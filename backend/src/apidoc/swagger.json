@@ -338,7 +338,7 @@
         "operationId" : "authenticateUser",
         "responses" : {
           "302" : {
-            "description" : "Redirect to app after successful authentication, or redirect to\nlogin after unsuccesful authentication\n"
+            "description" : "Redirect to app after successful authentication, or redirect to\nlogin after unsuccesful authentication.\n"
           }
         }
       }
