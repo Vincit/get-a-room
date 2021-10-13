@@ -13,13 +13,15 @@
     "version" : "0.2.0"
   },
   "servers" : [ {
-    "url" : "oispahuone.com",
+    "url" : "https://oispahuone.com/api",
     "description" : "The staging environment"
   } ],
   "tags" : [ {
     "name" : "preferences"
   }, {
     "name" : "bookings"
+  }, {
+    "name" : "authorization"
   } ],
   "paths" : {
     "/preferences" : {
@@ -288,7 +290,10 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/availableRoom"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/room"
+                  }
                 }
               }
             }
@@ -324,6 +329,19 @@
           }
         }
       }
+    },
+    "/auth/google" : {
+      "get" : {
+        "tags" : [ "authorization" ],
+        "summary" : "Authenticate the user",
+        "description" : "Redirects to a google login page in which the user is authenticated with google\n\nAfter google login, the backend uses the google provided token to retrieve details\nabout the google user and creates a new user in the database if one does not exist.\n",
+        "operationId" : "authenticateUser",
+        "responses" : {
+          "302" : {
+            "description" : "Redirect to app after successful authentication, or redirect to\nlogin after unsuccesful authentication\n"
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -355,20 +373,12 @@
             "items" : {
               "type" : "string"
             }
-          }
-        }
-      },
-      "availableRoom" : {
-        "required" : [ "availableFor", "room" ],
-        "type" : "object",
-        "properties" : {
-          "room" : {
-            "$ref" : "#/components/schemas/room"
           },
-          "availableFor" : {
-            "type" : "number",
-            "description" : "Minutes this room is available for",
-            "example" : 120
+          "nextCalendarEvent" : {
+            "type" : "string",
+            "description" : "Time when the room is no longer available",
+            "format" : "date-time",
+            "example" : "2021-10-21T17:32:28Z"
           }
         }
       },
@@ -421,11 +431,13 @@
           },
           "startTime" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date-time",
+            "example" : "2021-10-21T17:32:28Z"
           },
           "endTime" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date-time",
+            "example" : "2021-10-21T19:32:28Z"
           },
           "room" : {
             "$ref" : "#/components/schemas/room"
