@@ -112,6 +112,7 @@ jobs:
     backend-build:
         name: Build backend
         needs: check-style
+        runs-on: ubuntu-latest
 
         defaults:
             run:
@@ -123,6 +124,7 @@ jobs:
     backend-test:
         name: Test backend
         needs: backend-build
+        runs-on: ubuntu-latest
 
         defaults:
             run:
