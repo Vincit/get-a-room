@@ -40,7 +40,7 @@ jobs:
             - run: npm run build:ci
             - uses: actions/upload-artifact@main
               with:
-                  name: build
+                  name: frontend-build
                   path: frontend/build
 
     frontend-test:
@@ -119,7 +119,18 @@ jobs:
                 working-directory: backend
 
         steps:
-            - run: echo "backend build"
+            - uses: actions/checkout@main
+            - uses: actions/setup-node@main
+              with:
+                  node-version: 16
+                  cache: npm
+            - run: npm ci
+            - run: npm run lint:ci
+            - run: npm run build
+            - uses: actions/upload-artifact@main
+              with:
+                  name: backend-build
+                  path: backend/build
 
     backend-test:
         name: Test backend
@@ -131,7 +142,13 @@ jobs:
                 working-directory: backend
 
         steps:
-            - run: echo "backend test"
+            - uses: actions/checkout@main
+            - uses: actions/setup-node@main
+              with:
+                  node-version: 16
+                  cache: npm
+            - run: npm ci
+            - run: npm run test:ci
 
     backend-deploy:
         name: Deploy Node backend
@@ -158,7 +175,6 @@ jobs:
 
             # Pushes the .docker directory to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
             - name: Build and push Node backend to Container registry
-              working-directory: backend
               run: |-
                   gcloud builds submit \
                     --quiet \
