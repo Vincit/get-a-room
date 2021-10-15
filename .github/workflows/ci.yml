@@ -80,7 +80,7 @@ jobs:
             - name: Download Artifact
               uses: actions/download-artifact@main
               with:
-                  name: build
+                  name: frontend-build
                   path: frontend/.docker/build
 
             # Prepares the GCloud CLI with your project ID and private key
