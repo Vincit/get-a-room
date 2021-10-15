@@ -128,7 +128,7 @@ jobs:
 
         defaults:
             run:
-            working-directory: backend
+                working-directory: backend
 
         steps:
             - run: echo "backend test"
