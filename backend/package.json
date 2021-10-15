@@ -1,10 +1,17 @@
 {
     "name": "get-a-room-backend",
     "version": "0.1.0",
+    "type": "module",
     "description": "",
     "main": "src/app.ts",
+    "engines": {
+        "node": ">=16.0.0"
+    },
     "scripts": {
         "test": "jest",
+        "test:ci": "jest --ci",
+        "lint": "eslint .",
+        "lint:ci": "eslint . --max-warnings 1",
         "build": "tsc --project tsconfig.production.json",
         "start": "ts-node src/app.ts",
         "nodemon": "nodemon -e js,ts,json src/app.ts",
@@ -49,6 +56,17 @@
             "browser": true,
             "es2021": true
         },
+        "settings": {
+            "node": {
+                "tryExtensions": [
+                    ".js",
+                    ".json",
+                    ".node",
+                    ".ts",
+                    ".d.ts"
+                ]
+            }
+        },
         "extends": [
             "eslint:recommended",
             "plugin:@typescript-eslint/recommended",
@@ -64,7 +82,9 @@
             "@typescript-eslint"
         ],
         "rules": {
-            "@typescript-eslint/no-empty-interface": "off"
+            "@typescript-eslint/no-empty-interface": "off",
+            "node/no-extraneous-import": "off",
+            "node/no-unpublished-import": "off"
         }
     },
     "jest": {
