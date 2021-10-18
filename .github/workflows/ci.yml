@@ -109,51 +109,52 @@ jobs:
     #                 --platform "managed" \
     #                 --allow-unauthenticated
 
-    backend-build:
-        name: Build backend
-        # needs: check-style
-        runs-on: ubuntu-latest
+    # backend-build:
+    #     name: Build backend
+    #     # needs: check-style
+    #     runs-on: ubuntu-latest
 
-        defaults:
-            run:
-                working-directory: backend
+    #     defaults:
+    #         run:
+    #             working-directory: backend
 
-        steps:
-            - uses: actions/checkout@main
-            - uses: actions/setup-node@main
-              with:
-                  node-version: 16
-                  cache: npm
-            - run: npm ci
-            - run: npm run lint:ci
-            - run: npm run build
-            - uses: actions/upload-artifact@main
-              with:
-                  name: backend-build
-                  path: backend/build
+    #     steps:
+    #         - uses: actions/checkout@main
+    #         - uses: actions/setup-node@main
+    #           with:
+    #               node-version: 16
+    #               cache: npm
+    #         - run: npm ci
+    #         - run: npm run lint:ci
+    #         - run: npm run build
+    #         - uses: actions/upload-artifact@main
+    #           with:
+    #               name: backend-build
+    #               path: backend/build
 
-    backend-test:
-        name: Test backend
-        needs: backend-build
-        runs-on: ubuntu-latest
+    # backend-test:
+    #     name: Test backend
+    #     needs: backend-build
+    #     runs-on: ubuntu-latest
 
-        defaults:
-            run:
-                working-directory: backend
+    #     defaults:
+    #         run:
+    #             working-directory: backend
 
-        steps:
-            - uses: actions/checkout@main
-            - uses: actions/setup-node@main
-              with:
-                  node-version: 16
-                  cache: npm
-            - run: npm ci
-            - run: npm run test:ci
+    #     steps:
+    #         - uses: actions/checkout@main
+    #         - uses: actions/setup-node@main
+    #           with:
+    #               node-version: 16
+    #               cache: npm
+    #         - run: npm ci
+    #         - run: npm run test:ci
 
     backend-deploy:
         name: Deploy Node backend
         # if: github.ref == 'refs/heads/dev'
-        needs: backend-test
+        # needs: backend-test
+        # needs: backend-build
         runs-on: ubuntu-latest
 
         defaults:
