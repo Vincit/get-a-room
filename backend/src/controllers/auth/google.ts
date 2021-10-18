@@ -1,7 +1,6 @@
 import express from 'express';
 import { getOAuthClient } from '../googleController';
 import { OAuth2Client } from 'google-auth-library';
-import * as responses from '../../utils/responses';
 
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
 
@@ -69,6 +68,8 @@ export const verifyCode = () => {
             res.locals.oAuthClient = client;
             res.locals.token = accessToken;
             next();
+
+            /* eslint-disable @typescript-eslint/no-explicit-any*/
         } catch (err: any) {
             console.error(err);
             return res.redirect(`${frontendUrl}/auth/failure?code=500`);
