@@ -5,7 +5,8 @@
         "outDir": "./build",
         "esModuleInterop": true,
         "strict": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "moduleResolution": "node"
     },
     "exclude": ["**/*.test.ts"]
 }
