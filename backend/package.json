@@ -52,50 +52,5 @@
         "jest": "^27.2.5",
         "nodemon": "^2.0.13",
         "ts-jest": "^27.0.6"
-    },
-    "eslintConfig": {
-        "env": {
-            "browser": true,
-            "es2021": true
-        },
-        "settings": {
-            "node": {
-                "tryExtensions": [
-                    ".js",
-                    ".json",
-                    ".node",
-                    ".ts",
-                    ".d.ts"
-                ]
-            }
-        },
-        "extends": [
-            "eslint:recommended",
-            "plugin:@typescript-eslint/recommended",
-            "plugin:node/recommended",
-            "prettier"
-        ],
-        "parser": "@typescript-eslint/parser",
-        "parserOptions": {
-            "ecmaVersion": 12,
-            "sourceType": "module"
-        },
-        "plugins": [
-            "@typescript-eslint"
-        ],
-        "rules": {
-            "@typescript-eslint/no-empty-interface": "off",
-            "node/no-extraneous-import": "off",
-            "node/no-unpublished-import": "off"
-        }
-    },
-    "jest": {
-        "preset": "ts-jest",
-        "testEnvironment": "node",
-        "globals": {
-            "ts-jest": {
-                "isolatedModules": true
-            }
-        }
     }
 }
