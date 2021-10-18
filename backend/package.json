@@ -1,7 +1,6 @@
 {
     "name": "get-a-room-backend",
     "version": "0.1.0",
-    "type": "module",
     "description": "",
     "main": "src/app.ts",
     "engines": {
