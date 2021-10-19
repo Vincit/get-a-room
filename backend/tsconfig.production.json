@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
         "target": "es6",
+        "module": "commonjs",
         "rootDir": "./src",
         "outDir": "./build",
         "esModuleInterop": true,
         "strict": true,
-        "resolveJsonModule": true,
-        "moduleResolution": "node"
+        "resolveJsonModule": true
     },
     "exclude": ["**/*.test.ts"]
 }

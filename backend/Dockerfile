@@ -11,8 +11,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install production dependencies.
-RUN npm install
-# RUN npm install --only=production
+RUN npm install --only=production
 
 # RUN apt install node-typescript
 
