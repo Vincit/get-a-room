@@ -1,7 +1,6 @@
 {
     "name": "get-a-room-backend",
     "version": "0.1.0",
-    "type": "module",
     "description": "",
     "main": "src/app.ts",
     "engines": {
@@ -86,7 +85,15 @@
         "rules": {
             "@typescript-eslint/no-empty-interface": "off",
             "node/no-extraneous-import": "off",
-            "node/no-unpublished-import": "off"
+            "node/no-unpublished-import": "off",
+            "node/no-unsupported-features/es-syntax": [
+                "error",
+                {
+                    "ignores": [
+                        "modules"
+                    ]
+                }
+            ]
         }
     },
     "jest": {

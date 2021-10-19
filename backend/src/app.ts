@@ -23,10 +23,11 @@ const port = 8080;
 
 try {
     checkEnvVariables();
+    /* eslint-disable @typescript-eslint/no-explicit-any*/
 } catch (e: any) {
     // On error, prevent startup
     console.error(e);
-    process.exit(1);
+    // process.exit(1);
 }
 
 try {
