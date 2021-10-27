@@ -18,6 +18,11 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
     console.log(event.request.url);
 
+    // We do not want to cache authenticated related resources because they are canceled anyway
+    if (event.request.url.indexOf('/auth/') !== -1) {
+        return false;
+    }
+
     event.respondWith(
         caches.match(event.request).then(function (response) {
             return (
