@@ -1,8 +1,10 @@
 import roomData from './roomData';
 
-export default interface currentBookingData {
+export type currentBookingData = {
     id: string | null | undefined;
     startTime: string | null | undefined;
     endTime: string | null | undefined;
     room: roomData | null | undefined;
-}
+};
+
+export default currentBookingData;

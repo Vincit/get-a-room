@@ -63,7 +63,7 @@ export const simplifyAndFilterCurrentBookingsMiddleware = () => {
             const simplifiedBookings = simplifyBookings(allBookings, rooms);
 
             res.locals.currentBookings =
-                filteCurrentBookings(simplifiedBookings);
+                filterCurrentBookings(simplifiedBookings);
             next();
         } catch (err) {
             next(err);
@@ -110,7 +110,7 @@ export const simplifyBookings = (
  * @param simplifiedBookings List of simplified bookings
  * @returns filtered bookings
  */
-export const filteCurrentBookings = (
+export const filterCurrentBookings = (
     simplifiedBookings: currentBookingData[]
 ): currentBookingData[] => {
     // Filters away all bookings that aren't running at the moment
