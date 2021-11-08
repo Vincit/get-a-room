@@ -46,7 +46,7 @@ export const getCurrentBookingsMiddleware = () => {
  * Simplifies and filters current bookings
  * @returns
  */
-export const simplifyCurrentBookingsMiddleware = () => {
+export const simplifyAndFilterCurrentBookingsMiddleware = () => {
     const middleware = async (
         req: Request,
         res: Response,
@@ -63,7 +63,7 @@ export const simplifyCurrentBookingsMiddleware = () => {
             const simplifiedBookings = simplifyBookings(allBookings, rooms);
 
             res.locals.currentBookings =
-                filteCurrentlyRunningBookings(simplifiedBookings);
+                filteCurrentBookings(simplifiedBookings);
             next();
         } catch (err) {
             next(err);
@@ -110,7 +110,7 @@ export const simplifyBookings = (
  * @param simplifiedBookings List of simplified bookings
  * @returns filtered bookings
  */
-export const filteCurrentlyRunningBookings = (
+export const filteCurrentBookings = (
     simplifiedBookings: currentBookingData[]
 ): currentBookingData[] => {
     // Filters away all bookings that aren't running at the moment
