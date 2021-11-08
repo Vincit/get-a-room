@@ -2,13 +2,13 @@ import { DateTime } from 'luxon';
 import _ from 'lodash';
 
 import { Request, Response, NextFunction } from 'express';
-import currentBookingData from '../../interfaces/currentBookingData';
+import currentBookingData from '../../types/currentBookingData';
 import * as schema from '../../utils/googleSchema';
 import * as admin from '../googleAPI/adminAPI';
 import * as calendar from '../googleAPI/calendarAPI';
 import * as responses from '../../utils/responses';
 import { OAuth2Client } from 'google-auth-library';
-import { simplifyRoomData } from '../../controllers/roomController';
+import { simplifyRoomData } from '../roomController';
 import roomData from '../../interfaces/roomData';
 
 /**
