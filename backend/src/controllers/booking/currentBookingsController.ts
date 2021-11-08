@@ -8,8 +8,8 @@ import * as admin from '../googleAPI/adminAPI';
 import * as calendar from '../googleAPI/calendarAPI';
 import * as responses from '../../utils/responses';
 import { OAuth2Client } from 'google-auth-library';
-import { simplifyRoomData } from '../roomController';
-import roomData from '../../interfaces/roomData';
+import { simplifyRoomData } from '../../controllers/roomController';
+import roomData from '../../types/roomData';
 
 /**
  * Gets all the users currently active bookings
