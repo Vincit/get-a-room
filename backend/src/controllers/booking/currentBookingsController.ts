@@ -53,6 +53,12 @@ export const simplifyAndFilterCurrentBookingsMiddleware = () => {
         next: NextFunction
     ) => {
         try {
+            const now = DateTime.now().toUTC().toISO();
+            console.log(
+                'PRINTING NOW DateTime.now().toUTC().toISO(): ' +
+                    DateTime.now().plus({ hours: 2 }).toUTC().toISO()
+            );
+
             const allBookings: currentBookingData[] =
                 res.locals.currentBookings.items;
 
@@ -125,7 +131,8 @@ export const filterCurrentBookings = (
                 return false;
             }
 
-            const now = DateTime.now().toUTC().toISO();
+            const now = DateTime.now().plus({ hours: 2 }).toUTC().toISO();
+
             return booking.startTime <= now && booking.endTime >= now;
         });
 
