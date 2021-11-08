@@ -25,9 +25,7 @@ function getBookingTimeLeft(booking: Booking) {
 }
 
 function getTimeDifference(startTime: Date, endTime: Date) {
-    return Math.floor(
-        ((startTime.getTime() - endTime.getTime()) / 1000 / 60) % 60
-    );
+    return Math.floor((startTime.getTime() - endTime.getTime()) / 1000 / 60);
 }
 
 function areBookingsFetched(bookings: Booking[]) {
