@@ -1,4 +1,3 @@
-import * as schema from '../utils/googleSchema';
 import roomData from './roomData';
 
 export default interface currentBookingData {

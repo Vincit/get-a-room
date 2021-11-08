@@ -94,7 +94,7 @@ export const simplifyBookings = (
         };
 
         // Finds the room information and includes it inside the simpleEvent
-        const room = roomsSimplified.find((room: any) => {
+        const room = roomsSimplified.find((room: roomData) => {
             return room.location === booking.location;
         });
         simpleEvent.room = room;

@@ -194,7 +194,6 @@ export const simplifyRoomData = (
          * @param features featureInstances
          * @returns array of feature names
          */
-
         const cleanFeatures = (features: any): string[] => {
             if (!features) {
                 return [];
