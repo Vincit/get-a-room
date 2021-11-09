@@ -11,8 +11,7 @@ import {
     Typography
 } from '@mui/material';
 import { Booking } from '../types';
-import React, { useState, useEffect } from 'react';
-import { getBookings } from '../services/bookingService';
+import React from 'react';
 import { ExpandLess, ExpandMore, Group } from '@mui/icons-material';
 
 function getBookingRoomName(booking: Booking) {
@@ -52,13 +51,7 @@ function getFeatures(booking: Booking) {
     return featuresDisplay;
 }
 
-function CurrentBooking() {
-    const [bookings, setBookings] = useState<Booking[]>([]);
-
-    useEffect(() => {
-        getBookings().then(setBookings);
-    }, []);
-
+function CurrentBooking({ bookings }: { bookings: Booking[] }) {
     const [expandedFeatures, setExpandedFeatures] = React.useState('false');
 
     const handleFeaturesCollapse = (

@@ -13,15 +13,16 @@ import {
 import { Business, Group, ExpandMore, ExpandLess } from '@mui/icons-material';
 import './BookingView.css';
 import { getRooms } from '../services/roomService';
-import { makeBooking } from '../services/bookingService';
-import { Room, BookingDetails } from '../types';
+import { makeBooking, getBookings } from '../services/bookingService';
+import { Room, BookingDetails, Booking } from '../types';
 import NavBar from './NavBar';
 import CurrentBooking from './CurrentBooking';
 
 async function book(
     event: React.MouseEvent<HTMLElement>,
     room: Room,
-    duration: number
+    duration: number,
+    setBookings: React.Dispatch<React.SetStateAction<Booking[]>>
 ) {
     let bookingDetails: BookingDetails = {
         duration: duration,
@@ -31,6 +32,7 @@ async function book(
 
     makeBooking(bookingDetails)
         .then(() => {
+            getBookings().then(setBookings);
             alert('Booking successful!');
         })
         .catch(() => {
@@ -79,6 +81,12 @@ function areRoomsFetched(rooms: Room[]) {
 function BookingView() {
     const [rooms, setRooms] = useState<Room[]>([]);
 
+    const [bookings, setBookings] = useState<Booking[]>([]);
+
+    useEffect(() => {
+        getBookings().then(setBookings);
+    }, []);
+
     useEffect(() => {
         getRooms().then(setRooms);
     }, []);
@@ -102,7 +110,7 @@ function BookingView() {
 
     return (
         <div>
-            <CurrentBooking />
+            <CurrentBooking bookings={bookings} />
             <div className="BookingView">
                 <header className="BookingView-header">
                     <h1>Available rooms</h1>
@@ -207,7 +215,12 @@ function BookingView() {
                                                             maxHeight: '50px'
                                                         }}
                                                         onClick={(e) =>
-                                                            book(e, room, 30)
+                                                            book(
+                                                                e,
+                                                                room,
+                                                                30,
+                                                                setBookings
+                                                            )
                                                         }
                                                     >
                                                         30 min
@@ -231,7 +244,12 @@ function BookingView() {
                                                             maxHeight: '50px'
                                                         }}
                                                         onClick={(e) =>
-                                                            book(e, room, 60)
+                                                            book(
+                                                                e,
+                                                                room,
+                                                                60,
+                                                                setBookings
+                                                            )
                                                         }
                                                     >
                                                         60 min
