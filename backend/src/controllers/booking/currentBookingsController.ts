@@ -53,11 +53,6 @@ export const simplifyAndFilterCurrentBookingsMiddleware = () => {
         next: NextFunction
     ) => {
         try {
-            const now = DateTime.now()
-                .toUTC()
-                .setZone('Europe/Helsinki')
-                .toISO();
-
             const allBookings: currentBookingData[] =
                 res.locals.currentBookings.items;
 
