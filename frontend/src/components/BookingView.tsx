@@ -33,6 +33,7 @@ async function book(
     makeBooking(bookingDetails)
         .then(() => {
             getBookings().then(setBookings);
+            window.scrollTo(0, 0);
             alert('Booking successful!');
         })
         .catch(() => {
