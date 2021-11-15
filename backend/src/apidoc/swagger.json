@@ -1,21 +1,21 @@
 {
   "openapi" : "3.0.0",
+  "servers" : [ {
+    "description" : "The staging environment",
+    "url" : "https://oispahuone.com/api"
+  } ],
   "info" : {
-    "title" : "Get a room! API",
     "description" : "This is the API for get a room backend",
+    "version" : "0.3.0",
+    "title" : "Get a room! API",
     "contact" : {
       "email" : "mikko.m.pirhonen@tuni.fi"
     },
     "license" : {
       "name" : "MIT License",
       "url" : "https://opensource.org/licenses/MIT"
-    },
-    "version" : "0.2.0"
+    }
   },
-  "servers" : [ {
-    "url" : "https://oispahuone.com/api",
-    "description" : "The staging environment"
-  } ],
   "tags" : [ {
     "name" : "preferences"
   }, {
@@ -28,8 +28,8 @@
       "get" : {
         "tags" : [ "preferences" ],
         "summary" : "Get preferences for the user",
-        "description" : "The current user is resolved from the request and the corresponding preferences are returned\n",
         "operationId" : "getPreferences",
+        "description" : "The current user is resolved from the request and the corresponding preferences are returned\n",
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -49,8 +49,8 @@
       "put" : {
         "tags" : [ "preferences" ],
         "summary" : "Replace preferences for the user",
-        "description" : "The current user is resolved from the request and the corresponding preferences are updated\n",
         "operationId" : "updatePreferences",
+        "description" : "The current user is resolved from the request and the corresponding preferences are updated\n",
         "requestBody" : {
           "description" : "The new preferences",
           "content" : {
@@ -85,8 +85,8 @@
       "post" : {
         "tags" : [ "bookings" ],
         "summary" : "Make a booking",
-        "description" : "The selected resource is booked with the details specified in the request body and  the current user\n",
         "operationId" : "makeBooking",
+        "description" : "The selected resource is booked with the details specified in the request body and  the current user\n",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -123,15 +123,18 @@
       "get" : {
         "tags" : [ "bookings" ],
         "summary" : "Get the status of the current booking of the user",
-        "description" : "Current booking is a booking that is currently ongoing.\n",
         "operationId" : "getCurrentBooking",
+        "description" : "Current booking is a booking that is currently ongoing.\n",
         "responses" : {
           "200" : {
             "description" : "The current booking",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/booking"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/booking"
+                  }
                 }
               }
             }
@@ -143,22 +146,20 @@
       }
     },
     "/booking/{bookingId}" : {
+      "parameters" : [ {
+        "name" : "bookingId",
+        "in" : "path",
+        "description" : "ID of the booking",
+        "required" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/bookingId"
+        }
+      } ],
       "get" : {
         "tags" : [ "bookings" ],
         "summary" : "Get details for a booking",
-        "description" : "Get details of a booking by it's id\n",
         "operationId" : "getBooking",
-        "parameters" : [ {
-          "name" : "bookingId",
-          "in" : "path",
-          "description" : "ID of the booking",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "$ref" : "#/components/schemas/uuid"
-          }
-        } ],
+        "description" : "Get details of a booking by it's id\n",
         "responses" : {
           "200" : {
             "description" : "The booking",
@@ -181,52 +182,35 @@
       "delete" : {
         "tags" : [ "bookings" ],
         "summary" : "Delete a booking",
-        "description" : "Delete a booking by it's id\n",
         "operationId" : "deleteBooking",
-        "parameters" : [ {
-          "name" : "bookingId",
-          "in" : "path",
-          "description" : "ID of the booking",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "$ref" : "#/components/schemas/uuid"
-          }
-        } ],
+        "description" : "Delete a booking by it's id\n",
         "responses" : {
-          "204" : {
+          "202" : {
             "description" : "Booking was deleted successfully"
           },
           "401" : {
             "description" : "The user was not authenticated"
           },
-          "403" : {
-            "description" : "The user was not authorized delete this booking"
-          },
           "404" : {
-            "description" : "Booking not found"
+            "description" : "Booking not found or already deleted"
           }
         }
       }
     },
     "/booking/{bookingId}/addTime" : {
+      "parameters" : [ {
+        "name" : "bookingId",
+        "in" : "path",
+        "description" : "ID of the booking to update",
+        "required" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/bookingId"
+        }
+      } ],
       "patch" : {
         "tags" : [ "bookings" ],
         "summary" : "Add time to a booking",
-        "description" : "Adds the specified time to a booking\n",
         "operationId" : "addTimeToBooking",
-        "parameters" : [ {
-          "name" : "bookingId",
-          "in" : "path",
-          "description" : "ID of the booking to update",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "$ref" : "#/components/schemas/uuid"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -236,6 +220,7 @@
             }
           }
         },
+        "description" : "Adds the specified time to a booking\n",
         "responses" : {
           "200" : {
             "description" : "The modified booking",
@@ -259,31 +244,27 @@
     "/rooms" : {
       "get" : {
         "tags" : [ "bookings" ],
-        "summary" : "Get rooms",
-        "description" : "By default gets free (not currently in use) rooms from all buildings.\nCan be altered to limit to one building or to get reserved rooms as well. \n",
-        "operationId" : "getAvailableRooms",
         "parameters" : [ {
           "name" : "building",
           "in" : "query",
           "description" : "Building to filter by",
           "required" : false,
-          "style" : "form",
-          "explode" : true,
           "schema" : {
-            "$ref" : "#/components/schemas/uuid"
+            "$ref" : "#/components/schemas/buildingId"
           }
         }, {
           "name" : "showReserved",
           "in" : "query",
           "description" : "Should reserved rooms be included",
           "required" : false,
-          "style" : "form",
-          "explode" : true,
           "schema" : {
             "type" : "boolean",
             "default" : false
           }
         } ],
+        "summary" : "Get rooms",
+        "operationId" : "getAvailableRooms",
+        "description" : "By default gets free (not currently in use) rooms from all buildings.\nCan be altered to limit to one building or to get reserved rooms as well. \n",
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -306,10 +287,10 @@
     },
     "/buildings" : {
       "get" : {
-        "tags" : [ "bookings", "preferences" ],
+        "tags" : [ "preferences" ],
         "summary" : "Get available buildings",
-        "description" : "Conference rooms are located in buildings.\nBuildings can be used to group rooms\n",
         "operationId" : "getBuildings",
+        "description" : "Conference rooms are located in buildings.\nBuildings can be used to group rooms\n",
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -334,11 +315,24 @@
       "get" : {
         "tags" : [ "authorization" ],
         "summary" : "Authenticate the user",
-        "description" : "Redirects to a google login page in which the user is authenticated with google\n\nAfter google login, the backend uses the google provided token to retrieve details\nabout the google user and creates a new user in the database if one does not exist.\n",
         "operationId" : "authenticateUser",
+        "description" : "Redirects to a google login page in which the user is authenticated with google\n\nAfter google login, the backend uses the google provided token to retrieve details\nabout the google user and creates a new user in the database if one does not exist.\n",
         "responses" : {
           "302" : {
             "description" : "Redirect to app after successful authentication, or redirect to\nlogin after unsuccesful authentication.\n"
+          }
+        }
+      }
+    },
+    "/auth/logout" : {
+      "get" : {
+        "tags" : [ "authorization" ],
+        "summary" : "Logout the user",
+        "operationId" : "logoutUser",
+        "description" : "Empties the authentication cookies from the user, causing following\nrequests to fail.\n",
+        "responses" : {
+          "200" : {
+            "description" : "Cookies have been emptied.\n"
           }
         }
       }
@@ -346,21 +340,28 @@
   },
   "components" : {
     "schemas" : {
-      "uuid" : {
+      "roomId" : {
         "type" : "string",
-        "format" : "uuid",
-        "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        "format" : "email",
+        "example" : "c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com"
+      },
+      "buildingId" : {
+        "type" : "string",
+        "example" : "Hermia 5"
+      },
+      "bookingId" : {
+        "type" : "string",
+        "example" : "13223534"
       },
       "room" : {
-        "required" : [ "id", "name" ],
         "type" : "object",
+        "required" : [ "id", "name" ],
         "properties" : {
           "id" : {
-            "$ref" : "#/components/schemas/uuid"
+            "$ref" : "#/components/schemas/roomId"
           },
           "name" : {
             "type" : "string",
-            "nullable" : false,
             "example" : "Small meeting room 1"
           },
           "capacity" : {
@@ -376,18 +377,18 @@
           },
           "nextCalendarEvent" : {
             "type" : "string",
-            "description" : "Time when the room is no longer available",
             "format" : "date-time",
-            "example" : "2021-10-21T17:32:28Z"
+            "example" : "2021-10-21T17:32:28Z",
+            "description" : "Time when the room is no longer available"
           }
         }
       },
       "building" : {
-        "required" : [ "id", "name" ],
         "type" : "object",
+        "required" : [ "id", "name" ],
         "properties" : {
           "id" : {
-            "$ref" : "#/components/schemas/uuid"
+            "$ref" : "#/components/schemas/buildingId"
           },
           "name" : {
             "type" : "string",
@@ -396,17 +397,17 @@
         }
       },
       "preferences" : {
-        "required" : [ "favouriteBuilding" ],
         "type" : "object",
+        "required" : [ "building" ],
         "properties" : {
-          "favouriteBuilding" : {
+          "building" : {
             "$ref" : "#/components/schemas/building"
           }
         }
       },
       "bookingDetails" : {
-        "required" : [ "duration", "roomId", "title" ],
         "type" : "object",
+        "required" : [ "duration", "title", "roomId" ],
         "properties" : {
           "duration" : {
             "type" : "number",
@@ -418,16 +419,16 @@
             "example" : "Weekly software meeting"
           },
           "roomId" : {
-            "$ref" : "#/components/schemas/uuid"
+            "$ref" : "#/components/schemas/roomId"
           }
         }
       },
       "booking" : {
-        "required" : [ "endTime", "id", "room", "startTime" ],
         "type" : "object",
+        "required" : [ "id", "startTime", "endTime", "room" ],
         "properties" : {
           "id" : {
-            "$ref" : "#/components/schemas/uuid"
+            "$ref" : "#/components/schemas/bookingId"
           },
           "startTime" : {
             "type" : "string",
@@ -445,8 +446,8 @@
         }
       },
       "addTimeDetails" : {
-        "required" : [ "timeToAdd" ],
         "type" : "object",
+        "required" : [ "timeToAdd" ],
         "properties" : {
           "timeToAdd" : {
             "type" : "number",
