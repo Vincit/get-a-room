@@ -41,10 +41,7 @@ router.delete(
     '/:bookingId',
     deleteCurrentBookingController.deleteBooking(),
     (req: Request, res: Response) => {
-        res.status(202).send({
-            code: 202,
-            message: 'Booking was deleted successfully'
-        });
+        res.status(204).send('No Content');
     }
 );
 
