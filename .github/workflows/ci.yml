@@ -77,7 +77,7 @@ jobs:
             - name: Checkout Repo
               uses: actions/checkout@main
 
-            # Downloads the archived build folder into the .docker-staging directory
+            # Downloads the archived build folder into the .docker/.docker-staging directory
             - name: Download Artifact
               uses: actions/download-artifact@main
               with:
@@ -92,7 +92,7 @@ jobs:
                   service_account_key: ${{ secrets.GCR_SA_KEY }}
                   project_id: ${{ secrets.GCR_PROJECT }}
 
-            # Pushes the .docker-staging directory to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
+            # Pushes the .docker/.docker-staging directory to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
             - name: Build & Push React frontend to Container registry
               run: |-
                   gcloud builds submit \
@@ -126,7 +126,7 @@ jobs:
             - name: Checkout Repo
               uses: actions/checkout@main
 
-            # Downloads the archived build folder into the .docker-prod directory
+            # Downloads the archived build folder into the .docker/.docker-prod directory
             - name: Download Artifact
               uses: actions/download-artifact@main
               with:
@@ -141,7 +141,7 @@ jobs:
                   service_account_key: ${{ secrets.GCR_SA_KEY }}
                   project_id: ${{ secrets.GCR_PROJECT }}
 
-            # Pushes the .docker-prod directory to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
+            # Pushes the .docker/.docker-prod directory to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
             - name: Build & Push React frontend to Container registry
               run: |-
                   gcloud builds submit \
