@@ -72,14 +72,14 @@ export const fetchAvailability = () => {
                 return { id: x.id };
             });
 
-            // Custom ending time
-            const customEnd = req.query.until as string;
-            let start, end;
+            let start: string, end: string;
 
             // TODO: What should happen when the difference between start and end is small
-            if (customEnd) {
+            if (req.query.until) {
                 const startDt = DateTime.now().toUTC();
-                const endDt = DateTime.fromISO(customEnd).toUTC();
+                const endDt = DateTime.fromISO(
+                    req.query.until as string
+                ).toUTC();
                 start = startDt.toISO();
                 end = endDt.toISO();
 
