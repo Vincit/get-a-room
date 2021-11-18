@@ -75,9 +75,10 @@ export const checkRoomIsFree = () => {
             const client: OAuth2Client = res.locals.oAuthClient;
             const roomId: string = res.locals.roomId;
 
-            const startTime = DateTime.now().toISO();
+            const startTime = DateTime.now().toUTC().toISO();
             const endTime = DateTime.now()
                 .plus({ minutes: res.locals.duration })
+                .toUTC()
                 .toISO();
 
             const freeBusyResult = (
@@ -119,9 +120,10 @@ export const makeBooking = () => {
         next: NextFunction
     ) => {
         try {
-            const startTime = DateTime.now().toISO();
+            const startTime = DateTime.now().toUTC().toISO();
             const endTime = DateTime.now()
                 .plus({ minutes: res.locals.duration })
+                .toUTC()
                 .toISO();
 
             const client: OAuth2Client = res.locals.oAuthClient;

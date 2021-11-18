@@ -26,6 +26,7 @@ export const addTimeToBooking = () => {
             // New end time
             const endTime = DateTime.fromISO(eventData.end?.dateTime as string)
                 .plus({ minutes: timeToAdd })
+                .toUTC()
                 .toISO();
 
             // Pretty hacky and there probably is a better way to do this
@@ -73,6 +74,7 @@ export const checkRoomIsFree = () => {
             // New end time
             const endTime = DateTime.fromISO(event.end?.dateTime as string)
                 .plus({ minutes: timeToAdd })
+                .toUTC()
                 .toISO();
 
             const freeBusyResult = (
@@ -127,6 +129,7 @@ export const rollBackDeclinedUpdate = () => {
             // Original end time
             const endTime = DateTime.fromISO(eventData.end?.dateTime as string)
                 .minus({ minutes: timeToAdd })
+                .toUTC()
                 .toISO();
 
             // Pretty hacky and there probably is a better way to do this

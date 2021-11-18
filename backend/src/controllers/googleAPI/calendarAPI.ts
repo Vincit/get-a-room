@@ -117,7 +117,7 @@ export const freeBusyQuery = async (
 export const getCurrentBookings = async (
     client: OAuth2Client
 ): Promise<schema.EventsData> => {
-    const now = DateTime.now().toUTC().setZone('Europe/Helsinki').toISO();
+    const now = DateTime.now().toUTC().toISO();
 
     const eventsList = await calendar.events.list({
         calendarId: 'primary',
