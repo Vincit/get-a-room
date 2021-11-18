@@ -63,8 +63,9 @@ jobs:
 
     frontend-deploy:
         name: Deploy React frontend
-        if: ((github.ref == 'refs/heads/dev') || (github.ref == 'refs/heads/production-changes'))
-        needs: frontend-test
+        if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/production-changes'
+        # needs: frontend-test
+        needs: frontend-build
         runs-on: ubuntu-latest
 
         defaults:
