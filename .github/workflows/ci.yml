@@ -4,6 +4,7 @@ on: push
 
 env:
     PROJECT_ID: ${{ secrets.GCR_PROJECT }}
+    PROJECT_ID_PRODUCTION: ${{ secrets.GCR_PROJECT_PRODUCTION }}
     RUN_REGION: europe-north1
     REACT_FRONTEND_CLOUD_RUN_SERVICE_NAME: get-a-room
     NODE_BACKEND_CLOUD_RUN_SERVICE_NAME: get-a-room-node-backend
@@ -61,8 +62,8 @@ jobs:
     #         - run: npm ci
     #         - run: npm run test:ci
 
-    frontend-deploy:
-        name: Deploy React frontend to staging
+    frontend-deploy-staging:
+        name: Deploy frontend to staging
         if: github.ref == 'refs/heads/dev'
         # needs: frontend-test
         needs: frontend-build
@@ -90,7 +91,7 @@ jobs:
               with:
                   version: '290.0.1'
                   service_account_key: ${{ secrets.GCR_SA_KEY }}
-                  project_id: ${{ secrets.GCR_PROJECT }}
+                  project_id: $PROJECT_ID
 
             # Pushes the .docker/.docker-staging directory to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
             - name: Build & Push React frontend to Container registry
@@ -111,7 +112,7 @@ jobs:
                     --allow-unauthenticated
 
     frontend-deploy-prod:
-        name: Deploy React frontend to prod
+        name: Deploy frontend to prod
         if: github.ref == 'refs/heads/production-changes' # TODO MUISTAA VAIHTAA production-changes TILALLE main
         # needs: frontend-test
         needs: frontend-build
@@ -138,15 +139,15 @@ jobs:
               uses: google-github-actions/setup-gcloud@master
               with:
                   version: '290.0.1'
-                  service_account_key: ${{ secrets.GCR_SA_KEY }}
-                  project_id: ${{ secrets.GCR_PROJECT }}
+                  service_account_key: ${{ secrets.GCR_SA_KEY_PRODUCTION }}
+                  project_id: $PROJECT_ID_PRODUCTION
 
             # Pushes the .docker/.docker-prod directory to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
             - name: Build & Push React frontend to Container registry
               run: |-
                   gcloud builds submit \
                     --quiet \
-                    --tag "gcr.io/$PROJECT_ID/$REACT_FRONTEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA"
+                    --tag "gcr.io/$PROJECT_ID_PRODUCTION/$REACT_FRONTEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA"
               working-directory: frontend/.docker/.docker-prod
 
             # Deploy image to Cloud Run
@@ -155,7 +156,7 @@ jobs:
                   gcloud run deploy "$REACT_FRONTEND_CLOUD_RUN_SERVICE_NAME" \
                     --quiet \
                     --region "$RUN_REGION" \
-                    --image "gcr.io/$PROJECT_ID/$REACT_FRONTEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA" \
+                    --image "gcr.io/$PROJECT_ID_PRODUCTION/$REACT_FRONTEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA" \
                     --platform "managed" \
                     --allow-unauthenticated
 
@@ -201,7 +202,7 @@ jobs:
     #         - run: npm run test:ci
 
     backend-deploy-staging:
-        name: Deploy Node backend to staging
+        name: Deploy backend to staging
         if: github.ref == 'refs/heads/dev'
         # needs: backend-test
         runs-on: ubuntu-latest
@@ -221,7 +222,7 @@ jobs:
               with:
                   version: '290.0.1'
                   service_account_key: ${{ secrets.GCR_SA_KEY }}
-                  project_id: ${{ secrets.GCR_PROJECT }}
+                  project_id: $PROJECT_ID
 
             # Pushes the Nodejs codes to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
             - name: Build and push Node backend to Container registry
@@ -241,7 +242,7 @@ jobs:
                     --allow-unauthenticated
 
     backend-deploy-prod:
-        name: Deploy Node backend to prod
+        name: Deploy backend to prod
         if: github.ref == 'refs/heads/production-changes'
         # needs: backend-test
         runs-on: ubuntu-latest
@@ -260,15 +261,15 @@ jobs:
               uses: google-github-actions/setup-gcloud@master
               with:
                   version: '290.0.1'
-                  service_account_key: ${{ secrets.GCR_SA_KEY }}
-                  project_id: ${{ secrets.GCR_PROJECT }}
+                  service_account_key: ${{ secrets.GCR_SA_KEY_PRODUCTION }}
+                  project_id: $PROJECT_ID_PRODUCTION
 
             # Pushes the Nodejs codes to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
             - name: Build and push Node backend to Container registry
               run: |-
                   gcloud builds submit \
                     --quiet \
-                    --tag "gcr.io/$PROJECT_ID/$NODE_BACKEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA"
+                    --tag "gcr.io/$PROJECT_ID_PRODUCTION/$NODE_BACKEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA"
 
             # Deploy Node backend image to Cloud Run
             - name: Deploy Node backend to Cloud Run
@@ -276,6 +277,6 @@ jobs:
                   gcloud run deploy $NODE_BACKEND_CLOUD_RUN_SERVICE_NAME \
                     --quiet \
                     --region "$RUN_REGION" \
-                    --image "gcr.io/$PROJECT_ID/$NODE_BACKEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA" \
+                    --image "gcr.io/$PROJECT_ID_PRODUCTION/$NODE_BACKEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA" \
                     --platform "managed" \
                     --allow-unauthenticated
