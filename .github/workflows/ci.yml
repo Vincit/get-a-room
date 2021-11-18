@@ -91,7 +91,7 @@ jobs:
               with:
                   version: '290.0.1'
                   service_account_key: ${{ secrets.GCR_SA_KEY }}
-                  project_id: $PROJECT_ID
+                  project_id: ${{ secrets.GCR_PROJECT }}
 
             # Pushes the .docker/.docker-staging directory to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
             - name: Build & Push React frontend to Container registry
@@ -140,7 +140,7 @@ jobs:
               with:
                   version: '290.0.1'
                   service_account_key: ${{ secrets.GCR_SA_KEY_PRODUCTION }}
-                  project_id: $PROJECT_ID_PRODUCTION
+                  project_id: ${{ secrets.GCR_PROJECT_PRODUCTION }}
 
             # Pushes the .docker/.docker-prod directory to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
             - name: Build & Push React frontend to Container registry
@@ -222,7 +222,7 @@ jobs:
               with:
                   version: '290.0.1'
                   service_account_key: ${{ secrets.GCR_SA_KEY }}
-                  project_id: $PROJECT_ID
+                  project_id: ${{ secrets.GCR_PROJECT }}
 
             # Pushes the Nodejs codes to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
             - name: Build and push Node backend to Container registry
@@ -262,14 +262,14 @@ jobs:
               with:
                   version: '290.0.1'
                   service_account_key: ${{ secrets.GCR_SA_KEY_PRODUCTION }}
-                  project_id: $PROJECT_ID_PRODUCTION
+                  project_id: ${{ secrets.GCR_PROJECT_PRODUCTION }}
 
             # Pushes the Nodejs codes to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
             - name: Build and push Node backend to Container registry
               run: |-
                   gcloud builds submit \
                     --quiet \
-                    --tag "gcr.io/$PROJECT_ID_PRODUCTION/$NODE_BACKEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA"
+                    --tag "gcr.io/$PROJECT_ID/$NODE_BACKEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA"
 
             # Deploy Node backend image to Cloud Run
             - name: Deploy Node backend to Cloud Run
@@ -277,6 +277,6 @@ jobs:
                   gcloud run deploy $NODE_BACKEND_CLOUD_RUN_SERVICE_NAME \
                     --quiet \
                     --region "$RUN_REGION" \
-                    --image "gcr.io/$PROJECT_ID_PRODUCTION/$NODE_BACKEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA" \
+                    --image "gcr.io/$PROJECT_ID/$NODE_BACKEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA" \
                     --platform "managed" \
                     --allow-unauthenticated
