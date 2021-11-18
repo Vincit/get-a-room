@@ -92,7 +92,7 @@ export const checkRoomIsFree = () => {
 
             // freeBusyResult is equal to end time when there are no
             // reservations between now and end time
-            if (DateTime.fromISO(freeBusyResult).toISO() !== endTime) {
+            if (DateTime.fromISO(freeBusyResult).toUTC().toISO() !== endTime) {
                 return responses.custom(req, res, 409, 'Conflict');
             }
 
