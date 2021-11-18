@@ -109,6 +109,55 @@ jobs:
                     --platform "managed" \
                     --allow-unauthenticated
 
+    frontend-deploy-production:
+        name: Deploy React frontend to production
+        if: github.ref == 'refs/heads/production-changes' # TODO MUISTAA VAIHTAA production-changes TILALLE main
+        # needs: frontend-test
+        needs: frontend-build
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: frontend
+
+        steps:
+            # Checks out the repository
+            - name: Checkout Repo
+              uses: actions/checkout@main
+
+            # Downloads the archived build folder into the .docker directory
+            - name: Download Artifact
+              uses: actions/download-artifact@main
+              with:
+                  name: frontend-build
+                  path: frontend/.docker/build
+
+            # Prepares the GCloud CLI with your project ID and private key
+            - name: Setup gcloud CLI
+              uses: google-github-actions/setup-gcloud@master
+              with:
+                  version: '290.0.1'
+                  service_account_key: ${{ secrets.GCR_SA_KEY }}
+                  project_id: ${{ secrets.GCR_PROJECT }}
+
+            # Pushes the .docker directory to Google Cloud Build to build the Docker image and save it to Google Cloud Registry
+            - name: Build & Push React frontend to Container registry
+              run: |-
+                  gcloud builds submit \
+                    --quiet \
+                    --tag "gcr.io/$PROJECT_ID/$REACT_FRONTEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA"
+              working-directory: frontend/.docker
+
+            # Deploy image to Cloud Run
+            - name: Deploy React frontend to Cloud Run
+              run: |-
+                  gcloud run deploy "$REACT_FRONTEND_CLOUD_RUN_SERVICE_NAME" \
+                    --quiet \
+                    --region "$RUN_REGION" \
+                    --image "gcr.io/$PROJECT_ID/$REACT_FRONTEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA" \
+                    --platform "managed" \
+                    --allow-unauthenticated
+
     backend-build:
         name: Build backend
         needs: check-style
