@@ -62,7 +62,7 @@ jobs:
             - run: npm run test:ci
 
     frontend-deploy:
-        name: Deploy React frontend
+        name: Deploy React frontend to staging
         if: github.ref == 'refs/heads/dev'
         needs: frontend-test
         runs-on: ubuntu-latest
