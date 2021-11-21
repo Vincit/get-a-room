@@ -270,7 +270,6 @@ jobs:
                   gcloud builds submit \
                     --quiet \
                     --tag "gcr.io/$PROJECT_ID/$NODE_BACKEND_CLOUD_RUN_SERVICE_NAME:$GITHUB_SHA"
-
             # Deploy Node backend image to Cloud Run
             - name: Deploy Node backend to Cloud Run
               run: |-
