@@ -40,12 +40,7 @@ export const addAllRooms = () => {
             res.locals.rooms = rooms;
             next();
         } catch (err: any) {
-            // Custom error for incorrect building
-            if (err.errors[0].message === 'Invalid Input: filter') {
-                return responses.badRequest(req, res);
-            }
-
-            return responses.internalServerError(req, res);
+            next(err);
         }
     };
 
