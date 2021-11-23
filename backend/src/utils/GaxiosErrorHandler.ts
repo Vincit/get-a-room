@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { GaxiosError } from 'gaxios';
 import * as responses from '../utils/responses';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Handle Gaxios errors
  * @returns
