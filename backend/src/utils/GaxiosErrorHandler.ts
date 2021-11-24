@@ -23,6 +23,10 @@ export const gaxiosErrorHandler = () => {
                     return responses.unauthorized(req, res);
                 case 'invalid_grant':
                     return responses.unauthorized(req, res);
+                case 'Resource has been deleted':
+                    return responses.notFound(req, res);
+                case 'Not Found':
+                    return responses.notFound(req, res);
                 default:
                     return responses.internalServerError(req, res);
             }

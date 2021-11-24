@@ -39,7 +39,7 @@ export const addAllRooms = () => {
 
             res.locals.rooms = rooms;
             next();
-        } catch (err: any) {
+        } catch (err) {
             next(err);
         }
     };
