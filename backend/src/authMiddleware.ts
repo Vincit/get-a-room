@@ -11,7 +11,7 @@ import * as tokenTools from './controllers/auth/token';
  */
 export const authFilter = (req: express.Request) => {
     const path = req.path;
-    const skipPaths = ['/api/auth', '/api/api-docs', '/api/favicon.ico'];
+    const skipPaths = ['/api/auth', '/api/favicon.ico'];
 
     if (path === '/api') {
         return true;

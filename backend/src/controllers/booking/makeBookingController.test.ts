@@ -172,6 +172,12 @@ describe('makeBookingController', () => {
         });
     });
 
+    describe('checkRoomIsFree', () => {
+        test.todo('Should return internal server error if no result');
+        test.todo('Should return conflict if room is reserved');
+        test.todo('Should call next when successful and room is free');
+    });
+
     describe('checkRoomAccepted', () => {
         beforeEach(() => {
             mockRequest = {

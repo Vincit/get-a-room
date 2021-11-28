@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { GaxiosError } from 'gaxios';
-import * as responses from '../utils/responses';
+import * as responses from './responses';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

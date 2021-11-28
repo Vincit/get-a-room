@@ -23,6 +23,10 @@ export const addTimeToBooking = () => {
             const eventData: schema.EventData = res.locals.event;
             const timeToAdd: number = req.body.timeToAdd;
 
+            if (!bookingId || bookingId.length !== 26) {
+                return responses.badRequest(req, res);
+            }
+
             // New end time
             const endTime = DateTime.fromISO(eventData.end?.dateTime as string)
                 .plus({ minutes: timeToAdd })
