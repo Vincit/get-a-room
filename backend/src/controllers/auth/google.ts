@@ -49,7 +49,6 @@ export const verifyCode = () => {
     ) => {
         try {
             if (!req.query.code) {
-                console.error(`ERROR - "No code"`);
                 return res.redirect(`${frontendUrl}/auth/failure?code=401`);
             }
 
