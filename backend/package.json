@@ -105,6 +105,10 @@
             "/node_modules/",
             "/build/"
         ],
+        "collectCoverage": true,
+        "collectCoverageFrom": [
+            "src/**/*.ts"
+        ],
         "globals": {
             "ts-jest": {
                 "isolatedModules": true
