@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { getOAuthClient } from '../googleController';
+import { getOAuthClient } from '../../utils/oAuthClient';
 import { OAuth2Client } from 'google-auth-library';
 
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
