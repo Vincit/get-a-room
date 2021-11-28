@@ -29,7 +29,7 @@ export const checkRoomAccepted = () => {
             // so do request and check its response to see if the room has accepted the event
             // Also the acceptance seems to take some time on Google's end, so we try and wait a
             // few times before giving up (usually it seems to take 300-500ms)
-            for (let i = 0; i < 8; i += 1) {
+            for (let i = 0; i < 16; i += 1) {
                 const eventData = await calendar.getEventData(client, eventId);
                 const attendees = eventData.attendees;
                 res.locals.event = eventData;
