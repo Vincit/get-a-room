@@ -12,7 +12,7 @@ jest.mock('google-auth-library');
 const mockedInvalidToken = mocked(invalidToken, false);
 const mockedReadToken = mocked(readToken, false);
 const mockedUpdateToken = mocked(updateToken, false);
-const mockedOAuthClient = mocked(OAuth2Client, true);
+const mockedAuth = mocked(OAuth2Client, true);
 
 describe('authMiddleware', () => {
     let mockRequest: Partial<Request>;
@@ -148,14 +148,12 @@ describe('authMiddleware', () => {
         });
 
         test('Should return with Invalid Token when client returns no access token', async () => {
-            mockedOAuthClient.prototype.getAccessToken.mockImplementationOnce(
-                () => {
-                    return {
-                        token: null,
-                        res: null
-                    };
-                }
-            );
+            mockedAuth.prototype.getAccessToken.mockImplementationOnce(() => {
+                return {
+                    token: null,
+                    res: null
+                };
+            });
 
             await validateAccessToken()(
                 mockRequest as Request,
@@ -163,25 +161,19 @@ describe('authMiddleware', () => {
                 mockNext
             );
 
-            expect(mockedOAuthClient.prototype.setCredentials).toBeCalledTimes(
-                1
-            );
-            expect(mockedOAuthClient.prototype.getAccessToken).toBeCalledTimes(
-                1
-            );
+            expect(mockedAuth.prototype.setCredentials).toBeCalledTimes(1);
+            expect(mockedAuth.prototype.getAccessToken).toBeCalledTimes(1);
             expect(mockedInvalidToken).toBeCalledTimes(1);
             expect(mockNext).not.toBeCalled();
         });
 
         test('Should set new token to cookie when old access token is different', async () => {
-            mockedOAuthClient.prototype.getAccessToken.mockImplementationOnce(
-                () => {
-                    return {
-                        token: 'differentToken',
-                        res: null
-                    };
-                }
-            );
+            mockedAuth.prototype.getAccessToken.mockImplementationOnce(() => {
+                return {
+                    token: 'differentToken',
+                    res: null
+                };
+            });
             mockedUpdateToken.mockReturnValue('newCookie');
 
             await validateAccessToken()(
