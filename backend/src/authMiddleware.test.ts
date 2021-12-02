@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { mocked } from 'ts-jest/utils';
 import { authFilter, parseToken, validateAccessToken } from './authMiddleware';
 import { invalidToken } from './utils/responses';
