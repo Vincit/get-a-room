@@ -10,6 +10,8 @@ To utilize code formatting on commit, run `npm install` in the project root fold
 
 ## Setting up a new Google Cloud Environment and deployment
 
+Here are instructions on setting up a new Google Cloud deployment environment i.e. if new staging or production environment is needed.
+
 First a new project should be created to Google Cloud. Name for the project could be for example "get-a-room".
 
 Next up "Container registry" and "Cloud Build API" should be enabled for this newly created project. These are used to storage and build the Cloud Run containers.
