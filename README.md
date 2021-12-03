@@ -25,18 +25,20 @@ Cloud Build Service Account
 Viewer
 Service Account User
 
-Next a new service account key should be created. At this newly created service accounts page go to KEYS -> ADD KEY -> Create new key -> JSON -> Create. After downloading the key, its whole content should be saved as GitHub repository secret, so it can be accessed inside the GitHub actions worklow file .github/workflows/ci.yml.
+At this newly created service accounts page, go to KEYS -> ADD KEY -> Create new key -> JSON -> Create. After downloading the key, its whole content should be saved as GitHub repository secret, so it can be accessed inside the GitHub actions worklow file .github/workflows/ci.yml and GitHub Actions have permission to use Google Cloud Build API and Cloud Runs. Secret name could be something like this: "GCR_SA_KEY_NEW_ENVIRONMENT_NAME".
 
-After adding the service account key, next up the Google Clouds project ID should also be added as GitHub repository secret. Project ID probably looks something like this: "get-a-room-123456" and can be checked from Google Cloud. Naming convention on the ci.yml file for the project ID secrets is something like this: GCR_PROJECT_NEW_ENVIRONMENT
+After adding the service account key, next up the Google Clouds project ID should also be added as GitHub repository secret. Project ID probably looks something like this: "get-a-room-123456" and can be checked from Google Cloud. Naming convention on the ci.yml file for the project ID secrets is something like this: "GCR_PROJECT_NEW_ENVIRONMENT_NAME"
 
-Now best way to find out where and how these env variables should be used inside the ci.yml file is to check how the existing variables are used. Existing Google project ID variables and service account keys are named something like this: GCR_PROJECT* and GCR_SA_KEY*
+Now best way to find out where and how these env variables should be used inside the ci.yml file is to check how the existing variables are used. Existing Google project ID variables and service account keys are named something like this: "GCR_PROJECT*" and "GCR_SA_KEY*"
 
-Now after these variables are setted up, a new deployment job could be created that uses these new variables. You can check how the existing deployment jobs are created (i.e. frontend-deploy-prod and backend-deploy-prod) and copy them.
+Now after these variables are setted up, a new deployment job should be created that uses these new variables. You can check how the existing deployment jobs are created (i.e. frontend-deploy-prod and backend-deploy-prod) and copy them and use these newly created GitHub secrets on them.
 
-After running the pipeline, the pipeline builds the images and deploys them to the Cloud Runs. Backend deploy to Cloud Run probably fails with errors that ENV variables are not set. ENV variables can be setted up at the backends Cloud Run page. Example on what env variables should be setted up to the backend can be found in file backend/.env.example
+After new deployment jobs are created, you can run the pipeline. The pipeline builds the images and deploys them to the Cloud Runs. First time backend deploy to Cloud Run probably fails with errors that ENV variables are not set. ENV variables can be setted up at the backends Cloud Run page. Example on what ENV variables should be setted up to the backend Cloud Run can be found in file backend/.env.example In file backend/.env.example there is helpful comments on how to obtain these ENV variables.
 
-Also new nginx.conf should be created for this new environment, you can check how the existing nginx.confs are created (i.e. frontend/.docker/.docker-prod/nginx.conf) Remember to change the "proxy_pass" address from this nginx.conf to point to this newly created environments Cloud Run backend. So the Nginx knows to route the /api paths traffic to the correct backend.
+Also new nginx.conf should be created for this new environment, you can check how the existing nginx.confs are created (i.e. frontend/.docker/.docker-prod/nginx.conf) Remember to change the "proxy_pass" address from this nginx.conf to point to this newly created environments Cloud Run backend. So the Nginx knows to route the /api paths traffic to the correct backend. Backends auto generated URL can be found at the Cloud Runs edit/information page.
 
-After this you probably want to point some domain to this application. This can done by pointing the domain to the frontend/Nginx Cloud Run service. After the domain is pointed correctly, it should setted up also to the FRONTEND_URL and CALLBACK_URL env variables.
+After this you probably want to point some domain to this application. This can done by pointing the domain to the frontend/Nginx Cloud Run service. After the domain is pointed correctly, it should setted up also to the FRONTEND_URL and CALLBACK_URL ENV variables.
+
+As a last thing, new OAuth 2.0 Client should be created in Google Cloud -> "APIs and services" -> "CREATE CREDENTIALS" -> "OAuth Client ID". Application type is "Web Application". Authorized JavaScript origins can be left empty. And to the "Authorised redirect URIs" this URL should be added: "https://yourdomainname.com/api/auth/google/callback" And of course remember to replace "yourdomainname" with the new domain name that was reserved for this application.
 
 Now you should have a working GitHub actions deployment and a new environment!
