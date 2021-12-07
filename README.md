@@ -15,8 +15,10 @@ Here are instructions on setting up a new Google Cloud deployment environment i.
 First a new project should be created to Google Cloud. Name for the project could be for example "get-a-room".
 
 Next up "Container registry" and "Cloud Build API" should be enabled for this newly created project. These are used to storage and build the Cloud Run containers.
-Also remember to enable the Google Calendar API and Admin SDK API for the project here:
+Also remember to enable the Google Calendar API and Admin SDK API for the project from these URL:s:
+
 https://console.cloud.google.com/marketplace/product/google/calendar-json.googleapis.com
+
 https://console.cloud.google.com/marketplace/product/google/admin.googleapis.com
 
 Next up if you are using GitHub actions to deploy the project to this new environment, a new service account should be created for the project. Service account is used to authenticate the GitHub actions so automatic deployments are possible. Service account name could be for example "get-a-room" and the service account should be given these roles:
