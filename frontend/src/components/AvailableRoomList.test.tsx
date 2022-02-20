@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AvailableRoomList from './AvailableRoomList';
 import { makeBooking } from '../services/bookingService';
 import userEvent from '@testing-library/user-event';
@@ -53,56 +53,90 @@ describe('AvailableRoomList', () => {
 
         const items = screen.queryByTestId('AvailableRoomListCard');
         await waitFor(() =>
-            expect(items).toHaveClass('AvailableRoomListCardClass')
+            expect(items).toBeTruthy()
         );
 
         const title = screen.queryByTestId('BookingRoomTitle');
         await waitFor(() => expect(title).toHaveTextContent('Amor'));
     });
 
-    it('tests interaction with rooms expand button', async () => {
+    it('renders duration picker', async () => {
         render(
             <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
             container
         );
 
-        const expansionButton = await screen.findByTestId(
-            'ExpansionButtonAvailableRoomList'
+        const items = screen.queryByTestId('DurationPicker');
+        await waitFor(() =>
+            expect(items).toBeTruthy()
         );
-        userEvent.click(expansionButton);
-        await waitFor(() => expect(screen.getByText('TV, Whiteboard')));
     });
 
-    it('tests interaction with quick book button', async () => {
+    it('renders booking drawer', async () => {
         render(
             <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
             container
         );
 
-        const quickBookButton = await screen.findByTestId('QuickBookButton');
-        userEvent.click(quickBookButton);
-        await waitFor(() => expect(screen.getByText('30 min')));
-        await waitFor(() => expect(screen.getByText('60 min')));
+        const card = screen.queryByTestId('CardActiveArea');
+        await waitFor(() =>
+            expect(card).toBeTruthy()
+        );
+
+        fireEvent.click(card)
+
+        
+        const drawer = screen.queryByTestId('BookingDrawer');
+        await waitFor(() =>
+            expect(drawer).toBeTruthy()
+        );
     });
 
-    it('books a room for 30 minutes', async () => {
+    it('default books for a room for 15 minutes', async () => {
+        (makeBooking as jest.Mock).mockResolvedValueOnce({
+            duration: 15,
+            roomId: fakeRooms[0].id,
+            title: 'Reservation from Get a Room!'
+        });
+        
+        render(
+            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            container
+        );
+
+        const card = screen.queryByTestId('CardActiveArea');
+        fireEvent.click(card)
+        const bookButton = screen.queryByTestId('BookNowButton');
+        fireEvent.click(bookButton)
+        
+        await waitFor(() =>
+            expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
+                duration: 15,
+                roomId: fakeRooms[0].id,
+                title: 'Reservation from Get a Room!'
+            })
+        );
+    });
+
+    it('books for a room for 30 minutes', async () => {
         (makeBooking as jest.Mock).mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
             title: 'Reservation from Get a Room!'
         });
-
+        
         render(
             <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
             container
         );
 
-        const quickBookButton = await screen.findByTestId('QuickBookButton');
-        userEvent.click(quickBookButton);
-
-        const book30MinButton = await screen.findByTestId('Book30MinButton');
-        userEvent.click(book30MinButton);
-
+        const durationButton30 = screen.queryByTestId('DurationPicker30');
+        fireEvent.click(durationButton30);
+        const card = screen.queryByTestId('CardActiveArea');
+        fireEvent.click(card);
+        const bookButton = screen.queryByTestId('BookNowButton');
+        fireEvent.click(bookButton);
+        
         await waitFor(() =>
             expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
                 duration: 30,
@@ -112,27 +146,56 @@ describe('AvailableRoomList', () => {
         );
     });
 
-    it('books a room for 60 minutes', async () => {
+    it('books for a room for 60 minutes', async () => {
         (makeBooking as jest.Mock).mockResolvedValueOnce({
-            duration: 60,
+            duration: 30,
             roomId: fakeRooms[0].id,
             title: 'Reservation from Get a Room!'
         });
-
+        
         render(
             <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
             container
         );
 
-        const quickBookButton = await screen.findByTestId('QuickBookButton');
-        userEvent.click(quickBookButton);
-
-        const book60MinButton = await screen.findByTestId('Book60MinButton');
-        userEvent.click(book60MinButton);
-
+        const durationButton60 = screen.queryByTestId('DurationPicker60');
+        fireEvent.click(durationButton60);
+        const card = screen.queryByTestId('CardActiveArea');
+        fireEvent.click(card);
+        const bookButton = screen.queryByTestId('BookNowButton');
+        fireEvent.click(bookButton);
+        
         await waitFor(() =>
             expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
                 duration: 60,
+                roomId: fakeRooms[0].id,
+                title: 'Reservation from Get a Room!'
+            })
+        );
+    });
+
+    it('books for a room for 120 minutes', async () => {
+        (makeBooking as jest.Mock).mockResolvedValueOnce({
+            duration: 30,
+            roomId: fakeRooms[0].id,
+            title: 'Reservation from Get a Room!'
+        });
+        
+        render(
+            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            container
+        );
+
+        const durationButton120 = screen.queryByTestId('DurationPicker120');
+        fireEvent.click(durationButton120);
+        const card = screen.queryByTestId('CardActiveArea');
+        fireEvent.click(card);
+        const bookButton = screen.queryByTestId('BookNowButton');
+        fireEvent.click(bookButton);
+        
+        await waitFor(() =>
+            expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
+                duration: 120,
                 roomId: fakeRooms[0].id,
                 title: 'Reservation from Get a Room!'
             })
