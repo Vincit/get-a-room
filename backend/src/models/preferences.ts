@@ -5,7 +5,9 @@ import Preferences from '../types/preferences';
 export const buildingSchema = new Schema<BuildingData>(
     {
         id: { required: true, type: String },
-        name: { required: true, type: String }
+        name: { required: true, type: String },
+        latitude: { required: false, type: Number },
+        longitude: { required: false, type: Number },
     },
     { _id: false }
 );

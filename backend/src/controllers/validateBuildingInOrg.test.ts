@@ -64,11 +64,15 @@ describe('buildingsController', () => {
             mockedGetBuildings.mockResolvedValueOnce([
                 {
                     id: 'test2',
-                    name: 'First'
+                    name: 'First',
+                    latitude: 61.4957056,
+                    longitude: 23.7993984
                 },
                 {
                     id: 'test3',
-                    name: 'Second'
+                    name: 'Second',
+                    latitude: 61.4957056,
+                    longitude: 23.7993984
                 }
             ]);
 
@@ -87,12 +91,16 @@ describe('buildingsController', () => {
         test('Should call next if building in list', async () => {
             mockedGetBuildings.mockResolvedValueOnce([
                 {
-                    id: 'test1',
-                    name: 'First'
+                    id: 'test2',
+                    name: 'First',
+                    latitude: 61.4957056,
+                    longitude: 23.7993984
                 },
                 {
-                    id: 'test2',
-                    name: 'Second'
+                    id: 'test3',
+                    name: 'Second',
+                    latitude: 61.4957056,
+                    longitude: 23.7993984
                 }
             ]);
 
