@@ -4,11 +4,12 @@ import { Switch, Route } from 'react-router-dom';
 import BookingView from './BookingView';
 import PreferencesView from './PreferencesView';
 import { Building, Preferences } from '../types';
-import { getPreferences } from '../services/preferencesService';
+import { getPreferences, updatePreferences } from '../services/preferencesService';
 import { getBuildings } from '../services/buildingService';
 import PreferencesLoader from './PreferencesLoader';
 import { Box } from '@mui/material';
 import NavBar from './NavBar';
+import { getClosestBuilding } from '../services/gpsService';
 
 const MainView = () => {
     const [preferences, setPreferences] = useState<Preferences | undefined>();
@@ -26,6 +27,22 @@ const MainView = () => {
                 // Redirected to login
             });
     }, []);
+
+    getClosestBuilding().then(function(result){
+        console.log(result);
+        if (result != null) {
+            updatePreferences({ building: result })
+                .then((savedPreferences) => {
+                    setPreferences(savedPreferences);
+                    console.log('success')
+                })
+                .catch(() => {
+                    console.log('fail');
+                });
+        }
+    });
+
+
 
     return (
         <Box
