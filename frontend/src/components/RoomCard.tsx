@@ -9,9 +9,8 @@ import TimeLeft from './util/TimeLeft';
 import Group from '@mui/icons-material/People';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import {  CardActionArea,  CircularProgress,  styled } from '@mui/material';
+import { CardActionArea, CircularProgress, styled } from '@mui/material';
 import { getTimeLeft } from './util/TimeLeft';
-
 
 function getName(room: Room) {
     return room.name;
@@ -41,31 +40,33 @@ function getFeatures(room: Room) {
     return featuresDisplay;
 }
 
-const GridContainer = styled(Grid)(({theme}) => ({
+const GridContainer = styled(Grid)(({ theme }) => ({
     container: true,
     flexDirection: 'column',
     alignItems: 'flex-start',
-    padding: '16px',
+    padding: '16px'
 }));
 
-const Row = styled(Box)(({theme}) => ({
+const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     margin: '8px'
 }));
 
 const CustomCard = styled(Card)({
+    margin: '8px  0 24px 0',
     borderRadius: '10px',
-    boxShadow: '-2px -2px 4px rgba(255, 255, 255, 0.6), 4px 4px 4px rgba(205, 197, 197, 0.25)',
-    border: 'var(--border)',
+    boxShadow:
+        '-2px -2px 4px rgba(255, 255, 255, 0.6), 4px 4px 4px rgba(205, 197, 197, 0.25)',
+    border: 'var(--border)'
 });
 
 const defaultVars = {
-    '--border': 'none',
+    '--border': 'none'
 } as React.CSSProperties;
 
 const selectedVars = {
-    '--border': '1px solid #443938',
+    '--border': '1px solid #443938'
 } as React.CSSProperties;
 
 type RoomCardProps = {
@@ -77,39 +78,50 @@ type RoomCardProps = {
     isReserved?: boolean;
     isSelected: boolean;
     expandFeatures: boolean;
-}
+};
 
 const RoomCard = (props: RoomCardProps) => {
-    const { room, onClick, bookingLoading, disableBooking, isReserved, isSelected, expandFeatures } = props;
+    const {
+        room,
+        onClick,
+        bookingLoading,
+        disableBooking,
+        isReserved,
+        isSelected,
+        expandFeatures
+    } = props;
 
     const handleClick = () => {
         if (disableBooking) {
             return;
         }
         onClick(room);
-    }
+    };
 
     return (
-        <CustomCard 
+        <CustomCard
             data-testid="AvailableRoomListCard"
-            style={( isSelected )? selectedVars : defaultVars}
+            style={isSelected ? selectedVars : defaultVars}
         >
             <CardActionArea data-testid="CardActiveArea" onClick={handleClick}>
                 <GridContainer>
                     <Row>
-                        <Typography 
+                        <Typography
                             data-testid="BookingRoomTitle"
-                            variant='h3' 
-                            color='text.main'>
-                                {getName(room)}
+                            variant="h3"
+                            color="text.main"
+                        >
+                            {getName(room)}
                         </Typography>
                         <Grid
-                            display='flex'
+                            display="flex"
                             justifyContent={'flex-end'}
                             alignItems={'center'}
-                            >
+                        >
                             <Group />
-                            <Typography fontWeight='bold'>{getCapacity(room)}</Typography>   
+                            <Typography fontWeight="bold">
+                                {getCapacity(room)}
+                            </Typography>
                         </Grid>
                     </Row>
 
@@ -120,21 +132,21 @@ const RoomCard = (props: RoomCardProps) => {
                             alignItems={'center'}
                             margin={'8px'}
                         >
-                            <CheckCircleIcon  color='success' fontSize='small' />
+                            <CheckCircleIcon color="success" fontSize="small" />
                             <Typography
-                                variant='subtitle1'
-                                color='success.main'
+                                variant="subtitle1"
+                                color="success.main"
                                 margin={'0 0 0 5px'}
                             >
-                                Booked to you for {getTimeLeft(getNextCalendarEvent(room))}
+                                Booked to you for{' '}
+                                {getTimeLeft(getNextCalendarEvent(room))}
                             </Typography>
                         </Box>
                     ) : null}
-                    
 
                     <Row>
-                        <TimeLeft 
-                            timeLeftText='Available for '
+                        <TimeLeft
+                            timeLeftText="Available for "
                             endTime={getNextCalendarEvent(room)}
                         />
                         {bookingLoading === room.id ? (
@@ -142,19 +154,18 @@ const RoomCard = (props: RoomCardProps) => {
                         ) : null}
                         <FavoriteBorderIcon />
                     </Row>
-                    
-                    {expandFeatures? (
+
+                    {expandFeatures ? (
                         <Row>
-                            <Typography
-                                variant='body1'
-                                color='text.disabled'
-                            >{getFeatures(room)}</Typography>
+                            <Typography variant="body1" color="text.disabled">
+                                {getFeatures(room)}
+                            </Typography>
                         </Row>
-                    ): null} 
+                    ) : null}
                 </GridContainer>
             </CardActionArea>
         </CustomCard>
     );
-}
+};
 
 export default RoomCard;

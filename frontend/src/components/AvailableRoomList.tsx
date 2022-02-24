@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-    List,
-    Typography,
-    Box,
-    Switch,
-    FormControlLabel,
-} from '@mui/material';
+import { List, Typography, Box, Switch, FormControlLabel } from '@mui/material';
 import { makeBooking } from '../services/bookingService';
 import { Booking, BookingDetails, Room } from '../types';
 import useCreateNotification from '../hooks/useCreateNotification';
@@ -35,7 +29,9 @@ const AvailableRoomList = (props: BookingListProps) => {
     );
     const [expandBookingDrawer, setexpandBookingDrawer] = useState(false);
     const [bookingDuration, setBookingDuration] = useState(15);
-    const [selectedRoom, setSelectedRoom] = useState<Room | undefined>(undefined);
+    const [selectedRoom, setSelectedRoom] = useState<Room | undefined>(
+        undefined
+    );
 
     const handleAllFeaturesCollapse = () => {
         setExpandedFeaturesAll(!expandedFeaturesAll);
@@ -43,28 +39,28 @@ const AvailableRoomList = (props: BookingListProps) => {
 
     const handleDurationChange = (duration: number) => {
         setBookingDuration(duration);
-    }
+    };
 
     const handleReservation = () => {
         book(selectedRoom, bookingDuration);
         toggleDrawn(false);
-    }
+    };
 
     const handleCardClick = (room: Room) => {
         setexpandBookingDrawer(true);
         setSelectedRoom(room);
-    }
+    };
 
     const toggleDrawn = (newOpen: boolean) => {
         if (newOpen === false) {
-            setSelectedRoom(undefined)
+            setSelectedRoom(undefined);
         }
         setexpandBookingDrawer(newOpen);
-    }
+    };
 
-    const book = (room: Room|undefined, duration: number) => {
-        if(room === undefined) { 
-            return; 
+    const book = (room: Room | undefined, duration: number) => {
+        if (room === undefined) {
+            return;
         }
         let bookingDetails: BookingDetails = {
             duration: duration,
@@ -87,17 +83,17 @@ const AvailableRoomList = (props: BookingListProps) => {
             });
     };
     return (
-        <Box id="available-room-list" textAlign="center" p={'16px'} >
+        <Box id="available-room-list" textAlign="center" p={'16px'}>
             <div id="drawer-container">
-            <BookingDrawer 
-                open={expandBookingDrawer} 
-                toggle={toggleDrawn}
-                bookRoom={handleReservation}
-                room={selectedRoom}
-                duration={bookingDuration}
-            />
+                <BookingDrawer
+                    open={expandBookingDrawer}
+                    toggle={toggleDrawn}
+                    bookRoom={handleReservation}
+                    room={selectedRoom}
+                    duration={bookingDuration}
+                />
             </div>
-            
+
             <DurationPicker onChange={handleDurationChange} />
             <FormControlLabel
                 label={
@@ -112,17 +108,20 @@ const AvailableRoomList = (props: BookingListProps) => {
                 }
                 control={<Switch onChange={handleAllFeaturesCollapse} />}
             />
+            <Typography variant="subtitle1" textAlign="left">
+                Available rooms
+            </Typography>
             <List>
                 {rooms
                     .sort((a, b) => (a.name < b.name ? -1 : 1))
                     .map((room) => (
-                        <RoomCard 
+                        <RoomCard
                             key={room.id}
                             room={room}
                             onClick={handleCardClick}
                             bookingLoading={bookingLoading}
                             disableBooking={disableBooking(bookings)}
-                            isSelected={selectedRoom===room}
+                            isSelected={selectedRoom === room}
                             expandFeatures={expandedFeaturesAll}
                         />
                     ))}

@@ -6,26 +6,25 @@ import { grey } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import {  IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
 
-
 const drawerBleeding = 56;
 
-
-
 const Root = styled('div')(({ theme }) => ({
-  height: '100%',
-  backgroundColor:
-    theme.palette.mode === 'light' ? grey[100] : theme.palette.background.default,
+    height: '100%',
+    backgroundColor:
+        theme.palette.mode === 'light'
+            ? grey[100]
+            : theme.palette.background.default
 }));
 
 const Puller = styled(Box)(({ theme }) => ({
-  width: '30%',
-  height: 4,
-  backgroundColor: theme.palette.mode === 'light' ? '#F6F5F5' : grey[900],
-  borderRadius: 3,
+    width: '30%',
+    height: 4,
+    backgroundColor: theme.palette.mode === 'light' ? '#F6F5F5' : grey[900],
+    borderRadius: 3
 }));
 
 const DrawerHeader = styled(Box)(({ theme }) => ({
@@ -52,13 +51,13 @@ const DrawerTitle = styled(Typography)(({ theme }) => ({
     whiteSpace: 'nowrap'
 }));
 
-export const DrawerContent = styled(Box)(({theme}) => ({
-  px: '24px',
-  pb: '24px',
-  display: 'flex',
-  flexDirection: 'column',
-  height: '100%',
-  margin: '24px',
+export const DrawerContent = styled(Box)(({ theme }) => ({
+    px: '24px',
+    pb: '24px',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    margin: '24px'
 }));
 
 interface Props {
@@ -72,50 +71,52 @@ interface Props {
 }
 
 const SwipeableEdgeDrawer = (props: Props) => {
-  const { children, iconLeft, iconRight, headerTitle, isOpen, toggle, disableSwipeToOpen} = props
+    const { children, headerTitle, isOpen, toggle, disableSwipeToOpen } = props;
 
-  const toggleDrawer = (newOpen: boolean) => () => {
-    toggle(newOpen);
-  };
+    const toggleDrawer = (newOpen: boolean) => () => {
+        toggle(newOpen);
+    };
 
-  return (
-    <Root>
-      <CssBaseline />
-      <Global
-        styles={{
-          '.MuiDrawer-root > .MuiPaper-root': {
-            overflow: 'visible',
-          },
-        }}
-      />
-      <SwipeableDrawer
-        data-testid='BookingDrawer'
-        anchor="bottom"
-        open={isOpen}
-        onClose={toggleDrawer(false)}
-        onOpen={toggleDrawer(true)}
-        swipeAreaWidth={drawerBleeding}
-        disableSwipeToOpen={disableSwipeToOpen}
-        ModalProps={{
-          container: document.getElementById('drawer-container'),
-          keepMounted: false,
-        }}
-      >
-        <DrawerHeader>
-            <AccessTimeIcon/>
-            <Puller/>
-            <DrawerTitle>{headerTitle}</DrawerTitle>
-            <Puller/>
-            <IconButton onClick={toggleDrawer(false)}>
-              <CloseIcon />
-            </IconButton>
-        </DrawerHeader>
-        
-        {children}
+    return (
+        <Root>
+            <CssBaseline />
+            <Global
+                styles={{
+                    '.MuiDrawer-root > .MuiPaper-root': {
+                        overflow: 'visible'
+                    }
+                }}
+            />
+            <SwipeableDrawer
+                data-testid="BookingDrawer"
+                anchor="bottom"
+                open={isOpen}
+                onClose={toggleDrawer(false)}
+                onOpen={toggleDrawer(true)}
+                swipeAreaWidth={drawerBleeding}
+                disableSwipeToOpen={disableSwipeToOpen}
+                ModalProps={{
+                    container: document.getElementById('drawer-container'),
+                    keepMounted: false
+                }}
+            >
+                <DrawerHeader>
+                    <AccessTimeIcon />
+                    <Puller />
+                    <DrawerTitle>{headerTitle}</DrawerTitle>
+                    <Puller />
+                    <IconButton
+                        aria-label="close drawer"
+                        onClick={toggleDrawer(false)}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DrawerHeader>
 
-      </SwipeableDrawer>
-    </Root>
-  );
-}
+                {children}
+            </SwipeableDrawer>
+        </Root>
+    );
+};
 
 export default SwipeableEdgeDrawer;
