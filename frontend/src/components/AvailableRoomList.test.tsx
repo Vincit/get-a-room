@@ -4,7 +4,6 @@ import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AvailableRoomList from './AvailableRoomList';
 import { makeBooking } from '../services/bookingService';
-import userEvent from '@testing-library/user-event';
 
 const fakeRooms = [
     {
@@ -52,9 +51,7 @@ describe('AvailableRoomList', () => {
         );
 
         const items = screen.queryByTestId('AvailableRoomListCard');
-        await waitFor(() =>
-            expect(items).toBeTruthy()
-        );
+        await waitFor(() => expect(items).toBeTruthy());
 
         const title = screen.queryByTestId('BookingRoomTitle');
         await waitFor(() => expect(title).toHaveTextContent('Amor'));
@@ -67,9 +64,7 @@ describe('AvailableRoomList', () => {
         );
 
         const items = screen.queryByTestId('DurationPicker');
-        await waitFor(() =>
-            expect(items).toBeTruthy()
-        );
+        await waitFor(() => expect(items).toBeTruthy());
     });
 
     it('renders booking drawer', async () => {
@@ -79,17 +74,12 @@ describe('AvailableRoomList', () => {
         );
 
         const card = screen.queryByTestId('CardActiveArea');
-        await waitFor(() =>
-            expect(card).toBeTruthy()
-        );
+        await waitFor(() => expect(card).toBeTruthy());
 
-        fireEvent.click(card)
+        fireEvent.click(card);
 
-        
         const drawer = screen.queryByTestId('BookingDrawer');
-        await waitFor(() =>
-            expect(drawer).toBeTruthy()
-        );
+        await waitFor(() => expect(drawer).toBeTruthy());
     });
 
     it('default books for a room for 15 minutes', async () => {
@@ -98,17 +88,17 @@ describe('AvailableRoomList', () => {
             roomId: fakeRooms[0].id,
             title: 'Reservation from Get a Room!'
         });
-        
+
         render(
             <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
             container
         );
 
         const card = screen.queryByTestId('CardActiveArea');
-        fireEvent.click(card)
+        fireEvent.click(card);
         const bookButton = screen.queryByTestId('BookNowButton');
-        fireEvent.click(bookButton)
-        
+        fireEvent.click(bookButton);
+
         await waitFor(() =>
             expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
                 duration: 15,
@@ -124,7 +114,7 @@ describe('AvailableRoomList', () => {
             roomId: fakeRooms[0].id,
             title: 'Reservation from Get a Room!'
         });
-        
+
         render(
             <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
             container
@@ -136,7 +126,7 @@ describe('AvailableRoomList', () => {
         fireEvent.click(card);
         const bookButton = screen.queryByTestId('BookNowButton');
         fireEvent.click(bookButton);
-        
+
         await waitFor(() =>
             expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
                 duration: 30,
@@ -152,7 +142,7 @@ describe('AvailableRoomList', () => {
             roomId: fakeRooms[0].id,
             title: 'Reservation from Get a Room!'
         });
-        
+
         render(
             <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
             container
@@ -164,7 +154,7 @@ describe('AvailableRoomList', () => {
         fireEvent.click(card);
         const bookButton = screen.queryByTestId('BookNowButton');
         fireEvent.click(bookButton);
-        
+
         await waitFor(() =>
             expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
                 duration: 60,
@@ -180,7 +170,7 @@ describe('AvailableRoomList', () => {
             roomId: fakeRooms[0].id,
             title: 'Reservation from Get a Room!'
         });
-        
+
         render(
             <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
             container
@@ -192,7 +182,7 @@ describe('AvailableRoomList', () => {
         fireEvent.click(card);
         const bookButton = screen.queryByTestId('BookNowButton');
         fireEvent.click(bookButton);
-        
+
         await waitFor(() =>
             expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
                 duration: 120,
