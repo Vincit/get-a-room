@@ -9,7 +9,6 @@ import { getBuildings } from '../services/buildingService';
 import PreferencesLoader from './PreferencesLoader';
 import { Box } from '@mui/material';
 import NavBar from './NavBar';
-import { getClosestBuilding } from '../services/gpsService';
 
 const MainView = () => {
     const [preferences, setPreferences] = useState<Preferences | undefined>();
@@ -28,19 +27,6 @@ const MainView = () => {
             });
     }, []);
 
-    getClosestBuilding().then(function(result){
-        console.log(result);
-        if (result != null) {
-            updatePreferences({ building: result })
-                .then((savedPreferences) => {
-                    setPreferences(savedPreferences);
-                    console.log('success')
-                })
-                .catch(() => {
-                    console.log('fail');
-                });
-        }
-    });
 
 
 
