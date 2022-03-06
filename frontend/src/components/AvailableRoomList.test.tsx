@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
+import { DateTime } from 'luxon';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AvailableRoomList from './AvailableRoomList';
 import { makeBooking } from '../services/bookingService';
@@ -12,7 +13,46 @@ const fakeRooms = [
         building: 'Hermia 5',
         capacity: 15,
         features: ['TV', 'Whiteboard'],
-        nextCalendarEvent: '2021-10-21T17:32:28Z',
+        nextCalendarEvent: DateTime.now()
+            .plus({ minutes: 121 })
+            .toUTC()
+            .toISO(),
+        email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
+    },
+    {
+        id: '124',
+        name: 'Amor',
+        building: 'Hermia 5',
+        capacity: 15,
+        features: ['TV', 'Whiteboard'],
+        nextCalendarEvent: DateTime.now().plus({ minutes: 61 }).toUTC().toISO(),
+        email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
+    },
+    {
+        id: '125',
+        name: 'Amor',
+        building: 'Hermia 5',
+        capacity: 15,
+        features: ['TV', 'Whiteboard'],
+        nextCalendarEvent: DateTime.now().plus({ minutes: 31 }).toUTC().toISO(),
+        email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
+    },
+    {
+        id: '126',
+        name: 'Amor',
+        building: 'Hermia 5',
+        capacity: 15,
+        features: ['TV', 'Whiteboard'],
+        nextCalendarEvent: DateTime.now().plus({ minutes: 16 }).toUTC().toISO(),
+        email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
+    },
+    {
+        id: '127',
+        name: 'Amor',
+        building: 'Hermia 5',
+        capacity: 15,
+        features: ['TV', 'Whiteboard'],
+        nextCalendarEvent: DateTime.now().plus({ minutes: 1 }).toUTC().toISO(),
         email: 'c_188fib500s84uis7kcpb6dfm93v25@resource.calendar.google.com'
     }
 ];
@@ -50,11 +90,53 @@ describe('AvailableRoomList', () => {
             container
         );
 
-        const items = screen.queryByTestId('AvailableRoomListCard');
+        const items = screen.queryAllByTestId('AvailableRoomListCard');
         await waitFor(() => expect(items).toBeTruthy());
 
-        const title = screen.queryByTestId('BookingRoomTitle');
+        const title = screen.queryAllByTestId('BookingRoomTitle')[0];
         await waitFor(() => expect(title).toHaveTextContent('Amor'));
+    });
+
+    it('filters rooms available for less than 15 min', async () => {
+        render(
+            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            container
+        );
+        const items = screen.queryAllByTestId('AvailableRoomListCard');
+        await waitFor(() => expect(items).toHaveLength(4));
+    });
+
+    it('filters rooms available less than 30 min', async () => {
+        render(
+            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            container
+        );
+        const durationButton30 = screen.queryByTestId('DurationPicker30');
+        fireEvent.click(durationButton30);
+        const items = screen.queryAllByTestId('AvailableRoomListCard');
+        await waitFor(() => expect(items).toHaveLength(3));
+    });
+
+    it('filters rooms available for less than 60 min', async () => {
+        render(
+            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            container
+        );
+        const durationButton60 = screen.queryByTestId('DurationPicker60');
+        fireEvent.click(durationButton60);
+        const items = screen.queryAllByTestId('AvailableRoomListCard');
+        await waitFor(() => expect(items).toHaveLength(2));
+    });
+
+    it('filters rooms available for less than 120 min', async () => {
+        render(
+            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            container
+        );
+        const durationButton120 = screen.queryByTestId('DurationPicker120');
+        fireEvent.click(durationButton120);
+        const items = screen.queryAllByTestId('AvailableRoomListCard');
+        await waitFor(() => expect(items).toHaveLength(1));
     });
 
     it('renders duration picker', async () => {
@@ -73,7 +155,7 @@ describe('AvailableRoomList', () => {
             container
         );
 
-        const card = screen.queryByTestId('CardActiveArea');
+        const card = screen.queryAllByTestId('CardActiveArea')[0];
         await waitFor(() => expect(card).toBeTruthy());
 
         fireEvent.click(card);
@@ -94,8 +176,8 @@ describe('AvailableRoomList', () => {
             container
         );
 
-        const card = screen.queryByTestId('CardActiveArea');
-        fireEvent.click(card);
+        const card = screen.queryAllByTestId('CardActiveArea');
+        fireEvent.click(card[0]);
         const bookButton = screen.queryByTestId('BookNowButton');
         fireEvent.click(bookButton);
 
@@ -122,8 +204,8 @@ describe('AvailableRoomList', () => {
 
         const durationButton30 = screen.queryByTestId('DurationPicker30');
         fireEvent.click(durationButton30);
-        const card = screen.queryByTestId('CardActiveArea');
-        fireEvent.click(card);
+        const card = screen.queryAllByTestId('CardActiveArea');
+        fireEvent.click(card[0]);
         const bookButton = screen.queryByTestId('BookNowButton');
         fireEvent.click(bookButton);
 
@@ -150,8 +232,8 @@ describe('AvailableRoomList', () => {
 
         const durationButton60 = screen.queryByTestId('DurationPicker60');
         fireEvent.click(durationButton60);
-        const card = screen.queryByTestId('CardActiveArea');
-        fireEvent.click(card);
+        const card = screen.queryAllByTestId('CardActiveArea');
+        fireEvent.click(card[0]);
         const bookButton = screen.queryByTestId('BookNowButton');
         fireEvent.click(bookButton);
 
@@ -178,8 +260,8 @@ describe('AvailableRoomList', () => {
 
         const durationButton120 = screen.queryByTestId('DurationPicker120');
         fireEvent.click(durationButton120);
-        const card = screen.queryByTestId('CardActiveArea');
-        fireEvent.click(card);
+        const card = screen.queryAllByTestId('CardActiveArea');
+        fireEvent.click(card[0]);
         const bookButton = screen.queryByTestId('BookNowButton');
         fireEvent.click(bookButton);
 

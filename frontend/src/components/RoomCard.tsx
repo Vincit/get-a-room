@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Card from '@mui/material/Card';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Room, Booking } from '../types';
@@ -40,7 +39,7 @@ function getFeatures(room: Room) {
     return featuresDisplay;
 }
 
-const GridContainer = styled(Grid)(({ theme }) => ({
+const GridContainer = styled(Box)(({ theme }) => ({
     container: true,
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -50,6 +49,19 @@ const GridContainer = styled(Grid)(({ theme }) => ({
 const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
     justifyContent: 'space-between',
+    margin: '8px'
+}));
+
+const EndBox = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+}));
+
+const StartBox = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     margin: '8px'
 }));
 
@@ -113,25 +125,16 @@ const RoomCard = (props: RoomCardProps) => {
                         >
                             {getName(room)}
                         </Typography>
-                        <Grid
-                            display="flex"
-                            justifyContent={'flex-end'}
-                            alignItems={'center'}
-                        >
+                        <EndBox>
                             <Group />
                             <Typography fontWeight="bold">
                                 {getCapacity(room)}
                             </Typography>
-                        </Grid>
+                        </EndBox>
                     </Row>
 
                     {isReserved ? (
-                        <Box
-                            display={'flex'}
-                            justifyContent={'flex-start'}
-                            alignItems={'center'}
-                            margin={'8px'}
-                        >
+                        <StartBox>
                             <CheckCircleIcon color="success" fontSize="small" />
                             <Typography
                                 variant="subtitle1"
@@ -141,7 +144,7 @@ const RoomCard = (props: RoomCardProps) => {
                                 Booked to you for{' '}
                                 {getTimeLeft(getNextCalendarEvent(room))}
                             </Typography>
-                        </Box>
+                        </StartBox>
                     ) : null}
 
                     <Row>

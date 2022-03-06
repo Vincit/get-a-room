@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { List, Typography, Box, Switch, FormControlLabel } from '@mui/material';
 import { makeBooking } from '../services/bookingService';
 import { Booking, BookingDetails, Room } from '../types';
+import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
 import DurationPicker from './DurationPicker';
 import RoomCard from './RoomCard';
@@ -9,6 +10,14 @@ import BookingDrawer from './BookingDrawer';
 
 function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
+}
+
+function isAvailableFor(minutes: number, room: Room) {
+    let availableUntill = DateTime.fromISO(room.nextCalendarEvent).toUTC();
+    let duration = Duration.fromObject(
+        availableUntill.diffNow('minutes').toObject()
+    );
+    return minutes <= duration.minutes;
 }
 
 type BookingListProps = {
@@ -94,7 +103,7 @@ const AvailableRoomList = (props: BookingListProps) => {
                 />
             </div>
 
-            <DurationPicker onChange={handleDurationChange} />
+            <DurationPicker onChange={handleDurationChange} title="duration" />
             <FormControlLabel
                 label={
                     <Typography
@@ -114,17 +123,20 @@ const AvailableRoomList = (props: BookingListProps) => {
             <List>
                 {rooms
                     .sort((a, b) => (a.name < b.name ? -1 : 1))
-                    .map((room) => (
-                        <RoomCard
-                            key={room.id}
-                            room={room}
-                            onClick={handleCardClick}
-                            bookingLoading={bookingLoading}
-                            disableBooking={disableBooking(bookings)}
-                            isSelected={selectedRoom === room}
-                            expandFeatures={expandedFeaturesAll}
-                        />
-                    ))}
+                    .map((room) =>
+                        isAvailableFor(bookingDuration, room) ? (
+                            <li key={room.id}>
+                                <RoomCard
+                                    room={room}
+                                    onClick={handleCardClick}
+                                    bookingLoading={bookingLoading}
+                                    disableBooking={disableBooking(bookings)}
+                                    isSelected={selectedRoom === room}
+                                    expandFeatures={expandedFeaturesAll}
+                                />
+                            </li>
+                        ) : null
+                    )}
             </List>
         </Box>
     );

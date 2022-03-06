@@ -7,10 +7,11 @@ const CUSTOM_DURATION = -1;
 
 type DucationPickerProps = {
     onChange: (duration: number) => void;
+    title: string;
 };
 
 const DurationPicker = (props: DucationPickerProps) => {
-    const { onChange } = props;
+    const { onChange, title } = props;
 
     const [duration, setDuration] = React.useState(15);
 
@@ -21,8 +22,10 @@ const DurationPicker = (props: DucationPickerProps) => {
         if (newDuration === CUSTOM_DURATION) {
             // TODO custom duration selection
         } else {
-            setDuration(newDuration);
-            onChange(newDuration);
+            if (newDuration !== null) {
+                setDuration(newDuration);
+                onChange(newDuration);
+            }
         }
     };
 
@@ -33,7 +36,7 @@ const DurationPicker = (props: DucationPickerProps) => {
                 textAlign="left"
                 marginBottom={'8px'}
             >
-                duration
+                {title}
             </Typography>
             <ToggleButtonGroup
                 data-testid="DurationPicker"

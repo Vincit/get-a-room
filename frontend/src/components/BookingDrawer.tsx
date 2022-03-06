@@ -58,7 +58,7 @@ const RowCentered = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
-const DrawerButton = styled(Button)((theme) => ({
+const DrawerButton = styled(Button)(({ theme }) => ({
     textTransform: 'none',
     fontSize: '16px',
     display: 'flex',
@@ -70,21 +70,22 @@ const DrawerButton = styled(Button)((theme) => ({
     '&.Mui-hower': {}
 }));
 
-const DrawerButtonPrimary = styled(DrawerButton)((theme) => ({
-    color: '#F6F5F5',
-    background: '#443938',
+const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
+    color: theme.palette.background.default,
+    background: theme.palette.text.primary,
     '&.Mui-disabled': {
-        color: '#95807E',
-        background: '#F6F5F5'
+        color: '#7d6b6a',
+        background: theme.palette.background.default
     }
 }));
 
-const DrawerButtonSecondary = styled(DrawerButton)((theme) => ({
-    color: '#443938',
-    border: '1px solid #443938',
+const DrawerButtonSecondary = styled(DrawerButton)(({ theme }) => ({
+    color: theme.palette.text.primary,
+    border: '1px solid',
+    borderColor: theme.palette.text.primary,
     '&.Mui-disabled': {
-        color: '#95807E',
-        borderColor: '#95807E'
+        color: theme.palette.text.disabled,
+        borderColor: theme.palette.text.disabled
     }
 }));
 
@@ -99,7 +100,7 @@ const TimeTextBold = styled(TimeText)(() => ({
 
 const AvailableText = styled(Typography)(() => ({
     fontSize: '16px',
-    color: '#95807E'
+    color: '#82716F'
 }));
 
 const SmallText = styled(Typography)(() => ({
