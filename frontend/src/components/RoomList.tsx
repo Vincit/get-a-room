@@ -22,12 +22,7 @@ type BuildingSelectProps = {
 };
 
 const RoomList = (props: BuildingSelectProps) => {
-    const {
-        selectedBuildingId,
-        setSelectedBuildingId,
-        buildings,
-        handlePreferencesSubmit
-    } = props;
+    const { setSelectedBuildingId, buildings, handlePreferencesSubmit } = props;
     const [alignment, setAlignment] = React.useState('names');
 
     const clickFunction = (buildingId: string) => {
@@ -46,7 +41,7 @@ const RoomList = (props: BuildingSelectProps) => {
     };
 
     const renderRoomList = (): JSX.Element[] => {
-        if (alignment == 'names') {
+        if (alignment === 'names') {
             return buildings.map((buildingName) => {
                 return (
                     <Card
