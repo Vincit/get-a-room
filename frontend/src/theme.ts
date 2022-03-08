@@ -1,7 +1,7 @@
 import { createTheme } from '@mui/material';
 
-const ORANGE = '#f04e30';
-const VINCIT_ORANGE = '#443938';
+const ORANGE = '#ce3b20';
+const DARK_GRAY = '#443938';
 
 export const theme = createTheme({
     palette: {
@@ -9,15 +9,15 @@ export const theme = createTheme({
         primary: { main: ORANGE },
         success: { main: '#219653' },
         text: {
-            primary: VINCIT_ORANGE,
+            primary: DARK_GRAY,
             secondary: ORANGE,
-            disabled: '#95807E'
+            disabled: '#867271'
         }
     },
     typography: {
         h1: { color: ORANGE },
         h2: {
-            color: VINCIT_ORANGE,
+            color: DARK_GRAY,
             fontFamily: 'Proxima Nova, Roboto',
             fontStyle: 'normal',
             fontWeight: 'bold',
@@ -25,7 +25,7 @@ export const theme = createTheme({
             lineHeight: '36px'
         },
         h3: {
-            color: VINCIT_ORANGE,
+            color: DARK_GRAY,
             fontFamily: 'Proxima Nova, Roboto',
             fontStyle: 'normal',
             fontWeight: 'bold',
@@ -40,7 +40,7 @@ export const theme = createTheme({
             lineHeight: '21px'
         },
         subtitle1: {
-            color: VINCIT_ORANGE,
+            color: DARK_GRAY,
             fontFamily: 'Proxima Nova, Roboto',
             fontStyle: 'normal',
             fontWeight: 'bold',
@@ -62,11 +62,12 @@ export const theme = createTheme({
                     whiteSpace: 'nowrap',
 
                     borderRadius: '50px',
-                    border: '1px solid #F04E30',
+                    border: '1px solid',
+                    borderColor: ORANGE,
                     boxSizing: 'border-box',
                     padding: '8px 24px',
 
-                    color: '#F04E30',
+                    color: ORANGE,
                     fontStyle: 'normal',
                     fontWeight: 'bold',
                     fontSize: '16px',
@@ -74,7 +75,7 @@ export const theme = createTheme({
 
                     '&.Mui-selected': {
                         color: '#F6F5F5',
-                        background: '#F04E30'
+                        background: ORANGE
                     },
                     '&.Mui-selected:hover': {
                         background: '#C13217'
