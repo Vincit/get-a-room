@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, Button, styled, Typography } from '@mui/material';
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import { Room } from '../types';
@@ -16,6 +16,17 @@ function getNextCalendarEvent(room: Room | undefined) {
 
 function getTimeAvailable(room: Room | undefined) {
     return room === undefined ? '' : getTimeLeft(getNextCalendarEvent(room));
+}
+
+function availableForMinutes(room: Room | undefined) {
+    if (room === undefined) {
+        return 0;
+    }
+    let availableUntill = DateTime.fromISO(room.nextCalendarEvent).toUTC();
+    let duration = Duration.fromObject(
+        availableUntill.diffNow('minutes').toObject()
+    );
+    return Math.ceil(duration.minutes);
 }
 
 function addLeadingZero(number: number) {
@@ -67,7 +78,9 @@ const DrawerButton = styled(Button)(({ theme }) => ({
     borderRadius: '50px',
     width: '100%',
     margin: '8px 0px',
-    '&.Mui-hower': {}
+    '&.Mui-hower': {
+        background: 'transparent'
+    }
 }));
 
 const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
@@ -121,11 +134,33 @@ interface Props {
     toggle: (open: boolean) => void;
     bookRoom: () => void;
     duration: number;
+    additionalDuration: number;
+    onAddTime: (minutes: number) => void;
     room?: Room;
 }
 
 const BookingDrawer = (props: Props) => {
-    const { open, toggle, bookRoom, room, duration } = props;
+    const {
+        open,
+        toggle,
+        bookRoom,
+        room,
+        duration,
+        additionalDuration,
+        onAddTime
+    } = props;
+
+    const handleAdditionalTime = (minutes: number) => {
+        onAddTime(minutes);
+    };
+
+    const disableSubtractTime = () => {
+        return duration + additionalDuration <= 15;
+    };
+
+    const disableAddTime = () => {
+        return duration + additionalDuration + 15 > availableForMinutes(room);
+    };
 
     return (
         <SwipeableEdgeDrawer
@@ -138,8 +173,12 @@ const BookingDrawer = (props: Props) => {
         >
             <DrawerContent>
                 <RowCentered>
-                    <TimeTextBold>{duration} min</TimeTextBold>
-                    <TimeText>{getBookingRangeText(duration)}</TimeText>
+                    <TimeTextBold>
+                        {duration + additionalDuration} min
+                    </TimeTextBold>
+                    <TimeText>
+                        {getBookingRangeText(duration + additionalDuration)}
+                    </TimeText>
                 </RowCentered>
                 <RowCentered>
                     <AvailableText>
@@ -150,9 +189,19 @@ const BookingDrawer = (props: Props) => {
                     <SmallText>booking (rounded to next 5 min)</SmallText>
                 </Row>
                 <Row>
-                    <DrawerButtonPrimary disabled>- 15 min</DrawerButtonPrimary>
+                    <DrawerButtonPrimary
+                        onClick={(e) => handleAdditionalTime(-15)}
+                        disabled={disableSubtractTime()}
+                    >
+                        - 15 min
+                    </DrawerButtonPrimary>
                     <Spacer />
-                    <DrawerButtonPrimary disabled>+ 15 min</DrawerButtonPrimary>
+                    <DrawerButtonPrimary
+                        onClick={(e) => handleAdditionalTime(15)}
+                        disabled={disableAddTime()}
+                    >
+                        + 15 min
+                    </DrawerButtonPrimary>
                 </Row>
                 <Row>
                     <DrawerButtonSecondary disabled>
