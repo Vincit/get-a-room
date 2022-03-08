@@ -20,6 +20,7 @@ export interface Building {
     name: string;
     latitude: number;
     longitude: number;
+    distance?: number;
 }
 
 export interface Preferences {
