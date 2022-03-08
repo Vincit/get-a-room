@@ -10,6 +10,7 @@ import AvailableRoomList from './AvailableRoomList';
 import CenteredProgress from './util/CenteredProgress';
 
 const UPDATE_FREQUENCY = 30000;
+const GET_RESERVED = true;
 
 // Check if rooms are fetched
 function areRoomsFetched(rooms: Room[]) {
@@ -33,7 +34,7 @@ function BookingView(props: BookingViewProps) {
     const updateRooms = useCallback(() => {
         if (preferences) {
             const buildingPreference = preferences.building?.id;
-            getRooms(buildingPreference)
+            getRooms(buildingPreference, GET_RESERVED)
                 .then(setRooms)
                 .catch((error) => console.log(error));
         }

@@ -51,11 +51,19 @@ const NavBar = () => {
         >
             <Toolbar>
                 <Box flexGrow={1}>
-                    <IconButton size="large" onClick={handleHomeClick}>
+                    <IconButton
+                        aria-label="home"
+                        size="large"
+                        onClick={handleHomeClick}
+                    >
                         <HomeOutlinedIcon fontSize="inherit" />
                     </IconButton>
                 </Box>
-                <IconButton size="large" onClick={handleProfileMenuOpen}>
+                <IconButton
+                    aria-label="profile menu"
+                    size="large"
+                    onClick={handleProfileMenuOpen}
+                >
                     <PersonOutlineIcon fontSize="inherit" />
                 </IconButton>
             </Toolbar>
