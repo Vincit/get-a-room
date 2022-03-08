@@ -9,7 +9,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { setGPSLocationPreference } from '../services/gpsService';
 
 const App = () => {
-    setGPSLocationPreference()
+    setGPSLocationPreference();
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />

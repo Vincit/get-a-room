@@ -63,7 +63,14 @@ describe('PreferencesView', () => {
     it('does not set building when building is not valid', () => {
         render(
             <PreferencesView
-                preferences={{ building: { id: 'notFound', name: 'notFound', latitude: 61.4957056, longitude: 23.7993984 } }}
+                preferences={{
+                    building: {
+                        id: 'notFound',
+                        name: 'notFound',
+                        latitude: 61.4957056,
+                        longitude: 23.7993984
+                    }
+                }}
                 buildings={TEST_BUILDINGS}
                 setPreferences={jest.fn()}
             />
