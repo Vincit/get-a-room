@@ -1,4 +1,5 @@
 import * as React from 'react';
+import RoomList from './RoomList';
 
 import { Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -20,25 +21,33 @@ import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import { userInfo } from 'os';
 
 
-//Listaus
-
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-
-
-
 type PreferencesViewProps = {
     buildings: Building[];
     preferences?: Preferences;
     setPreferences: (preferences?: Preferences) => any;
 };
 
+
+
 const PreferencesView = (props: PreferencesViewProps) => {
     const { buildings, preferences, setPreferences } = props;
 
     const [selectedBuildingId, setSelecedBuildingId] = useState('');
-    const [alignment, setAlignment] = React.useState('proximity');
+    const notInitialRender = React.useRef(false)
+    useEffect(() => {
+        
+
+        if (notInitialRender.current) {
+            console.log(selectedBuildingId, '- Has changed')
+          } else {
+            notInitialRender.current = true
+          }
+          
+    }, [selectedBuildingId])
+
+
+
+    const [alignment, setAlignment] = React.useState('names');
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
 
@@ -87,6 +96,8 @@ const PreferencesView = (props: PreferencesViewProps) => {
         }
     };
 
+
+
     if (!preferences) return <CenteredProgress />;
     return (
         <Stack
@@ -119,12 +130,17 @@ const PreferencesView = (props: PreferencesViewProps) => {
             </ToggleButtonGroup>
 
             
-
+            <RoomList
+                buildings = {buildings}
+                selectedBuildingId={selectedBuildingId}
+                setSelectedBuildingId={setSelecedBuildingId}
+            />
 
             <BuildingSelect
                 buildings={buildings}
                 selectedBuildingId={selectedBuildingId}
                 setSelectedBuildingId={setSelecedBuildingId}
+
             />
             <FormButtons
                 submitText="Save"
@@ -137,3 +153,7 @@ const PreferencesView = (props: PreferencesViewProps) => {
 };
 
 export default PreferencesView;
+
+/*
+
+*/
