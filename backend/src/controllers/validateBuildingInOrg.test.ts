@@ -91,16 +91,12 @@ describe('buildingsController', () => {
         test('Should call next if building in list', async () => {
             mockedGetBuildings.mockResolvedValueOnce([
                 {
-                    id: 'test2',
-                    name: 'First',
-                    latitude: 61.4957056,
-                    longitude: 23.7993984
+                    id: 'test1',
+                    name: 'First'
                 },
                 {
-                    id: 'test3',
-                    name: 'Second',
-                    latitude: 61.4957056,
-                    longitude: 23.7993984
+                    id: 'test2',
+                    name: 'Second'
                 }
             ]);
 
@@ -112,6 +108,7 @@ describe('buildingsController', () => {
 
             expect(mockedGetBuildings).toBeCalledTimes(1);
             expect(mockedInternalServerError).not.toBeCalled();
+            expect(mockedBadRequest).toBeCalledTimes(0);
             expect(mockNext).toBeCalledWith();
             expect(mockNext).toBeCalledTimes(1);
         });
