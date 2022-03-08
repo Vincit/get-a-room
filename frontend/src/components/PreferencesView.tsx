@@ -8,22 +8,16 @@ import { updatePreferences } from '../services/preferencesService';
 import { Building, Preferences } from '../types';
 import CenteredProgress from './util/CenteredProgress';
 
-
 type PreferencesViewProps = {
     buildings: Building[];
     preferences?: Preferences;
     setPreferences: (preferences?: Preferences) => any;
 };
 
-
-
 const PreferencesView = (props: PreferencesViewProps) => {
     const { buildings, preferences, setPreferences } = props;
 
     const [selectedBuildingId, setSelecedBuildingId] = useState('');
-
-
-
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -45,7 +39,7 @@ const PreferencesView = (props: PreferencesViewProps) => {
         history.push('/');
     };
 
-    const handlePreferencesSubmit = (buildingId : string) => {
+    const handlePreferencesSubmit = (buildingId: string) => {
         const foundBuilding = buildings.find(
             (building) => building.id === buildingId
         );
@@ -53,9 +47,7 @@ const PreferencesView = (props: PreferencesViewProps) => {
             updatePreferences({ building: foundBuilding })
                 .then((savedPreferences) => {
                     setPreferences(savedPreferences);
-                    createSuccessNotification(
-                        'Chose building ' + buildingId
-                    );
+                    createSuccessNotification('Chose building ' + buildingId);
                     goToMainView();
                 })
                 .catch(() => {
@@ -64,12 +56,10 @@ const PreferencesView = (props: PreferencesViewProps) => {
         }
     };
 
-
-
     if (!preferences) return <CenteredProgress />;
     return (
         <RoomList
-            buildings = {buildings}
+            buildings={buildings}
             selectedBuildingId={selectedBuildingId}
             setSelectedBuildingId={setSelecedBuildingId}
             handlePreferencesSubmit={handlePreferencesSubmit}
