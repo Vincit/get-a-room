@@ -4,10 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import BookingView from './BookingView';
 import PreferencesView from './PreferencesView';
 import { Building, Preferences } from '../types';
-import {
-    getPreferences,
-    updatePreferences
-} from '../services/preferencesService';
+import { getPreferences } from '../services/preferencesService';
 import { getBuildings } from '../services/buildingService';
 import PreferencesLoader from './PreferencesLoader';
 import { Box } from '@mui/material';
