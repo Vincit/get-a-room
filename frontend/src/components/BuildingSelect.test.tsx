@@ -3,9 +3,9 @@ import { render, cleanup, screen, fireEvent } from '@testing-library/react';
 import BuildingSelect from './BuildingSelect';
 
 const TEST_BUILDINGS = [
-    { name: 'b0Name', id: 'b0Id' },
-    { name: 'b1Name', id: 'b1Id' },
-    { name: 'b2Name', id: 'b2Id' }
+    { name: 'b0Name', id: 'b0Id', latitude: 61.4957056, longitude: 23.7993984 },
+    { name: 'b1Name', id: 'b1Id', latitude: 61.4957056, longitude: 23.7993984 },
+    { name: 'b2Name', id: 'b2Id', latitude: 61.4957056, longitude: 23.7993984 }
 ];
 
 describe('BuildingSelect', () => {
