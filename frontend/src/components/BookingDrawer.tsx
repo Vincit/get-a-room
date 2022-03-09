@@ -4,7 +4,7 @@ import { DateTime } from 'luxon';
 
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import { Room } from '../types';
-import { getTimeLeft } from './util/TimeLeft';
+import { getTimeLeft, getTimeLeftMinutes } from './util/TimeLeft';
 
 function getName(room: Room | undefined) {
     return room === undefined ? '' : room.name;
@@ -16,6 +16,14 @@ function getNextCalendarEvent(room: Room | undefined) {
 
 function getTimeAvailable(room: Room | undefined) {
     return room === undefined ? '' : getTimeLeft(getNextCalendarEvent(room));
+}
+
+function getTimeAvailableMinutes(room: Room | undefined): number {
+    if (room === undefined) {
+        return 0;
+    }
+
+    return getTimeLeftMinutes(getNextCalendarEvent(room));
 }
 
 function addLeadingZero(number: number) {
@@ -122,10 +130,12 @@ interface Props {
     bookRoom: () => void;
     duration: number;
     room?: Room;
+    handleDurationChange: (duration: number) => void;
 }
 
 const BookingDrawer = (props: Props) => {
-    const { open, toggle, bookRoom, room, duration } = props;
+    const { open, toggle, bookRoom, room, duration, handleDurationChange } =
+        props;
 
     return (
         <SwipeableEdgeDrawer
@@ -164,8 +174,13 @@ const BookingDrawer = (props: Props) => {
                     </DrawerButtonSecondary>
                 </Row>
                 <Row>
-                    <DrawerButtonSecondary disabled>
-                        Spaceholder
+                    <DrawerButtonSecondary
+                        aria-label="until next meeting"
+                        onClick={() =>
+                            handleDurationChange(getTimeAvailableMinutes(room))
+                        }
+                    >
+                        Until next meeting
                     </DrawerButtonSecondary>
                 </Row>
                 <Row>
