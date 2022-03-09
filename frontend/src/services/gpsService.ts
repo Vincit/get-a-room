@@ -19,7 +19,7 @@ export const setGPSLocationPreference = async () => {
         return;
     }
 
-    var closest = 999999999999999;
+    var closest = Number.MAX_SAFE_INTEGER;
     var currentClosestBuilding: Building;
     function success(position: any) {
         var crd = position.coords;
@@ -30,7 +30,6 @@ export const setGPSLocationPreference = async () => {
                 building.latitude,
                 building.longitude
             );
-            //console.log(`distance: ${dist}, office ${building.name}`);
             if (dist < closest) {
                 closest = dist;
                 currentClosestBuilding = building;
