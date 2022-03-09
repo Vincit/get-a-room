@@ -24,33 +24,6 @@ export const getTimeLeft = (endTime: string) => {
         : duration.hours + ' h ' + Math.floor(duration.minutes) + ' min';
 };
 
-export const getTimeLeftMinutes = (endTime: string) => {
-    let endOfDay = DateTime.local().endOf('day').toUTC();
-    let nextReservationTime = DateTime.fromISO(endTime).toUTC();
-
-    let duration = Duration.fromObject(
-        nextReservationTime.diffNow(['minutes']).toObject()
-    );
-
-    // If nextReservationTime equals to end of the day, then that means that the
-    // room has no current reservations for that day and is free all day.
-    if (nextReservationTime.equals(endOfDay) || duration.hours >= 1440) {
-        let bookUntilObj = DateTime.utc().toObject();
-        bookUntilObj.hour = 17;
-        let bookUntil = DateTime.fromObject(bookUntilObj);
-        let durationToBookUntil = Duration.fromObject(
-            bookUntil.diffNow(['minutes']).toObject()
-        );
-        return durationToBookUntil.minutes;
-    }
-
-    if (duration.hours === 0 && duration.minutes < 1) {
-        return 0;
-    }
-
-    return duration.minutes;
-};
-
 type TimeLeftProps = {
     endTime: string;
     timeLeftText: string;

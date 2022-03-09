@@ -100,7 +100,6 @@ const AvailableRoomList = (props: BookingListProps) => {
                     bookRoom={handleReservation}
                     room={selectedRoom}
                     duration={bookingDuration}
-                    handleDurationChange={handleDurationChange}
                 />
             </div>
 
