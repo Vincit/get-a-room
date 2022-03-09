@@ -58,7 +58,9 @@ const simplifyBuildingData = (result: schema.Building[]): BuildingData[] => {
     return result.map((x) => {
         return {
             id: x.buildingId,
-            name: x.buildingName
+            name: x.buildingName,
+            latitude: x.coordinates?.latitude,
+            longitude: x.coordinates?.longitude
         };
     });
 };

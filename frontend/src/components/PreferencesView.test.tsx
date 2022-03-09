@@ -28,8 +28,8 @@ jest.mock('../hooks/useCreateNotification', () => () => {
 jest.mock('../services/preferencesService');
 
 const TEST_BUILDINGS = [
-    { id: 'b1Id', name: 'b1Name' },
-    { id: 'b2Id', name: 'b2Name' }
+    { id: 'b1Id', name: 'b1Name', latitude: 61.4957056, longitude: 23.7993984 },
+    { id: 'b2Id', name: 'b2Name', latitude: 61.4957056, longitude: 23.7993984 }
 ];
 
 describe('PreferencesView', () => {
@@ -63,7 +63,14 @@ describe('PreferencesView', () => {
     it('does not set building when building is not valid', () => {
         render(
             <PreferencesView
-                preferences={{ building: { id: 'notFound', name: 'notFound' } }}
+                preferences={{
+                    building: {
+                        id: 'notFound',
+                        name: 'notFound',
+                        latitude: 61.4957056,
+                        longitude: 23.7993984
+                    }
+                }}
                 buildings={TEST_BUILDINGS}
                 setPreferences={jest.fn()}
             />
