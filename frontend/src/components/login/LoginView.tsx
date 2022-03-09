@@ -7,7 +7,7 @@ const LoginView = () => {
         <Box height="100vh">
             <Stack id="login-view" height="100%" justifyContent="space-evenly">
                 <Box textAlign="center">
-                    <Typography textAlign="center" variant="h3">
+                    <Typography textAlign="center" variant="h2">
                         Get a Room!
                     </Typography>
                     <Typography variant="subtitle1">
