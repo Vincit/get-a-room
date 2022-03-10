@@ -35,3 +35,7 @@ export interface Room {
     features?: Array<string>;
     nextCalendarEvent: string;
 }
+
+export interface Name {
+    name: string;
+}

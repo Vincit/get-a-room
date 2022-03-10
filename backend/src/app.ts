@@ -17,6 +17,7 @@ import { router as bookingRouter } from './routes/booking';
 import { router as buildingRouter } from './routes/buildings';
 import { router as preferenceRouter } from './routes/preferences';
 import { router as roomRouter } from './routes/rooms';
+import { router as nameRouter } from './routes/name';
 
 const app = express();
 const port = 8080;
@@ -47,6 +48,7 @@ app.use('/api/booking', bookingRouter);
 app.use('/api/buildings', buildingRouter);
 app.use('/api/preferences', preferenceRouter);
 app.use('/api/rooms', roomRouter);
+app.use('/api/name', nameRouter);
 app.use(gaxiosErrorHandler());
 
 app.listen(port, () => {

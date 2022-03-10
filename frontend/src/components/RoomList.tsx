@@ -19,10 +19,12 @@ type BuildingSelectProps = {
     setSelectedBuildingId: (buildingId: string) => any;
     buildings: Building[];
     handlePreferencesSubmit: (buildingId: string) => void;
+    name: String | undefined;
 };
 
 const RoomList = (props: BuildingSelectProps) => {
-    const { setSelectedBuildingId, buildings, handlePreferencesSubmit } = props;
+    const { setSelectedBuildingId, buildings, handlePreferencesSubmit, name } =
+        props;
     const [alignment, setAlignment] = React.useState('names');
 
     const clickFunction = (buildingId: string) => {
@@ -55,19 +57,18 @@ const RoomList = (props: BuildingSelectProps) => {
                             <CardContent>
                                 <Grid container spacing={2}>
                                     <Grid item xs={10}>
-                                        <Typography variant="h6">
+                                        <Typography variant="h3">
                                             {buildingName.name}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={1}>
                                         <GpsFixedIcon
                                             style={{ float: 'right' }}
-                                            fontSize="small"
                                         ></GpsFixedIcon>
                                     </Grid>
 
                                     <Grid item xs={1}>
-                                        <Typography variant="h6">
+                                        <Typography variant="h3">
                                             7 km
                                         </Typography>
                                     </Grid>
@@ -125,7 +126,7 @@ const RoomList = (props: BuildingSelectProps) => {
             >
                 <FormGroup>
                     <Typography textAlign="center" variant="h6">
-                        Welcome, asdfasdf
+                        Welcome, {name}
                     </Typography>
                     <Typography textAlign="center" variant="h3">
                         Choose office
