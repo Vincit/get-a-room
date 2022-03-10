@@ -42,81 +42,63 @@ const RoomList = (props: BuildingSelectProps) => {
 
     const renderRoomList = (): JSX.Element[] => {
         if (alignment === 'names') {
-            return buildings.map((buildingName) => {
-                return (
-                    <Card
-                        elevation={3}
-                        key={buildingName.name}
-                        sx={{ borderRadius: 5, marginBottom: 2 }}
-                    >
-                        <CardActionArea
-                            onClick={() => clickFunction(buildingName.id)}
-                        >
-                            <CardContent>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={10}>
-                                        <Typography variant="h6">
-                                            {buildingName.name}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={1}>
-                                        <GpsFixedIcon
-                                            style={{ float: 'right' }}
-                                            fontSize="small"
-                                        ></GpsFixedIcon>
-                                    </Grid>
-
-                                    <Grid item xs={1}>
-                                        <Typography variant="h6">
-                                            7 km
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </CardActionArea>
-                    </Card>
-                );
-            });
+            buildings.sort((a, b) => a.name.localeCompare(b.name));
         } else {
-            return buildings.map((buildingName) => {
-                return (
-                    <Card
-                        elevation={3}
-                        key={buildingName.name}
-                        sx={{ borderRadius: 5 }}
-                    >
-                        <CardActionArea
-                            onClick={() => clickFunction(buildingName.id)}
-                        >
-                            <CardContent>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={10}>
-                                        <Typography variant="h3">
-                                            {buildingName.name}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={1}>
-                                        <GpsFixedIcon
-                                            style={{ float: 'right' }}
-                                        ></GpsFixedIcon>
-                                    </Grid>
-
-                                    <Grid item xs={1}>
-                                        <Typography variant="h3">
-                                            7 km
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </CardActionArea>
-                    </Card>
-                );
+            buildings.sort((a, b) => {
+                if (a.distance && b.distance) {
+                    return a.distance - b.distance;
+                } else {
+                    return 999999;
+                }
             });
         }
+        return buildings.map((building) => {
+            return (
+                <Card
+                    elevation={3}
+                    key={building.name}
+                    sx={{ borderRadius: 5 }}
+                    style={{ display: 'flex', flexDirection: 'column' }}
+                >
+                    <CardActionArea onClick={() => clickFunction(building.id)}>
+                        <CardContent>
+                            <Grid container spacing={2}>
+                                <Grid item xs={8}>
+                                    <Typography variant="h3">
+                                        {building.name}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={1}>
+                                    <GpsFixedIcon
+                                        style={{ float: 'right' }}
+                                    ></GpsFixedIcon>
+                                </Grid>
+
+                                <Grid item xs={2}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        style={{
+                                            fontSize: '16px',
+                                            width: '100px',
+                                            lineHeight: '24px'
+                                        }}
+                                    >
+                                        {building.distance
+                                            ? Math.round(building.distance)
+                                            : 0}{' '}
+                                        km
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            );
+        });
     };
 
     return (
-        <div>
+        <div style={{ padding: '16px' }}>
             <Stack
                 id="preferences-view"
                 height="100%"

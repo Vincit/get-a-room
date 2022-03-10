@@ -30,6 +30,7 @@ export const setGPSLocationPreference = async () => {
                 building.latitude,
                 building.longitude
             );
+            building.distance = dist;
             if (dist < closest) {
                 closest = dist;
                 currentClosestBuilding = building;
@@ -107,12 +108,12 @@ export const getBuildingsWithDistance = async (): Promise<Building[]> => {
  * @param lon2 longitude2
  * @returns Distance between two geographical points
  */
-function getDistanceFromLatLonInKm(
+export const getDistanceFromLatLonInKm = (
     lat1: number,
     lon1: number,
     lat2: number,
     lon2: number
-) {
+) => {
     var R = 6371; // Radius of the earth in km
     var dLat = deg2rad(lat2 - lat1); // deg2rad below
     var dLon = deg2rad(lon2 - lon1);
@@ -125,7 +126,7 @@ function getDistanceFromLatLonInKm(
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
     return d;
-}
+};
 
 function deg2rad(deg: number) {
     return deg * (Math.PI / 180);

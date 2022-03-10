@@ -16,14 +16,17 @@ const MainView = () => {
     const [buildings, setBuildings] = useState<Building[]>([]);
 
     useEffect(() => {
-        getBuildings().then(setBuildings);
+        getBuildings()
+            .then(setBuildings)
+            .catch((e) => console.log(e));
     }, []);
 
     useEffect(() => {
         getPreferences()
             .then(setPreferences)
-            .catch(() => {
+            .catch((e) => {
                 // Redirected to login
+                console.log(e);
             });
     }, []);
 

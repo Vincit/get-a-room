@@ -6,10 +6,8 @@ import { SnackbarProvider } from 'notistack';
 import MainView from './MainView';
 import LoginView from './login/LoginView';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { setGPSLocationPreference } from '../services/gpsService';
 
 const App = () => {
-    setGPSLocationPreference();
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
