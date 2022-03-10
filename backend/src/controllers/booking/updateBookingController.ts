@@ -71,7 +71,6 @@ export const endBookingNow = () => {
         try {
             const bookingId: string = req.params.bookingId;
             const client: OAuth2Client = res.locals.oAuthClient;
-            const eventData: schema.EventData = res.locals.event;
 
             if (!bookingId || bookingId.length !== 26) {
                 return responses.badRequest(req, res);
