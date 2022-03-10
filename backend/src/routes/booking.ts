@@ -72,3 +72,14 @@ router.patch(
         res.status(200).json(res.locals.event);
     }
 );
+
+// Change booking endtime to now
+router.patch(
+    '/:bookingId/endNow',
+    getBooking(),
+    updateBookingController.endBookingNow(),
+    
+    (req: Request, res: Response) => {
+        res.status(200).json(res.locals.event);
+}
+);

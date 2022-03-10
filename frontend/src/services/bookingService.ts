@@ -41,3 +41,10 @@ export const deleteBooking = async (bookingId: string) => {
     const response = await axios.delete('booking/' + bookingId);
     return response.data;
 };
+
+export const endBooking = async (bookingId: string) => {
+    const response = await axios.patch(
+        'booking/' + bookingId + '/endNow'
+    );
+    return response.data;
+};
