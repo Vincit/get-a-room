@@ -13,7 +13,11 @@ import {
 } from '@mui/material';
 import { Booking, AddTimeDetails, Room } from '../types';
 import { ExpandLess, ExpandMore, Group } from '@mui/icons-material';
-import { updateBooking, deleteBooking, endBooking } from '../services/bookingService';
+import {
+    updateBooking,
+    deleteBooking,
+    endBooking
+} from '../services/bookingService';
 import TimeLeft, { getTimeLeft } from './util/TimeLeft';
 import useCreateNotification from '../hooks/useCreateNotification';
 

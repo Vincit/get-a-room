@@ -78,8 +78,8 @@ router.patch(
     '/:bookingId/endNow',
     getBooking(),
     updateBookingController.endBookingNow(),
-    
+
     (req: Request, res: Response) => {
         res.status(200).json(res.locals.event);
-}
+    }
 );

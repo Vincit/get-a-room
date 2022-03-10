@@ -62,7 +62,7 @@ export const addTimeToBooking = () => {
 /**
  * Change the booking endtime to now
  */
- export const endBookingNow = () => {
+export const endBookingNow = () => {
     const middleware = async (
         req: Request,
         res: Response,
@@ -78,9 +78,7 @@ export const addTimeToBooking = () => {
             }
 
             // New end time
-            const endTime = DateTime.now()
-                .toUTC()
-                .toISO();
+            const endTime = DateTime.now().toUTC().toISO();
 
             // Pretty hacky and there probably is a better way to do this
             const attendeeList: schema.EventAttendee[] = [
@@ -108,8 +106,6 @@ export const addTimeToBooking = () => {
 
     return middleware;
 };
-
-
 
 /**
  * Checks if the rooms if free before making a change
