@@ -8,8 +8,6 @@ import DurationPicker from './DurationPicker';
 import RoomCard from './RoomCard';
 import BookingDrawer from './BookingDrawer';
 
-const MIN_DURATION = 15;
-
 function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
 }
@@ -48,6 +46,7 @@ const AvailableRoomList = (props: BookingListProps) => {
     const [expandBookingDrawer, setexpandBookingDrawer] = useState(false);
     const [bookingDuration, setBookingDuration] = useState(15);
     const [additionalDuration, setAdditionalDuration] = useState(0);
+    const [availableMinutes, setAvailableMinutes] = useState(0);
     const [selectedRoom, setSelectedRoom] = useState<Room | undefined>(
         undefined
     );
@@ -73,12 +72,14 @@ const AvailableRoomList = (props: BookingListProps) => {
     const handleCardClick = (room: Room) => {
         setexpandBookingDrawer(true);
         setSelectedRoom(room);
+        setAvailableMinutes(availableForMinutes(room));
     };
 
     const toggleDrawn = (newOpen: boolean) => {
         if (newOpen === false) {
             setSelectedRoom(undefined);
             setAdditionalDuration(0);
+            setAvailableMinutes(0);
         }
         setexpandBookingDrawer(newOpen);
     };
@@ -117,6 +118,7 @@ const AvailableRoomList = (props: BookingListProps) => {
                     room={selectedRoom}
                     duration={bookingDuration}
                     additionalDuration={additionalDuration}
+                    availableMinutes={availableMinutes}
                     onAddTime={handleAdditionaDurationChange}
                 />
             </div>

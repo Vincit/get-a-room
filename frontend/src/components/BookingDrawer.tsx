@@ -1,10 +1,14 @@
 import * as React from 'react';
 import { Box, Button, styled, Typography } from '@mui/material';
-import { DateTime, Duration } from 'luxon';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { DateTime } from 'luxon';
 
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import { Room } from '../types';
 import { getTimeLeft } from './util/TimeLeft';
+
+const MIN_DURATION = 15;
 
 function getName(room: Room | undefined) {
     return room === undefined ? '' : room.name;
@@ -18,36 +22,37 @@ function getTimeAvailable(room: Room | undefined) {
     return room === undefined ? '' : getTimeLeft(getNextCalendarEvent(room));
 }
 
-function availableForMinutes(room: Room | undefined) {
-    if (room === undefined) {
-        return 0;
+/**
+ * Retunrs minutes as hours and minutes string.
+ *
+ * @param minutes
+ * @returns Example "1 h 15 min"
+ */
+function minutesToSimpleString(minutes: number) {
+    const hours = Math.floor(minutes / 60);
+    const min = minutes % 60;
+    if (hours === 0) {
+        return min + ' min';
     }
-    let availableUntill = DateTime.fromISO(room.nextCalendarEvent).toUTC();
-    let duration = Duration.fromObject(
-        availableUntill.diffNow('minutes').toObject()
-    );
-    return Math.ceil(duration.minutes);
+    if (min === 0) {
+        return hours + ' h';
+    }
+    return hours + ' h ' + min + ' min';
 }
 
-function addLeadingZero(number: number) {
-    if (number < 10) {
-        return '0' + number;
-    }
-    return number.toString();
-}
-
+/**
+ *
+ * @param minutes
+ * @returns Example "(15.15 - 15.30)"
+ */
 function getBookingRangeText(minutes: number) {
     let startTime = DateTime.local();
     let endTime = startTime.plus({ minutes: minutes });
     return (
         '(' +
-        addLeadingZero(startTime.hour) +
-        ':' +
-        addLeadingZero(startTime.minute) +
-        '-' +
-        addLeadingZero(endTime.hour) +
-        ':' +
-        addLeadingZero(endTime.minute) +
+        startTime.toLocaleString(DateTime.TIME_24_SIMPLE) +
+        ' - ' +
+        endTime.toLocaleString(DateTime.TIME_24_SIMPLE) +
         ')'
     );
 }
@@ -77,10 +82,7 @@ const DrawerButton = styled(Button)(({ theme }) => ({
     alignItems: 'center',
     borderRadius: '50px',
     width: '100%',
-    margin: '8px 0px',
-    '&.Mui-hower': {
-        background: 'transparent'
-    }
+    margin: '8px 0px'
 }));
 
 const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
@@ -89,6 +91,9 @@ const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
     '&.Mui-disabled': {
         color: '#7d6b6a',
         background: theme.palette.background.default
+    },
+    '&:hover': {
+        backgroundColor: theme.palette.text.primary
     }
 }));
 
@@ -136,6 +141,7 @@ interface Props {
     duration: number;
     additionalDuration: number;
     onAddTime: (minutes: number) => void;
+    availableMinutes: number;
     room?: Room;
 }
 
@@ -147,7 +153,8 @@ const BookingDrawer = (props: Props) => {
         room,
         duration,
         additionalDuration,
-        onAddTime
+        onAddTime,
+        availableMinutes
     } = props;
 
     const handleAdditionalTime = (minutes: number) => {
@@ -155,11 +162,11 @@ const BookingDrawer = (props: Props) => {
     };
 
     const disableSubtractTime = () => {
-        return duration + additionalDuration <= 15;
+        return duration + additionalDuration <= MIN_DURATION;
     };
 
     const disableAddTime = () => {
-        return duration + additionalDuration + 15 > availableForMinutes(room);
+        return duration + additionalDuration + 15 > availableMinutes;
     };
 
     return (
@@ -174,7 +181,7 @@ const BookingDrawer = (props: Props) => {
             <DrawerContent>
                 <RowCentered>
                     <TimeTextBold>
-                        {duration + additionalDuration} min
+                        {minutesToSimpleString(duration + additionalDuration)}
                     </TimeTextBold>
                     <TimeText>
                         {getBookingRangeText(duration + additionalDuration)}
@@ -190,17 +197,21 @@ const BookingDrawer = (props: Props) => {
                 </Row>
                 <Row>
                     <DrawerButtonPrimary
+                        aria-label="subtract 15 minutes"
+                        data-testid="subtract15"
                         onClick={(e) => handleAdditionalTime(-15)}
                         disabled={disableSubtractTime()}
                     >
-                        - 15 min
+                        <RemoveIcon /> 15 min
                     </DrawerButtonPrimary>
                     <Spacer />
                     <DrawerButtonPrimary
+                        aria-label="add 15 minutes"
+                        data-testid="add15"
                         onClick={(e) => handleAdditionalTime(15)}
                         disabled={disableAddTime()}
                     >
-                        + 15 min
+                        <AddIcon /> 15 min
                     </DrawerButtonPrimary>
                 </Row>
                 <Row>
