@@ -35,8 +35,17 @@ export const getTimeLeftMinutes = (endTime: string) => {
     // If nextReservationTime equals to end of the day, then that means that the
     // room has no current reservations for that day and is free all day.
     if (nextReservationTime.equals(endOfDay) || duration.hours >= 1440) {
-        let bookUntilObj = DateTime.utc().toObject();
-        bookUntilObj.hour = 17;
+        let bookUntilObj = DateTime.local().toObject();
+
+        //Sets duration for booking until 17:00, if it's past that time set to 23:59
+        if (bookUntilObj.hour >= 17 && bookUntilObj.minute >= 0) {
+            bookUntilObj.hour = 23;
+            bookUntilObj.minute = 59;
+        } else {
+            bookUntilObj.hour = 17;
+            bookUntilObj.minute = 0;
+        }
+
         let bookUntil = DateTime.fromObject(bookUntilObj);
         let durationToBookUntil = Duration.fromObject(
             bookUntil.diffNow(['minutes']).toObject()
