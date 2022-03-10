@@ -19,10 +19,12 @@ type BuildingSelectProps = {
     setSelectedBuildingId: (buildingId: string) => any;
     buildings: Building[];
     handlePreferencesSubmit: (buildingId: string) => void;
+    name: String | undefined;
 };
 
 const RoomList = (props: BuildingSelectProps) => {
-    const { setSelectedBuildingId, buildings, handlePreferencesSubmit } = props;
+    const { setSelectedBuildingId, buildings, handlePreferencesSubmit, name } =
+        props;
     const [alignment, setAlignment] = React.useState('names');
 
     const clickFunction = (buildingId: string) => {
@@ -107,7 +109,7 @@ const RoomList = (props: BuildingSelectProps) => {
             >
                 <FormGroup>
                     <Typography textAlign="center" variant="h6">
-                        Welcome, asdfasdf
+                        Welcome, {name}
                     </Typography>
                     <Typography textAlign="center" variant="h3">
                         Choose office

@@ -12,10 +12,11 @@ type PreferencesViewProps = {
     buildings: Building[];
     preferences?: Preferences;
     setPreferences: (preferences?: Preferences) => any;
+    name: String | undefined;
 };
 
 const PreferencesView = (props: PreferencesViewProps) => {
-    const { buildings, preferences, setPreferences } = props;
+    const { buildings, preferences, setPreferences, name } = props;
 
     const [selectedBuildingId, setSelecedBuildingId] = useState('');
 
@@ -63,6 +64,7 @@ const PreferencesView = (props: PreferencesViewProps) => {
             selectedBuildingId={selectedBuildingId}
             setSelectedBuildingId={setSelecedBuildingId}
             handlePreferencesSubmit={handlePreferencesSubmit}
+            name={name}
         />
     );
 };

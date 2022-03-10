@@ -41,7 +41,13 @@ describe('PreferencesView', () => {
     });
 
     it('renders progressbar when no preferences given', () => {
-        render(<PreferencesView buildings={[]} setPreferences={jest.fn()} />);
+        render(
+            <PreferencesView
+                buildings={[]}
+                setPreferences={jest.fn()}
+                name="test"
+            />
+        );
 
         expect(screen.getByRole('progressbar')).toBeTruthy();
     });
@@ -53,6 +59,7 @@ describe('PreferencesView', () => {
                     preferences={{ building: TEST_BUILDINGS[0] }}
                     buildings={TEST_BUILDINGS}
                     setPreferences={jest.fn()}
+                    name="test"
                 />
             );
         });
@@ -73,6 +80,7 @@ describe('PreferencesView', () => {
                 }}
                 buildings={TEST_BUILDINGS}
                 setPreferences={jest.fn()}
+                name="test"
             />
         );
 
@@ -89,6 +97,7 @@ describe('PreferencesView', () => {
                 preferences={{}}
                 buildings={TEST_BUILDINGS}
                 setPreferences={mockedSetPreferences}
+                name="test"
             />
         );
 

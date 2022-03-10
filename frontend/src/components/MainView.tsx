@@ -9,11 +9,14 @@ import { getBuildings } from '../services/buildingService';
 import PreferencesLoader from './PreferencesLoader';
 import { Box } from '@mui/material';
 import NavBar from './NavBar';
+import { getName } from '../services/nameService';
 
 const MainView = () => {
     const [preferences, setPreferences] = useState<Preferences | undefined>();
 
     const [buildings, setBuildings] = useState<Building[]>([]);
+
+    const [name, setName] = React.useState<String>();
 
     useEffect(() => {
         getBuildings()
@@ -28,6 +31,10 @@ const MainView = () => {
                 // Redirected to login
                 console.log(e);
             });
+    }, []);
+
+    React.useEffect(() => {
+        getName().then(setName);
     }, []);
 
     return (
@@ -47,6 +54,7 @@ const MainView = () => {
                             preferences={preferences}
                             setPreferences={setPreferences}
                             buildings={buildings}
+                            name={name}
                         />
                     </Route>
                     <Route path="/auth/success">
