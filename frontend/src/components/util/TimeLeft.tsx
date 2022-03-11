@@ -57,7 +57,7 @@ export const getTimeLeftMinutes = (endTime: string) => {
         return 0;
     }
 
-    return duration.minutes;
+    return Math.round(duration.minutes) - 1;
 };
 
 type TimeLeftProps = {
