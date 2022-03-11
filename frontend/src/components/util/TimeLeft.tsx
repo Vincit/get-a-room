@@ -35,12 +35,15 @@ export const getTimeLeftMinutes = (endTime: string) => {
     // If nextReservationTime equals to end of the day, then that means that the
     // room has no current reservations for that day and is free all day.
     if (nextReservationTime.equals(endOfDay) || duration.hours >= 1440) {
-        let bookUntilObj = DateTime.local().toObject();
+        let bookUntilObj = DateTime.now().toObject();
 
-        //Sets duration for booking until 17:00, if it's past that time set to 23:59
-        if (bookUntilObj.hour >= 17 && bookUntilObj.minute >= 0) {
+        //Sets duration for booking until 17:00, if it's past that time set to 23:55
+        if (
+            (bookUntilObj.hour >= 17 && bookUntilObj.minute >= 0) ||
+            bookUntilObj.hour > 17
+        ) {
             bookUntilObj.hour = 23;
-            bookUntilObj.minute = 59;
+            bookUntilObj.minute = 55;
         } else {
             bookUntilObj.hour = 17;
             bookUntilObj.minute = 0;
@@ -50,14 +53,14 @@ export const getTimeLeftMinutes = (endTime: string) => {
         let durationToBookUntil = Duration.fromObject(
             bookUntil.diffNow(['minutes']).toObject()
         );
-        return durationToBookUntil.minutes;
+        return Math.round(durationToBookUntil.minutes);
     }
 
     if (duration.hours === 0 && duration.minutes < 1) {
         return 0;
     }
 
-    return Math.round(duration.minutes) - 1;
+    return Math.floor(duration.minutes);
 };
 
 type TimeLeftProps = {
