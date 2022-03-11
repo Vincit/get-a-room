@@ -12,12 +12,19 @@ function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
 }
 
-function isAvailableFor(minutes: number, room: Room) {
+function availableForMinutes(room: Room | undefined) {
+    if (room === undefined) {
+        return 0;
+    }
     let availableUntill = DateTime.fromISO(room.nextCalendarEvent).toUTC();
     let duration = Duration.fromObject(
         availableUntill.diffNow('minutes').toObject()
     );
-    return minutes <= duration.minutes;
+    return Math.ceil(duration.minutes);
+}
+
+function isAvailableFor(minutes: number, room: Room) {
+    return minutes <= availableForMinutes(room);
 }
 
 type BookingListProps = {
@@ -38,6 +45,8 @@ const AvailableRoomList = (props: BookingListProps) => {
     );
     const [expandBookingDrawer, setexpandBookingDrawer] = useState(false);
     const [bookingDuration, setBookingDuration] = useState(15);
+    const [additionalDuration, setAdditionalDuration] = useState(0);
+    const [availableMinutes, setAvailableMinutes] = useState(0);
     const [selectedRoom, setSelectedRoom] = useState<Room | undefined>(
         undefined
     );
@@ -50,19 +59,27 @@ const AvailableRoomList = (props: BookingListProps) => {
         setBookingDuration(duration);
     };
 
+    const handleAdditionaDurationChange = (additionalMinutes: number) => {
+        setAdditionalDuration(additionalDuration + additionalMinutes);
+    };
+
     const handleReservation = () => {
-        book(selectedRoom, bookingDuration);
+        book(selectedRoom, bookingDuration + additionalDuration);
+        setAdditionalDuration(0);
         toggleDrawn(false);
     };
 
     const handleCardClick = (room: Room) => {
         setexpandBookingDrawer(true);
         setSelectedRoom(room);
+        setAvailableMinutes(availableForMinutes(room));
     };
 
     const toggleDrawn = (newOpen: boolean) => {
         if (newOpen === false) {
             setSelectedRoom(undefined);
+            setAdditionalDuration(0);
+            setAvailableMinutes(0);
         }
         setexpandBookingDrawer(newOpen);
     };
@@ -100,6 +117,9 @@ const AvailableRoomList = (props: BookingListProps) => {
                     bookRoom={handleReservation}
                     room={selectedRoom}
                     duration={bookingDuration}
+                    additionalDuration={additionalDuration}
+                    availableMinutes={availableMinutes}
+                    onAddTime={handleAdditionaDurationChange}
                 />
             </div>
 
