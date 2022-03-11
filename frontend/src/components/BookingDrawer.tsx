@@ -23,7 +23,7 @@ function getTimeAvailable(room: Room | undefined) {
 }
 
 /**
- * Retunrs minutes as hours and minutes string.
+ * Returns minutes as hours and minutes string.
  *
  * @param minutes
  * @returns Example "1 h 15 min"
