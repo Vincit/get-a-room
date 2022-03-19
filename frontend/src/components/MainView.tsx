@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import BookingView from './BookingView';
-import PreferencesView from './PreferencesView';
+import ChooseOfficeView from './ChooseOfficeView';
 import { Building, Preferences } from '../types';
 import { getPreferences } from '../services/preferencesService';
 import { getBuildings } from '../services/buildingService';
@@ -50,7 +50,7 @@ const MainView = () => {
             >
                 <Switch>
                     <Route path="/(preferences|auth/success)/">
-                        <PreferencesView
+                        <ChooseOfficeView
                             preferences={preferences}
                             setPreferences={setPreferences}
                             buildings={buildings}

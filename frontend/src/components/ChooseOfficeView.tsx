@@ -8,14 +8,14 @@ import { updatePreferences } from '../services/preferencesService';
 import { Building, Preferences } from '../types';
 import CenteredProgress from './util/CenteredProgress';
 
-type PreferencesViewProps = {
+type ChooseOfficeViewProps = {
     buildings: Building[];
     preferences?: Preferences;
     setPreferences: (preferences?: Preferences) => any;
     name: String | undefined;
 };
 
-const PreferencesView = (props: PreferencesViewProps) => {
+const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
     const { buildings, preferences, setPreferences, name } = props;
 
     const [selectedBuildingId, setSelecedBuildingId] = useState('');
@@ -69,4 +69,4 @@ const PreferencesView = (props: PreferencesViewProps) => {
     );
 };
 
-export default PreferencesView;
+export default ChooseOfficeView;

@@ -8,7 +8,7 @@ import {
 } from '@testing-library/react';
 import { updatePreferences } from '../services/preferencesService';
 
-import PreferencesView from './PreferencesView';
+import ChooseOfficeView from './ChooseOfficeView';
 
 const mockedHistoryPush = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -32,7 +32,7 @@ const TEST_BUILDINGS = [
     { id: 'b2Id', name: 'b2Name', latitude: 61.4957056, longitude: 23.7993984 }
 ];
 
-describe('PreferencesView', () => {
+describe('ChooseOfficeView', () => {
     beforeEach(() => {
         cleanup();
     });
@@ -42,7 +42,7 @@ describe('PreferencesView', () => {
 
     it('renders progressbar when no preferences given', () => {
         render(
-            <PreferencesView
+            <ChooseOfficeView
                 buildings={[]}
                 setPreferences={jest.fn()}
                 name="test"
@@ -55,7 +55,7 @@ describe('PreferencesView', () => {
     it('sets building according to preferences when valid', () => {
         act(() => {
             render(
-                <PreferencesView
+                <ChooseOfficeView
                     preferences={{ building: TEST_BUILDINGS[0] }}
                     buildings={TEST_BUILDINGS}
                     setPreferences={jest.fn()}
@@ -69,7 +69,7 @@ describe('PreferencesView', () => {
 
     it('does not set building when building is not valid', () => {
         render(
-            <PreferencesView
+            <ChooseOfficeView
                 preferences={{
                     building: {
                         id: 'notFound',
@@ -93,7 +93,7 @@ describe('PreferencesView', () => {
             building: TEST_BUILDINGS[1]
         });
         render(
-            <PreferencesView
+            <ChooseOfficeView
                 preferences={{}}
                 buildings={TEST_BUILDINGS}
                 setPreferences={mockedSetPreferences}
