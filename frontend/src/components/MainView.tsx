@@ -57,13 +57,13 @@ const MainView = () => {
                             name={name}
                         />
                     </Route>
-                    <Route path="/auth/success">
+                    {/*                     <Route path="/auth/success">
                         <PreferencesLoader
                             preferences={preferences}
                             setPreferences={setPreferences}
                             buildings={buildings}
                         />
-                    </Route>
+                    </Route> */}
                     <Route path="/">
                         <BookingView preferences={preferences} />
                     </Route>

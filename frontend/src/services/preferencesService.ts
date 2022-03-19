@@ -4,9 +4,7 @@ import { getBuildings } from './buildingService';
 import { getDistanceFromLatLonInKm } from './gpsService';
 
 export const getPreferences = async () => {
-    console.log('start');
     const result = await axios.get('preferences');
-    console.log('get pref called');
     if (!navigator.geolocation) {
         return result.data;
     }
@@ -33,11 +31,13 @@ export const getPreferences = async () => {
                     currentClosestBuilding = building;
                 }
             }
-            console.log('pref set to gps');
-            return resolve(currentClosestBuilding);
+            result.data.building.id = currentClosestBuilding.id;
+            result.data.building.name = currentClosestBuilding.name;
+            return resolve(result.data);
         }
         function error(err: any) {
-            reject(`ERROR(${err.code}): ${err.message} 2`);
+            resolve(result.data);
+            //reject(`ERROR(${err.code}): ${err.message} 2`);
         }
         var options = {
             enableHighAccuracy: true,

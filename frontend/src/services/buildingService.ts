@@ -3,7 +3,6 @@ import axios from './axiosConfigurer';
 import { getDistanceFromLatLonInKm } from './gpsService';
 
 export const getBuildings = async (): Promise<Building[]> => {
-    console.log('get buldings');
     const response = await axios.get('/buildings');
     const buildings = response.data.buildings;
     if (navigator.geolocation) {
@@ -22,7 +21,8 @@ export const getBuildings = async (): Promise<Building[]> => {
                 resolve(buildings);
             }
             function error(err: any) {
-                reject(`ERROR(${err.code}): ${err.message} 1`);
+                resolve(buildings);
+                //reject(`ERROR(${err.code}): ${err.message} 1`);
             }
             var options = {
                 enableHighAccuracy: true,

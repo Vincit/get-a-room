@@ -11,7 +11,8 @@ import {
     ToggleButtonGroup,
     Typography
 } from '@mui/material';
-import GpsFixedIcon from '@mui/icons-material/GpsFixed';
+import { GpsFixed, GpsOff } from '@mui/icons-material';
+//import GpsOff from '@mui/icons-material/GpsOff';
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 
 type BuildingSelectProps = {
@@ -28,7 +29,6 @@ const RoomList = (props: BuildingSelectProps) => {
     const [alignment, setAlignment] = React.useState('names');
 
     const clickFunction = (buildingId: string) => {
-        console.log(buildingId);
         setSelectedBuildingId(buildingId);
         handlePreferencesSubmit(buildingId);
     };
@@ -59,8 +59,13 @@ const RoomList = (props: BuildingSelectProps) => {
                 <Card
                     elevation={3}
                     key={building.name}
-                    sx={{ borderRadius: 5 }}
-                    style={{ display: 'flex', flexDirection: 'column' }}
+                    sx={{ borderRadius: '10px' }}
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        marginTop: '16px',
+                        marginBottom: '16px'
+                    }}
                 >
                     <CardActionArea onClick={() => clickFunction(building.id)}>
                         <CardContent>
@@ -71,9 +76,9 @@ const RoomList = (props: BuildingSelectProps) => {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={1}>
-                                    <GpsFixedIcon
+                                    <GpsFixed
                                         style={{ float: 'right' }}
-                                    ></GpsFixedIcon>
+                                    ></GpsFixed>
                                 </Grid>
 
                                 <Grid item xs={2}>
@@ -107,29 +112,49 @@ const RoomList = (props: BuildingSelectProps) => {
                 justifyContent="space-around"
                 alignItems="center"
             >
-                <FormGroup>
-                    <Typography textAlign="center" variant="h6">
-                        Welcome, {name}
-                    </Typography>
-                    <Typography textAlign="center" variant="h3">
-                        Choose office
-                    </Typography>
-                </FormGroup>
+                <div
+                    style={{
+                        height: '100%',
+                        width: '100%',
+                        padding: '0px 24px'
+                    }}
+                >
+                    <FormGroup sx={{ alignItems: 'left' }}>
+                        <Typography
+                            textAlign="left"
+                            variant="subtitle1"
+                            color={'#ce3b20'}
+                            paddingTop="10px"
+                            paddingBottom="5px"
+                        >
+                            Welcome, {name}
+                        </Typography>
+                        <Typography textAlign="left" variant="h2">
+                            Choose office
+                        </Typography>
+                        <Typography
+                            textAlign="left"
+                            variant="subtitle1"
+                            paddingTop="20px"
+                            paddingBottom="10px"
+                        >
+                            SORT BASED ON
+                        </Typography>
+                    </FormGroup>
+                </div>
 
                 <ToggleButtonGroup
                     color="primary"
                     value={alignment}
                     exclusive
                     onChange={handleChange}
-                    style={{ marginBottom: 20 }}
+                    style={{ marginBottom: 10 }}
                 >
                     <ToggleButton
                         style={{ minWidth: '150px' }}
                         value="proximity"
                     >
-                        <GpsFixedIcon
-                            style={{ minWidth: '40px' }}
-                        ></GpsFixedIcon>
+                        <GpsFixed style={{ minWidth: '40px' }}></GpsFixed>
                         Proximity
                     </ToggleButton>
 
