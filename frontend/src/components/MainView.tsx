@@ -49,7 +49,7 @@ const MainView = () => {
                 sx={{ flexGrow: 1, overflowY: 'scroll' }}
             >
                 <Switch>
-                    <Route path="/preferences">
+                    <Route path="/(preferences|auth/success)/">
                         <PreferencesView
                             preferences={preferences}
                             setPreferences={setPreferences}
