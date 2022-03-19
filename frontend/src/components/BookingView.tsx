@@ -89,6 +89,7 @@ function BookingView(props: BookingViewProps) {
                 color={'#ce3b20'}
                 paddingLeft="20px"
                 paddingTop="20px"
+                style={{ cursor: 'pointer' }}
             >
                 <ArrowBackIcon style={{ fontSize: 'small' }}></ArrowBackIcon>
                 {preferences?.building ? preferences.building.name : 'Back'}
