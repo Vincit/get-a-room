@@ -13,7 +13,11 @@ import {
 } from '@mui/material';
 import { Booking, AddTimeDetails, Room } from '../types';
 import { ExpandLess, ExpandMore, Group } from '@mui/icons-material';
-import { updateBooking, deleteBooking } from '../services/bookingService';
+import {
+    updateBooking,
+    deleteBooking,
+    endBooking
+} from '../services/bookingService';
 import TimeLeft, { getTimeLeft } from './util/TimeLeft';
 import useCreateNotification from '../hooks/useCreateNotification';
 
@@ -137,7 +141,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
             });
     };
 
-    // Delete booking and add the room back to the available rooms list
+    // Delete booking and add the room back to the available rooms list LEGACY new end booking
     const handleDeleteBooking = (booking: Booking) => {
         setBookingProcessing(booking.id);
 
@@ -152,6 +156,24 @@ const CurrentBooking = (props: CurrentBookingProps) => {
             .catch(() => {
                 setBookingProcessing('false');
                 createErrorNotification('Could not delete booking');
+            });
+    };
+
+    // End booking by changing the endtime to now
+    const handleEndBooking = (booking: Booking) => {
+        setBookingProcessing(booking.id);
+
+        endBooking(booking.id)
+            .then((endBooking) => {
+                setBookingProcessing('false');
+                // replace updated booking
+                updateBookings();
+                createSuccessNotification('Booking ended');
+                window.scrollTo(0, 0);
+            })
+            .catch(() => {
+                setBookingProcessing('false');
+                createErrorNotification('Could not end booking');
             });
     };
 
@@ -310,6 +332,38 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                                             }
                                         >
                                             Delete
+                                        </Button>
+                                    </CardActions>
+                                </Box>
+                                <Box
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'flex-end',
+                                        alignItems: 'right'
+                                    }}
+                                >
+                                    <CardActions disableSpacing>
+                                        <Button
+                                            id="end-button"
+                                            data-testid="EndButton"
+                                            style={{
+                                                backgroundColor: '#443938',
+                                                textTransform: 'none',
+                                                color: '#F6F5F5',
+                                                fontSize: '16px',
+                                                animation:
+                                                    'ripple 600ms linear',
+                                                minWidth: '130px',
+                                                minHeight: '50px',
+                                                maxWidth: '130px',
+                                                maxHeight: '50px',
+                                                borderRadius: '50px'
+                                            }}
+                                            onClick={() =>
+                                                handleEndBooking(booking)
+                                            }
+                                        >
+                                            End booking
                                         </Button>
                                     </CardActions>
                                 </Box>
