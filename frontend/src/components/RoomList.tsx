@@ -5,12 +5,15 @@ import {
     CardActionArea,
     CardContent,
     FormGroup,
-    Grid,
     Stack,
     ToggleButton,
     ToggleButtonGroup,
-    Typography
+    Typography,
+    styled,
+    makeStyles
 } from '@mui/material';
+
+import Box from '@mui/material/Box';
 import { GpsFixed, GpsOff } from '@mui/icons-material';
 //import GpsOff from '@mui/icons-material/GpsOff';
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
@@ -22,6 +25,23 @@ type BuildingSelectProps = {
     handlePreferencesSubmit: (buildingId: string) => void;
     name: String | undefined;
 };
+
+const GridContainer = styled(Box)(({ theme }) => ({
+    container: true,
+    flexDirection: 'column',
+    alignItems: 'flex-start'
+}));
+
+const Row = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'space-between'
+}));
+
+const EndBox = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+}));
 
 const RoomList = (props: BuildingSelectProps) => {
     const { setSelectedBuildingId, buildings, handlePreferencesSubmit, name } =
@@ -60,43 +80,35 @@ const RoomList = (props: BuildingSelectProps) => {
                     elevation={3}
                     key={building.name}
                     sx={{ borderRadius: '10px' }}
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        marginTop: '16px',
-                        marginBottom: '16px'
-                    }}
                 >
                     <CardActionArea onClick={() => clickFunction(building.id)}>
                         <CardContent>
-                            <Grid container spacing={2}>
-                                <Grid item xs={8}>
+                            <GridContainer>
+                                <Row>
                                     <Typography variant="h3">
                                         {building.name}
                                     </Typography>
-                                </Grid>
-                                <Grid item xs={1}>
-                                    <GpsFixed
-                                        style={{ float: 'right' }}
-                                    ></GpsFixed>
-                                </Grid>
 
-                                <Grid item xs={2}>
-                                    <Typography
-                                        variant="subtitle1"
-                                        style={{
-                                            fontSize: '16px',
-                                            width: '100px',
-                                            lineHeight: '24px'
-                                        }}
-                                    >
-                                        {building.distance
-                                            ? Math.round(building.distance)
-                                            : 0}{' '}
-                                        km
-                                    </Typography>
-                                </Grid>
-                            </Grid>
+                                    <EndBox>
+                                        <GpsFixed></GpsFixed>
+
+                                        <Typography
+                                            variant="subtitle1"
+                                            align="right"
+                                            style={{
+                                                fontSize: '16px',
+                                                width: '68px',
+                                                lineHeight: '24px'
+                                            }}
+                                        >
+                                            {building.distance
+                                                ? Math.round(building.distance)
+                                                : 0}{' '}
+                                            km
+                                        </Typography>
+                                    </EndBox>
+                                </Row>
+                            </GridContainer>
                         </CardContent>
                     </CardActionArea>
                 </Card>
@@ -110,7 +122,7 @@ const RoomList = (props: BuildingSelectProps) => {
                 id="preferences-view"
                 height="100%"
                 justifyContent="space-around"
-                alignItems="center"
+                alignItems="left"
             >
                 <div
                     style={{
@@ -144,21 +156,25 @@ const RoomList = (props: BuildingSelectProps) => {
                 </div>
 
                 <ToggleButtonGroup
+                    className="ToggleButtonGroupStyle"
                     color="primary"
                     value={alignment}
                     exclusive
                     onChange={handleChange}
-                    style={{ marginBottom: 10 }}
+                    style={{ overflow: 'auto' }}
                 >
                     <ToggleButton
-                        style={{ minWidth: '150px' }}
+                        style={{ minWidth: '150px', maxWidth: '150px' }}
                         value="proximity"
                     >
                         <GpsFixed style={{ minWidth: '40px' }}></GpsFixed>
                         Proximity
                     </ToggleButton>
 
-                    <ToggleButton style={{ minWidth: '150px' }} value="names">
+                    <ToggleButton
+                        style={{ minWidth: '150px', maxWidth: '150px' }}
+                        value="names"
+                    >
                         <SortByAlphaIcon
                             style={{ minWidth: '40px' }}
                         ></SortByAlphaIcon>
