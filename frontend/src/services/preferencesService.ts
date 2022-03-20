@@ -10,7 +10,6 @@ export const getPreferences = async () => {
     }
     const buildings = await getBuildings();
     if (buildings.length === 0) {
-        console.log('Could not find buildings');
         return result.data;
     }
     return new Promise((resolve, reject) => {
@@ -37,7 +36,6 @@ export const getPreferences = async () => {
         }
         function error(err: any) {
             resolve(result.data);
-            //reject(`ERROR(${err.code}): ${err.message} 2`);
         }
         var options = {
             enableHighAccuracy: true,

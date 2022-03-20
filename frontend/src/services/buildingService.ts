@@ -22,7 +22,6 @@ export const getBuildings = async (): Promise<Building[]> => {
             }
             function error(err: any) {
                 resolve(buildings);
-                //reject(`ERROR(${err.code}): ${err.message} 1`);
             }
             var options = {
                 enableHighAccuracy: true,
@@ -32,7 +31,6 @@ export const getBuildings = async (): Promise<Building[]> => {
             navigator.geolocation.getCurrentPosition(success, error, options);
         });
     } else {
-        console.log('aaa');
         return buildings;
     }
 };

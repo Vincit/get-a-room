@@ -9,13 +9,12 @@ import {
     ToggleButton,
     ToggleButtonGroup,
     Typography,
-    styled,
-    makeStyles
+    styled
 } from '@mui/material';
 
 import Box from '@mui/material/Box';
-import { GpsFixed, GpsOff } from '@mui/icons-material';
-//import GpsOff from '@mui/icons-material/GpsOff';
+import { GpsFixed } from '@mui/icons-material';
+import LocationOffIcon from '@mui/icons-material/LocationOff';
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 
 type BuildingSelectProps = {
@@ -90,22 +89,27 @@ const RoomList = (props: BuildingSelectProps) => {
                                     </Typography>
 
                                     <EndBox>
-                                        <GpsFixed></GpsFixed>
-
-                                        <Typography
-                                            variant="subtitle1"
-                                            align="right"
-                                            style={{
-                                                fontSize: '16px',
-                                                width: '68px',
-                                                lineHeight: '24px'
-                                            }}
-                                        >
-                                            {building.distance
-                                                ? Math.round(building.distance)
-                                                : 0}{' '}
-                                            km
-                                        </Typography>
+                                        {building.distance ? (
+                                            <>
+                                                <GpsFixed></GpsFixed>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    align="right"
+                                                    style={{
+                                                        fontSize: '16px',
+                                                        width: '68px',
+                                                        lineHeight: '24px'
+                                                    }}
+                                                >
+                                                    {Math.round(
+                                                        building.distance
+                                                    )}{' '}
+                                                    km
+                                                </Typography>
+                                            </>
+                                        ) : (
+                                            <LocationOffIcon></LocationOffIcon>
+                                        )}
                                     </EndBox>
                                 </Row>
                             </GridContainer>
