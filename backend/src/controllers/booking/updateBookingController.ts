@@ -59,6 +59,52 @@ export const addTimeToBooking = () => {
 
     return middleware;
 };
+/**
+ * Change the booking endtime to now
+ */
+export const endBookingNow = () => {
+    const middleware = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const bookingId: string = req.params.bookingId;
+            const client: OAuth2Client = res.locals.oAuthClient;
+
+            if (!bookingId || bookingId.length !== 26) {
+                return responses.badRequest(req, res);
+            }
+
+            // New end time
+            const endTime = DateTime.now().toUTC().toISO();
+
+            // Pretty hacky and there probably is a better way to do this
+            const attendeeList: schema.EventAttendee[] = [
+                {
+                    email: res.locals.roomId,
+                    resource: true,
+                    responseStatus: 'needsAction'
+                },
+                { email: res.locals.email, responseStatus: 'accepted' }
+            ];
+
+            const result = await calendar.updateEndTime(
+                client,
+                bookingId,
+                endTime,
+                attendeeList
+            );
+            res.locals.event = result;
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    };
+
+    return middleware;
+};
 
 /**
  * Checks if the rooms if free before making a change
