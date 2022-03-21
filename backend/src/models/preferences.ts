@@ -5,7 +5,8 @@ import Preferences from '../types/preferences';
 export const buildingSchema = new Schema<BuildingData>(
     {
         id: { required: true, type: String },
-        name: { required: true, type: String }
+        name: { required: true, type: String },
+        fav_rooms: { required: false, type: Array }
     },
     { _id: false }
 );
