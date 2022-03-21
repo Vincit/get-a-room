@@ -149,6 +149,7 @@ interface Props {
     duration: number;
     additionalDuration: number;
     onAddTime: (minutes: number) => void;
+    onAddTimeUntilNext: (minutes: number) => void;
     availableMinutes: number;
     room?: Room;
     handleDurationChange: (duration: number) => void;
@@ -163,12 +164,16 @@ const BookingDrawer = (props: Props) => {
         duration,
         additionalDuration,
         onAddTime,
-        availableMinutes,
-        handleDurationChange
+        onAddTimeUntilNext,
+        availableMinutes
     } = props;
 
     const handleAdditionalTime = (minutes: number) => {
         onAddTime(minutes);
+    };
+
+    const handleUntilNext = (minutes: number) => {
+        onAddTimeUntilNext(minutes);
     };
 
     const disableSubtractTime = () => {
@@ -237,7 +242,7 @@ const BookingDrawer = (props: Props) => {
                     <DrawerButtonSecondary
                         aria-label="until next meeting"
                         onClick={() =>
-                            handleDurationChange(getTimeAvailableMinutes(room))
+                            handleUntilNext(getTimeAvailableMinutes(room))
                         }
                     >
                         Until next meeting

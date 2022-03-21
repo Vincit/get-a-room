@@ -63,6 +63,10 @@ const AvailableRoomList = (props: BookingListProps) => {
         setAdditionalDuration(additionalDuration + additionalMinutes);
     };
 
+    const handleUntilNextDurationChange = (additionalMinutes: number) => {
+        setAdditionalDuration(additionalMinutes - bookingDuration);
+    };
+
     const handleReservation = () => {
         book(selectedRoom, bookingDuration + additionalDuration);
         setAdditionalDuration(0);
@@ -121,6 +125,7 @@ const AvailableRoomList = (props: BookingListProps) => {
                     additionalDuration={additionalDuration}
                     availableMinutes={availableMinutes}
                     onAddTime={handleAdditionaDurationChange}
+                    onAddTimeUntilNext={handleUntilNextDurationChange}
                 />
             </div>
 

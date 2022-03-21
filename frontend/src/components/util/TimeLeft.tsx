@@ -37,7 +37,7 @@ export const getTimeLeftMinutes = (endTime: string) => {
     if (nextReservationTime.equals(endOfDay) || duration.hours >= 1440) {
         let bookUntilObj = DateTime.now().toObject();
 
-        //Sets duration for booking until 17:00, if it's past that time set to 23:55
+        // Sets duration for booking until 17:00, if it's past that time set to 23:55
         if (
             (bookUntilObj.hour >= 17 && bookUntilObj.minute >= 0) ||
             bookUntilObj.hour > 17
@@ -59,8 +59,10 @@ export const getTimeLeftMinutes = (endTime: string) => {
     if (duration.hours === 0 && duration.minutes < 1) {
         return 0;
     }
-
-    return Math.floor(duration.minutes);
+    // If there was a next meeting, this sets the duration so that the end
+    // time is 5 minutes before the next meeting begins to prevent overlapping
+    // errors. There could be a better fix.
+    return Math.ceil(duration.minutes) - 5;
 };
 
 type TimeLeftProps = {
