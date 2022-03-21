@@ -149,6 +149,8 @@ interface Props {
     duration: number;
     additionalDuration: number;
     onAddTime: (minutes: number) => void;
+    onAddTimeUntilHalf: () => void;
+    onAddTimeUntilFull: () => void;
     onAddTimeUntilNext: (minutes: number) => void;
     availableMinutes: number;
     room?: Room;
@@ -164,6 +166,8 @@ const BookingDrawer = (props: Props) => {
         duration,
         additionalDuration,
         onAddTime,
+        onAddTimeUntilHalf,
+        onAddTimeUntilFull,
         onAddTimeUntilNext,
         availableMinutes
     } = props;
@@ -173,11 +177,20 @@ const BookingDrawer = (props: Props) => {
         updateFullHour();
     });
 
-    const [nextHalfHour, setNextHalfHour] = React.useState('00:30');
-    const [nextFullHour, setNextFullHour] = React.useState('01:00');
+    // Placeholder values
+    const [nextHalfHour, setNextHalfHour] = useState('00:30');
+    const [nextFullHour, setNextFullHour] = useState('01:00');
 
     const handleAdditionalTime = (minutes: number) => {
         onAddTime(minutes);
+    };
+
+    const handleNextHalfHour = () => {
+        onAddTimeUntilHalf();
+    };
+
+    const handleNextFullHour = () => {
+        onAddTimeUntilFull();
     };
 
     const handleUntilNext = (minutes: number) => {
@@ -269,14 +282,14 @@ const BookingDrawer = (props: Props) => {
                 </Row>
                 <Row>
                     <DrawerButtonSecondary
-                        //onClick={() => handleNextHalfHour()}
+                        onClick={() => handleNextHalfHour()}
                         disabled={disableNextHalfHour()}
                     >
                         Until {nextHalfHour}
                     </DrawerButtonSecondary>
                     <Spacer />
                     <DrawerButtonSecondary
-                        //onClick={() => handleNextFullHour()}
+                        onClick={() => handleNextFullHour()}
                         disabled={disableNextFullHour()}
                     >
                         Until {nextFullHour}
