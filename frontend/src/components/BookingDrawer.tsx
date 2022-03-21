@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, styled, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -168,6 +168,14 @@ const BookingDrawer = (props: Props) => {
         availableMinutes
     } = props;
 
+    useEffect(() => {
+        updateHalfHour();
+        updateFullHour();
+    });
+
+    const [nextHalfHour, setNextHalfHour] = React.useState('00:30');
+    const [nextFullHour, setNextFullHour] = React.useState('01:00');
+
     const handleAdditionalTime = (minutes: number) => {
         onAddTime(minutes);
     };
@@ -182,6 +190,36 @@ const BookingDrawer = (props: Props) => {
 
     const disableAddTime = () => {
         return duration + additionalDuration + 15 > availableMinutes;
+    };
+
+    const disableNextHalfHour = () => {
+        let currentTime = DateTime.now().toObject();
+        return (
+            currentTime.minute >= 30 ||
+            30 - currentTime.minute > availableMinutes
+        );
+    };
+
+    const disableNextFullHour = () => {
+        let currentTime = DateTime.now().toObject();
+        return 60 - currentTime.minute > availableMinutes;
+    };
+
+    const updateHalfHour = () => {
+        let halfHour = DateTime.now().toObject();
+        halfHour.minute = 30;
+        let halfHourString =
+            halfHour.hour.toString() + ':' + halfHour.minute.toString();
+        setNextHalfHour(halfHourString);
+    };
+
+    const updateFullHour = () => {
+        let fullHour = DateTime.now().toObject();
+        fullHour.minute = 0;
+        fullHour.hour = fullHour.hour + 1;
+        let fullHourString =
+            fullHour.hour.toString() + ':' + fullHour.minute.toString() + '0';
+        setNextFullHour(fullHourString);
     };
 
     return (
@@ -230,12 +268,18 @@ const BookingDrawer = (props: Props) => {
                     </DrawerButtonPrimary>
                 </Row>
                 <Row>
-                    <DrawerButtonSecondary disabled>
-                        Spaceholder
+                    <DrawerButtonSecondary
+                        //onClick={() => handleNextHalfHour()}
+                        disabled={disableNextHalfHour()}
+                    >
+                        Until {nextHalfHour}
                     </DrawerButtonSecondary>
                     <Spacer />
-                    <DrawerButtonSecondary disabled>
-                        Spaceholder
+                    <DrawerButtonSecondary
+                        //onClick={() => handleNextFullHour()}
+                        disabled={disableNextFullHour()}
+                    >
+                        Until {nextFullHour}
                     </DrawerButtonSecondary>
                 </Row>
                 <Row>
