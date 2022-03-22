@@ -33,7 +33,7 @@ export const getPreferencesWithGPS = async () => {
                 return resolve(result.data);
             }
             function error(err: any) {
-                resolve(result.data);
+                reject('GPS not available');
             }
             var options = {
                 enableHighAccuracy: true,

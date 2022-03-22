@@ -27,8 +27,7 @@ const MainView = () => {
 
     const history = useHistory();
 
-    const { createSuccessNotification, createErrorNotification } =
-        useCreateNotification();
+    const { createSuccessNotification } = useCreateNotification();
 
     useEffect(() => {
         getBuildings()
@@ -61,7 +60,7 @@ const MainView = () => {
                 // Redirected to login
                 console.log(e);
             });
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         getName().then(setName);
