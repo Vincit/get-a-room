@@ -2,7 +2,7 @@ import { Building } from '../types';
 import axios from './axiosConfigurer';
 import { getDistanceFromLatLonInKm } from './gpsService';
 
-export const getBuildings = async (): Promise<Building[]> => {
+export const getBuildingsWithPosition = async (): Promise<Building[]> => {
     const response = await axios.get('/buildings');
     const buildings = response.data.buildings;
     if (navigator.geolocation) {
@@ -33,4 +33,9 @@ export const getBuildings = async (): Promise<Building[]> => {
     } else {
         return buildings;
     }
+};
+
+export const getBuildings = async (): Promise<Building[]> => {
+    const response = await axios.get('/buildings');
+    return response.data.buildings;
 };

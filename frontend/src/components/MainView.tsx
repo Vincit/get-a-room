@@ -1,25 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import BookingView from './BookingView';
 import ChooseOfficeView from './ChooseOfficeView';
 import { Building, Preferences } from '../types';
-import { getPreferences } from '../services/preferencesService';
-import { getBuildings } from '../services/buildingService';
-import PreferencesLoader from './PreferencesLoader';
+import {
+    getPreferences,
+    getPreferencesWithGPS
+} from '../services/preferencesService';
+import {
+    getBuildings,
+    getBuildingsWithPosition
+} from '../services/buildingService';
 import { Box } from '@mui/material';
 import NavBar from './NavBar';
 import { getName } from '../services/nameService';
+import { useHistory } from 'react-router-dom';
+import useCreateNotification from '../hooks/useCreateNotification';
 
 const MainView = () => {
     const [preferences, setPreferences] = useState<Preferences | undefined>();
 
     const [buildings, setBuildings] = useState<Building[]>([]);
 
-    const [name, setName] = React.useState<String>();
+    const [name, setName] = useState<String>();
+
+    const history = useHistory();
+
+    const { createSuccessNotification, createErrorNotification } =
+        useCreateNotification();
 
     useEffect(() => {
         getBuildings()
+            .then(setBuildings)
+            .catch((e) => console.log(e));
+    }, []);
+
+    useEffect(() => {
+        getBuildingsWithPosition()
             .then(setBuildings)
             .catch((e) => console.log(e));
     }, []);
@@ -33,9 +51,33 @@ const MainView = () => {
             });
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
+        getPreferencesWithGPS()
+            .then((preference) => {
+                setPreferences(preference);
+                createSuccessNotification('Office set according to GPS');
+            })
+            .catch((e) => {
+                // Redirected to login
+                console.log(e);
+            });
+    }, []);
+
+    useEffect(() => {
         getName().then(setName);
     }, []);
+
+    const goToMainView = useCallback(() => {
+        // Use replace in place of push because it's a temporary page and wouln't work if navigated back to
+        history.replace('/');
+    }, [history]);
+
+    useEffect(() => {
+        if (preferences?.building?.id) {
+            // Preferences already set
+            goToMainView();
+        }
+    }, [preferences, goToMainView]);
 
     return (
         <Box
@@ -57,13 +99,6 @@ const MainView = () => {
                             name={name}
                         />
                     </Route>
-                    {/*                     <Route path="/auth/success">
-                        <PreferencesLoader
-                            preferences={preferences}
-                            setPreferences={setPreferences}
-                            buildings={buildings}
-                        />
-                    </Route> */}
                     <Route path="/">
                         <BookingView preferences={preferences} />
                     </Route>
