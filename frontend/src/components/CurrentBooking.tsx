@@ -20,6 +20,7 @@ import {
 } from '../services/bookingService';
 import TimeLeft, { getTimeLeft } from './util/TimeLeft';
 import useCreateNotification from '../hooks/useCreateNotification';
+import RoomCard from './RoomCard';
 
 function getBookingRoomName(booking: Booking) {
     return booking.room.name;
@@ -188,235 +189,20 @@ const CurrentBooking = (props: CurrentBookingProps) => {
             </Typography>
             <List>
                 {bookings.map((booking) => (
-                    <Card
-                        data-testid="CurrentBookingCard"
-                        className="CurrentBookingCardClass"
-                        key={booking.id}
-                        sx={{
-                            background:
-                                'linear-gradient(to right bottom, #c9c9c9, #969696)',
-                            backgroundColor: '#c9c9c9',
-                            border: 'success',
-                            borderRadius: 3,
-                            boxShadow: '5px 5px #bcbcbc',
-                            m: 2
-                        }}
-                    >
-                        <CardContent
-                            style={{
-                                justifyContent: 'space-between',
-                                display: 'flex',
-                                textAlign: 'left'
+                    <li key={booking.id}>
+                        <RoomCard
+                            room={booking.room}
+                            booking={booking}
+                            onClick={function (room: Room): void {
+                                throw new Error('Function not implemented.');
                             }}
-                        >
-                            <Box display="flex" flexDirection="column">
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'left',
-                                        alignItems: 'center',
-                                        pt: 0.9
-                                    }}
-                                >
-                                    <Group sx={{ pb: 0.3 }} />
-                                    <Typography
-                                        sx={{
-                                            fontSize: '18px',
-                                            fontWeight: 'bold'
-                                        }}
-                                    >
-                                        {getCapacity(booking)}
-                                    </Typography>
-                                    <Typography
-                                        data-testid="BookingRoomTitle"
-                                        sx={{
-                                            fontSize: '18px',
-                                            fontWeight: 'bold',
-                                            ml: 1
-                                        }}
-                                    >
-                                        {getBookingRoomName(booking)}
-                                    </Typography>
-                                </Box>
-                                <Box>
-                                    <TimeLeft
-                                        endTime={getEndTime(booking)}
-                                        timeLeftText="Time left:"
-                                    />
-                                </Box>
-                                <Box>
-                                    {getNextCalendarEvent(booking) !== '-1' ? (
-                                        <TimeLeft
-                                            endTime={getNextCalendarEvent(
-                                                booking
-                                            )}
-                                            timeLeftText="Available for: "
-                                        />
-                                    ) : (
-                                        <Typography>Available for:</Typography>
-                                    )}
-                                </Box>
-                                {bookingProcessing === booking.id ? (
-                                    <Box
-                                        display="flex"
-                                        justifyContent="center"
-                                        mt={3}
-                                    >
-                                        <CircularProgress color="primary" />
-                                    </Box>
-                                ) : null}
-                            </Box>
-                            <Box flexDirection="column">
-                                {isNaN(getBookingTimeLeft(booking)) ||
-                                getBookingTimeLeft(booking) > 15 ? (
-                                    <Box
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'flex-end',
-                                            alignItems: 'right'
-                                        }}
-                                    >
-                                        <CardActions disableSpacing>
-                                            <Button
-                                                id="extraTime-button"
-                                                data-testid="ExtraTimeButton"
-                                                style={{
-                                                    backgroundColor: '#282c34',
-                                                    textTransform: 'none',
-                                                    color: 'white',
-                                                    fontSize: '16px',
-                                                    animation:
-                                                        'ripple 600ms linear',
-                                                    minWidth: '130px',
-                                                    minHeight: '50px',
-                                                    maxWidth: '130px',
-                                                    maxHeight: '50px'
-                                                }}
-                                                onClick={() =>
-                                                    handleAddExtraTime(
-                                                        booking,
-                                                        15
-                                                    )
-                                                }
-                                            >
-                                                +15 min
-                                            </Button>
-                                        </CardActions>
-                                    </Box>
-                                ) : null}
-                                <Box
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'flex-end',
-                                        alignItems: 'right'
-                                    }}
-                                >
-                                    <CardActions disableSpacing>
-                                        <Button
-                                            id="delete-button"
-                                            data-testid="DeleteButton"
-                                            style={{
-                                                backgroundColor: '#282c34',
-                                                textTransform: 'none',
-                                                color: 'white',
-                                                fontSize: '16px',
-                                                animation:
-                                                    'ripple 600ms linear',
-                                                minWidth: '130px',
-                                                minHeight: '50px',
-                                                maxWidth: '130px',
-                                                maxHeight: '50px'
-                                            }}
-                                            onClick={() =>
-                                                handleDeleteBooking(booking)
-                                            }
-                                        >
-                                            Delete
-                                        </Button>
-                                    </CardActions>
-                                </Box>
-                                <Box
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'flex-end',
-                                        alignItems: 'right'
-                                    }}
-                                >
-                                    <CardActions disableSpacing>
-                                        <Button
-                                            id="end-button"
-                                            data-testid="EndButton"
-                                            style={{
-                                                backgroundColor: '#443938',
-                                                textTransform: 'none',
-                                                color: '#F6F5F5',
-                                                fontSize: '16px',
-                                                animation:
-                                                    'ripple 600ms linear',
-                                                minWidth: '130px',
-                                                minHeight: '50px',
-                                                maxWidth: '130px',
-                                                maxHeight: '50px',
-                                                borderRadius: '50px'
-                                            }}
-                                            onClick={() =>
-                                                handleEndBooking(booking)
-                                            }
-                                        >
-                                            End booking
-                                        </Button>
-                                    </CardActions>
-                                </Box>
-                            </Box>
-                        </CardContent>
-                        {getFeatures(booking).length > 0 ? (
-                            <CardContent
-                                style={{
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'column',
-                                    display: 'flex',
-                                    textAlign: 'center'
-                                }}
-                            >
-                                <Box
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        maxHeight: '10px'
-                                    }}
-                                >
-                                    <CardActions disableSpacing>
-                                        <IconButton
-                                            data-testid="ExpansionButton"
-                                            onClick={() =>
-                                                handleFeaturesCollapse(booking)
-                                            }
-                                            aria-label="Expand"
-                                        >
-                                            {expandedFeatures === booking.id ? (
-                                                <ExpandLess />
-                                            ) : (
-                                                <ExpandMore />
-                                            )}
-                                        </IconButton>
-                                    </CardActions>
-                                </Box>
-                                <Collapse
-                                    in={expandedFeatures === booking.id}
-                                    timeout="auto"
-                                    unmountOnExit
-                                >
-                                    <Box mt={2}>
-                                        <Typography
-                                            style={{ fontSize: '16px' }}
-                                        >
-                                            {getFeatures(booking)}
-                                        </Typography>
-                                    </Box>
-                                </Collapse>
-                            </CardContent>
-                        ) : null}
-                    </Card>
+                            bookingLoading={'false'}
+                            disableBooking={false}
+                            isSelected={false}
+                            isReserved={true}
+                            expandFeatures={true}
+                        />
+                    </li>
                 ))}
             </List>
         </div>
