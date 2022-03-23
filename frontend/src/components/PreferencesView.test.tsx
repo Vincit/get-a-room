@@ -87,7 +87,7 @@ describe('ChooseOfficeView', () => {
         expect(screen.queryByText('notFound')).not.toBeTruthy();
     });
 
-    it('updates preferences when clicking confirm', async () => {
+    it('updates preferences when clicking an office', async () => {
         const mockedSetPreferences = jest.fn();
         (updatePreferences as jest.Mock).mockResolvedValueOnce({
             building: TEST_BUILDINGS[1]
@@ -101,10 +101,7 @@ describe('ChooseOfficeView', () => {
             />
         );
 
-        fireEvent.mouseDown(screen.getByLabelText('Office location'));
         fireEvent.click(screen.getByText(TEST_BUILDINGS[1].name));
-
-        fireEvent.click(screen.getByText('Save'));
 
         expect(updatePreferences as jest.Mock).toHaveBeenCalledWith({
             building: TEST_BUILDINGS[1]
