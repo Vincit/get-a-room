@@ -30,7 +30,7 @@ const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
         getBuildingsWithPosition()
             .then(setBuildings)
             .catch((e) => console.log(e));
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     // If current building found, show it in building select
     useEffect(() => {
