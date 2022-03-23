@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import BookingView from './BookingView';
@@ -30,18 +30,6 @@ const MainView = () => {
     const { createSuccessNotification } = useCreateNotification();
 
     useEffect(() => {
-        getBuildings()
-            .then(setBuildings)
-            .catch((e) => console.log(e));
-    }, []);
-
-    useEffect(() => {
-        getBuildingsWithPosition()
-            .then(setBuildings)
-            .catch((e) => console.log(e));
-    }, []);
-
-    useEffect(() => {
         getPreferences()
             .then(setPreferences)
             .catch((e) => {
@@ -61,6 +49,18 @@ const MainView = () => {
                 console.log(e);
             });
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        getBuildings()
+            .then(setBuildings)
+            .catch((e) => console.log(e));
+    }, []);
+
+    useEffect(() => {
+        getBuildingsWithPosition()
+            .then(setBuildings)
+            .catch((e) => console.log(e));
+    }, []);
 
     useEffect(() => {
         getName().then(setName);
@@ -96,6 +96,7 @@ const MainView = () => {
                             setPreferences={setPreferences}
                             buildings={buildings}
                             name={name}
+                            setBuildings={setBuildings}
                         />
                     </Route>
                     <Route path="/">
