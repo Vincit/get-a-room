@@ -8,6 +8,7 @@ import { Room, Booking, Preferences } from '../types';
 import CurrentBooking from './CurrentBooking';
 import AvailableRoomList from './AvailableRoomList';
 import CenteredProgress from './util/CenteredProgress';
+import DurationPicker from './DurationPicker';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -30,6 +31,7 @@ function BookingView(props: BookingViewProps) {
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [bookings, setBookings] = useState<Booking[]>([]);
+    const [bookingDuration, setBookingDuration] = useState(15);
 
     const updateRooms = useCallback(() => {
         if (preferences) {
@@ -39,6 +41,10 @@ function BookingView(props: BookingViewProps) {
                 .catch((error) => console.log(error));
         }
     }, [preferences]);
+
+    const handleDurationChange = (newDuration: number) => {
+        setBookingDuration(newDuration);
+    };
 
     const updateBookings = useCallback(() => {
         getBookings()
@@ -72,7 +78,7 @@ function BookingView(props: BookingViewProps) {
     }, [updateData]);
 
     return (
-        <div id="booking-view">
+        <Box id="current booking" textAlign="center" p={'16px'}>
             <Typography py={2} variant="h4" textAlign="center">
                 Available rooms
             </Typography>
@@ -100,6 +106,8 @@ function BookingView(props: BookingViewProps) {
                 </Box>
             ) : null}
 
+            <DurationPicker onChange={handleDurationChange} title="duration" />
+
             <CurrentBooking
                 bookings={bookings}
                 updateRooms={updateRooms}
@@ -111,12 +119,13 @@ function BookingView(props: BookingViewProps) {
                 <CenteredProgress />
             ) : (
                 <AvailableRoomList
+                    bookingDuration={bookingDuration}
                     rooms={rooms}
                     bookings={bookings}
                     updateData={updateData}
                 />
             )}
-        </div>
+        </Box>
     );
 }
 
