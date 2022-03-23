@@ -28,7 +28,7 @@ function getTimeAvailable(room: Room | undefined) {
  * @param minutes
  * @returns Example "1 h 15 min"
  */
-function minutesToSimpleString(minutes: number) {
+export function minutesToSimpleString(minutes: number) {
     const hours = Math.floor(minutes / 60);
     const min = minutes % 60;
     if (hours === 0) {

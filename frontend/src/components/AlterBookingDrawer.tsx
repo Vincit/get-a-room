@@ -7,6 +7,7 @@ import { DateTime } from 'luxon';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import { Booking, Room } from '../types';
 import { getTimeLeft } from './util/TimeLeft';
+import { minutesToSimpleString } from './BookingDrawer';
 
 const MIN_DURATION = 15;
 
@@ -22,22 +23,12 @@ function getTimeAvailable(room: Room | undefined) {
     return room === undefined ? '' : getTimeLeft(getNextCalendarEvent(room));
 }
 
-/**
- * Returns minutes as hours and minutes string.
- *
- * @param minutes
- * @returns Example "1 h 15 min"
- */
-function minutesToSimpleString(minutes: number) {
-    const hours = Math.floor(minutes / 60);
-    const min = minutes % 60;
-    if (hours === 0) {
-        return min + ' min';
+function getSimpleEndTime(booking: Booking | undefined) {
+    if (booking === undefined) {
+        return;
     }
-    if (min === 0) {
-        return hours + ' h';
-    }
-    return hours + ' h ' + min + ' min';
+    let time = DateTime.fromISO(booking.endTime).toUTC();
+    return time.toLocaleString(DateTime.TIME_24_SIMPLE);
 }
 
 const Row = styled(Box)(({ theme }) => ({
@@ -128,12 +119,11 @@ const Spacer = styled('div')(() => ({
 interface Props {
     open: boolean;
     toggle: (open: boolean) => void;
-    endBooking: () => void;
+    endBooking: (booking: Booking) => void;
     duration: number;
-    additionalDuration: number;
-    onAlterTime: (minutes: number) => void;
+    onAlterTime: (booking: Booking, minutes: number) => void;
     availableMinutes: number;
-    booking: Booking;
+    booking?: Booking;
 }
 
 const AlterBookingDrawer = (props: Props) => {
@@ -143,13 +133,15 @@ const AlterBookingDrawer = (props: Props) => {
         endBooking,
         booking,
         duration,
-        additionalDuration,
         onAlterTime,
         availableMinutes
     } = props;
 
     const handleAdditionalTime = (minutes: number) => {
-        onAlterTime(minutes);
+        if (booking === undefined) {
+            return;
+        }
+        onAlterTime(booking, minutes);
     };
 
     const disableSubtractTime = () => {
@@ -157,12 +149,21 @@ const AlterBookingDrawer = (props: Props) => {
     };
 
     const disableAddTime = () => {
-        return true;
+        return availableMinutes < 15;
+    };
+
+    const handleEndBooking = () => {
+        if (booking === undefined) {
+            return;
+        }
+        endBooking(booking);
     };
 
     return (
         <SwipeableEdgeDrawer
-            headerTitle={getName(booking.room)}
+            headerTitle={getName(
+                booking === undefined ? undefined : booking.room
+            )}
             iconLeft={'AccessTime'}
             iconRight={'Close'}
             isOpen={open}
@@ -171,16 +172,18 @@ const AlterBookingDrawer = (props: Props) => {
         >
             <DrawerContent>
                 <RowCentered>
-                    <TimeTextBoldGreen>{15} min remaning</TimeTextBoldGreen>
+                    <TimeTextBoldGreen>
+                        {duration} min remaning
+                    </TimeTextBoldGreen>
                 </RowCentered>
                 <RowCentered>
                     <AvailableTextGreen>
-                        Room booked for you untill xx:xx
+                        Room booked for you untill {getSimpleEndTime(booking)}
                     </AvailableTextGreen>
                 </RowCentered>
                 <RowCentered>
                     <AvailableText>
-                        Available for {getTimeAvailable(booking.room)}
+                        Available for {minutesToSimpleString(availableMinutes)}
                     </AvailableText>
                 </RowCentered>
 
@@ -224,7 +227,7 @@ const AlterBookingDrawer = (props: Props) => {
                     <DrawerButtonPrimary
                         aria-label="End booking"
                         data-testid="EndBookingButton"
-                        onClick={endBooking}
+                        onClick={handleEndBooking}
                     >
                         End Booking
                     </DrawerButtonPrimary>

@@ -73,12 +73,6 @@ function BookingView(props: BookingViewProps) {
 
     return (
         <div id="booking-view">
-            <CurrentBooking
-                bookings={bookings}
-                updateRooms={updateRooms}
-                updateBookings={updateBookings}
-                setBookings={setBookings}
-            />
             <Typography py={2} variant="h4" textAlign="center">
                 Available rooms
             </Typography>
@@ -105,6 +99,14 @@ function BookingView(props: BookingViewProps) {
                     </Typography>
                 </Box>
             ) : null}
+
+            <CurrentBooking
+                bookings={bookings}
+                updateRooms={updateRooms}
+                updateBookings={updateBookings}
+                setBookings={setBookings}
+            />
+
             {!areRoomsFetched(rooms) ? (
                 <CenteredProgress />
             ) : (

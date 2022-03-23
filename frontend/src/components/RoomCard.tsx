@@ -9,7 +9,7 @@ import Group from '@mui/icons-material/People';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { CardActionArea, CircularProgress, styled } from '@mui/material';
-import { getTimeLeft } from './util/TimeLeft';
+import { getTimeLeft, getTimeLeftMinutes } from './util/TimeLeft';
 
 function getName(room: Room) {
     return room.name;
@@ -37,6 +37,23 @@ function getFeatures(room: Room) {
         }
     }
     return featuresDisplay;
+}
+
+export function getBookingTimeLeft(booking: Booking | undefined) {
+    if (booking === undefined) {
+        return 0;
+    }
+    return Math.floor(getTimeLeftMinutes(booking.endTime));
+}
+
+export function getTimeAvailableMinutes(booking: Booking | undefined) {
+    if (booking === undefined) {
+        return 0;
+    }
+    let timeLeft = getTimeLeftMinutes(booking.endTime);
+    let availableFor = getTimeLeftMinutes(getNextCalendarEvent(booking.room));
+
+    return Math.ceil(availableFor - timeLeft);
 }
 
 const GridContainer = styled(Box)(({ theme }) => ({
@@ -84,7 +101,7 @@ const selectedVars = {
 type RoomCardProps = {
     room: Room;
     booking?: Booking;
-    onClick: (room: Room) => void;
+    onClick: (room: Room, booking?: Booking) => void;
     bookingLoading: string;
     disableBooking: boolean;
     isReserved?: boolean;
@@ -95,6 +112,7 @@ type RoomCardProps = {
 const RoomCard = (props: RoomCardProps) => {
     const {
         room,
+        booking,
         onClick,
         bookingLoading,
         disableBooking,
@@ -107,7 +125,7 @@ const RoomCard = (props: RoomCardProps) => {
         if (disableBooking) {
             return;
         }
-        onClick(room);
+        onClick(room, booking);
     };
 
     return (
@@ -141,8 +159,8 @@ const RoomCard = (props: RoomCardProps) => {
                                 color="success.main"
                                 margin={'0 0 0 5px'}
                             >
-                                Booked to you for{' '}
-                                {getTimeLeft(getNextCalendarEvent(room))}
+                                Booked to you for {getBookingTimeLeft(booking)}{' '}
+                                minutes.
                             </Typography>
                         </StartBox>
                     ) : null}

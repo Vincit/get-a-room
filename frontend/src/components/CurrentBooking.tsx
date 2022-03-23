@@ -18,50 +18,14 @@ import {
     deleteBooking,
     endBooking
 } from '../services/bookingService';
-import TimeLeft, { getTimeLeft } from './util/TimeLeft';
+import TimeLeft, { getTimeLeftMinutes } from './util/TimeLeft';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
+import AlterBookingDrawer from './AlterBookingDrawer';
+import { getTimeAvailableMinutes } from './RoomCard';
 
 function getBookingRoomName(booking: Booking) {
     return booking.room.name;
-}
-
-function getEndTime(booking: Booking) {
-    return booking.endTime;
-}
-
-function convertH2M(time: string) {
-    time = time.replace(' h ', ':');
-    let timeParts = time.split(':');
-    return Number(timeParts[0]) * 60 + Number(timeParts[1]);
-}
-
-function getBookingTimeLeft(booking: Booking) {
-    let timeLeft = getTimeLeft(getEndTime(booking));
-    let availableFor = getTimeLeft(getNextCalendarEvent(booking.room));
-
-    // Slice min string away
-    timeLeft = timeLeft.slice(0, -3);
-    availableFor = availableFor.slice(0, -3);
-
-    let timeLeftMin: number;
-    let availableForMin: number;
-
-    // Convert to h:mm or mm
-    if (timeLeft.includes(' h ')) {
-        timeLeftMin = convertH2M(timeLeft);
-    } else {
-        timeLeftMin = +timeLeft;
-    }
-
-    // Convert to h:mm or mm
-    if (availableFor.includes(' h ')) {
-        availableForMin = convertH2M(availableFor);
-    } else {
-        availableForMin = +availableFor;
-    }
-
-    return availableForMin - timeLeftMin;
 }
 
 function getNextCalendarEvent(room: Room) {
@@ -93,6 +57,13 @@ function getFeatures(booking: Booking) {
     return featuresDisplay;
 }
 
+function getBookingTimeLeft(booking: Booking | undefined) {
+    if (booking === undefined) {
+        return 0;
+    }
+    return Math.floor(getTimeLeftMinutes(booking.endTime));
+}
+
 type CurrentBookingProps = {
     bookings: Booking[];
     setBookings: (bookings: Booking[]) => void;
@@ -108,11 +79,24 @@ const CurrentBooking = (props: CurrentBookingProps) => {
 
     const [expandedFeatures, setExpandedFeatures] = useState('false');
     const [bookingProcessing, setBookingProcessing] = useState('false');
+    const [selectedBooking, setSelectedBooking] = useState<Booking | undefined>(
+        undefined
+    );
+    const [isOpenDrawer, setIsOpenDrawer] = useState(false);
 
     const handleFeaturesCollapse = (booking: Booking) => {
         setExpandedFeatures(
             expandedFeatures === booking.id ? 'false' : booking.id
         );
+    };
+
+    const toggleDrawer = (open: boolean) => {
+        setIsOpenDrawer(open);
+    };
+
+    const handleCardClick = (room: Room, booking?: Booking) => {
+        setSelectedBooking(booking);
+        toggleDrawer(true);
     };
 
     // Get the next booking time in the reserved room
@@ -126,7 +110,8 @@ const CurrentBooking = (props: CurrentBookingProps) => {
             timeToAdd: minutes
         };
 
-        setBookingProcessing(booking.id);
+        setBookingProcessing(booking.room.id);
+        setIsOpenDrawer(false);
 
         updateBooking(addTimeDetails, booking.id)
             .then((updatedBooking) => {
@@ -162,7 +147,8 @@ const CurrentBooking = (props: CurrentBookingProps) => {
 
     // End booking by changing the endtime to now
     const handleEndBooking = (booking: Booking) => {
-        setBookingProcessing(booking.id);
+        setBookingProcessing(booking.room.id);
+        setIsOpenDrawer(false);
 
         endBooking(booking.id)
             .then((endBooking) => {
@@ -184,8 +170,18 @@ const CurrentBooking = (props: CurrentBookingProps) => {
 
     return (
         <div id="current-booking">
-            <Typography py={2} textAlign="center" variant="h4">
-                Your Booking
+            <AlterBookingDrawer
+                open={isOpenDrawer}
+                toggle={toggleDrawer}
+                duration={getBookingTimeLeft(selectedBooking)}
+                onAlterTime={handleAddExtraTime}
+                availableMinutes={getTimeAvailableMinutes(selectedBooking)}
+                booking={selectedBooking}
+                endBooking={handleEndBooking}
+            />
+
+            <Typography variant="subtitle1" textAlign="left">
+                booked to you
             </Typography>
             <List>
                 {bookings.map((booking) => (
@@ -193,10 +189,8 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                         <RoomCard
                             room={booking.room}
                             booking={booking}
-                            onClick={function (room: Room): void {
-                                throw new Error('Function not implemented.');
-                            }}
-                            bookingLoading={'false'}
+                            onClick={handleCardClick}
+                            bookingLoading={bookingProcessing}
                             disableBooking={false}
                             isSelected={false}
                             isReserved={true}
