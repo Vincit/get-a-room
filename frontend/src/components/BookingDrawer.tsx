@@ -207,10 +207,11 @@ const BookingDrawer = (props: Props) => {
 
     const disableNextHalfHour = () => {
         let currentTime = DateTime.now().toObject();
-        return (
-            currentTime.minute >= 30 ||
-            30 - currentTime.minute > availableMinutes
-        );
+        if (currentTime.minute >= 30) {
+            return 60 - (currentTime.minute - 30) > availableMinutes;
+        } else {
+            return 30 - currentTime.minute > availableMinutes;
+        }
     };
 
     const disableNextFullHour = () => {
@@ -220,7 +221,11 @@ const BookingDrawer = (props: Props) => {
 
     const updateHalfHour = () => {
         let halfHour = DateTime.now().toObject();
+        if (halfHour.minute >= 30) {
+            halfHour.hour = halfHour.hour + 1;
+        }
         halfHour.minute = 30;
+
         let halfHourString =
             halfHour.hour.toString() + ':' + halfHour.minute.toString();
         setNextHalfHour(halfHourString);

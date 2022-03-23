@@ -65,6 +65,9 @@ const AvailableRoomList = (props: BookingListProps) => {
 
     const handleUntilHalf = () => {
         let halfTime = DateTime.now().toObject();
+        if (halfTime.minute >= 30) {
+            halfTime.hour = halfTime.hour + 1;
+        }
         halfTime.minute = 30;
         halfTime.second = 0;
         halfTime.millisecond = 0;
