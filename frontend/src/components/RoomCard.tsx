@@ -98,6 +98,10 @@ const selectedVars = {
     '--border': '1px solid #443938'
 } as React.CSSProperties;
 
+const selectedReservedVars = {
+    '--border': '2px solid #219653'
+} as React.CSSProperties;
+
 type RoomCardProps = {
     room: Room;
     booking?: Booking;
@@ -128,11 +132,19 @@ const RoomCard = (props: RoomCardProps) => {
         onClick(room, booking);
     };
 
+    const cardStyle = () => {
+        if (isSelected && isReserved) {
+            return selectedReservedVars;
+        }
+        if (isSelected) {
+            return selectedVars;
+        }
+
+        return defaultVars;
+    };
+
     return (
-        <CustomCard
-            data-testid="AvailableRoomListCard"
-            style={isSelected ? selectedVars : defaultVars}
-        >
+        <CustomCard data-testid="AvailableRoomListCard" style={cardStyle()}>
             <CardActionArea data-testid="CardActiveArea" onClick={handleClick}>
                 <GridContainer>
                     <Row>
@@ -166,10 +178,17 @@ const RoomCard = (props: RoomCardProps) => {
                     ) : null}
 
                     <Row>
-                        <TimeLeft
-                            timeLeftText="Available for "
-                            endTime={getNextCalendarEvent(room)}
-                        />
+                        {isReserved ? (
+                            <TimeLeft
+                                timeLeftText="Available for another"
+                                endTime={getNextCalendarEvent(room)}
+                            />
+                        ) : (
+                            <TimeLeft
+                                timeLeftText="Available for "
+                                endTime={getNextCalendarEvent(room)}
+                            />
+                        )}
                         {bookingLoading === room.id ? (
                             <CircularProgress color="primary" />
                         ) : null}

@@ -189,7 +189,7 @@ const BookingDrawer = (props: Props) => {
                 </RowCentered>
                 <RowCentered>
                     <AvailableText>
-                        Available for {getTimeAvailable(room)}
+                        Maximum {getTimeAvailable(room)} available
                     </AvailableText>
                 </RowCentered>
                 <Row>

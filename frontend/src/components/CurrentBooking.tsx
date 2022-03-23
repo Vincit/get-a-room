@@ -78,6 +78,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         useCreateNotification();
 
     const [expandedFeatures, setExpandedFeatures] = useState('false');
+    const [selectedId, setSelectedId] = useState('false');
     const [bookingProcessing, setBookingProcessing] = useState('false');
     const [selectedBooking, setSelectedBooking] = useState<Booking | undefined>(
         undefined
@@ -91,11 +92,15 @@ const CurrentBooking = (props: CurrentBookingProps) => {
     };
 
     const toggleDrawer = (open: boolean) => {
+        if (open === false) {
+            setSelectedId('false');
+        }
         setIsOpenDrawer(open);
     };
 
     const handleCardClick = (room: Room, booking?: Booking) => {
         setSelectedBooking(booking);
+        setSelectedId(room.id);
         toggleDrawer(true);
     };
 
@@ -111,7 +116,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         };
 
         setBookingProcessing(booking.room.id);
-        setIsOpenDrawer(false);
+        toggleDrawer(false);
 
         updateBooking(addTimeDetails, booking.id)
             .then((updatedBooking) => {
@@ -148,7 +153,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
     // End booking by changing the endtime to now
     const handleEndBooking = (booking: Booking) => {
         setBookingProcessing(booking.room.id);
-        setIsOpenDrawer(false);
+        toggleDrawer(false);
 
         endBooking(booking.id)
             .then((endBooking) => {
@@ -169,7 +174,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
     }
 
     return (
-        <div id="current-booking">
+        <Box id="current booking" marginTop={'24px'}>
             <AlterBookingDrawer
                 open={isOpenDrawer}
                 toggle={toggleDrawer}
@@ -192,14 +197,14 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                             onClick={handleCardClick}
                             bookingLoading={bookingProcessing}
                             disableBooking={false}
-                            isSelected={false}
+                            isSelected={booking.room.id === selectedId}
                             isReserved={true}
                             expandFeatures={true}
                         />
                     </li>
                 ))}
             </List>
-        </div>
+        </Box>
     );
 };
 

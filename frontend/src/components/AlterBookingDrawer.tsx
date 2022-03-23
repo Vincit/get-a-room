@@ -183,7 +183,7 @@ const AlterBookingDrawer = (props: Props) => {
                 </RowCentered>
                 <RowCentered>
                     <AvailableText>
-                        Available for {minutesToSimpleString(availableMinutes)}
+                        {minutesToSimpleString(availableMinutes)} more available
                     </AvailableText>
                 </RowCentered>
 

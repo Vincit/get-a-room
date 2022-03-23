@@ -19,12 +19,6 @@ export const getTimeLeft = (endTime: string) => {
         nextReservationTime.diffNow(['hours', 'minutes']).toObject()
     );
 
-    // If nextReservationTime equals to end of the day, then that means that the
-    // room has no current reservations for that day and is free all day.
-    if (nextReservationTime.equals(endOfDay) || duration.hours >= 24) {
-        return 'All day';
-    }
-
     if (duration.hours === 0 && duration.minutes < 1) {
         return '< 1 min';
     }
