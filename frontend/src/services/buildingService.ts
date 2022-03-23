@@ -21,7 +21,7 @@ export const getBuildingsWithPosition = async (): Promise<Building[]> => {
                 resolve(buildings);
             }
             function error(err: any) {
-                resolve(buildings);
+                reject(err);
             }
             var options = {
                 enableHighAccuracy: true,

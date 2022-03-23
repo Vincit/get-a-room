@@ -30,7 +30,7 @@ export const getPreferencesWithGPS = async () => {
                 }
                 result.data.building.id = currentClosestBuilding.id;
                 result.data.building.name = currentClosestBuilding.name;
-                return resolve(result.data);
+                resolve(result.data);
             }
             function error(err: any) {
                 reject('GPS not available');
