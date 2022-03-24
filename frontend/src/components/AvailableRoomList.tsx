@@ -4,7 +4,6 @@ import { makeBooking } from '../services/bookingService';
 import { Booking, BookingDetails, Room } from '../types';
 import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
-import DurationPicker from './DurationPicker';
 import RoomCard from './RoomCard';
 import BookingDrawer from './BookingDrawer';
 
