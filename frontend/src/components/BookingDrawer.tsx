@@ -36,7 +36,7 @@ function getTimeAvailableMinutes(room: Room | undefined): number {
  * @param minutes
  * @returns Example "1 h 15 min"
  */
-function minutesToSimpleString(minutes: number) {
+export function minutesToSimpleString(minutes: number) {
     const hours = Math.floor(minutes / 60);
     const min = minutes % 60;
     if (hours === 0) {
@@ -65,7 +65,7 @@ function getBookingRangeText(minutes: number) {
     );
 }
 
-const Row = styled(Box)(({ theme }) => ({
+export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -73,7 +73,7 @@ const Row = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
-const RowCentered = styled(Box)(({ theme }) => ({
+export const RowCentered = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -82,7 +82,7 @@ const RowCentered = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
-const DrawerButton = styled(Button)(({ theme }) => ({
+export const DrawerButton = styled(Button)(({ theme }) => ({
     textTransform: 'none',
     fontSize: '16px',
     display: 'flex',
@@ -93,7 +93,7 @@ const DrawerButton = styled(Button)(({ theme }) => ({
     margin: '8px 0px'
 }));
 
-const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
+export const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
     color: theme.palette.background.default,
     background: theme.palette.text.primary,
     '&.Mui-disabled': {
@@ -105,7 +105,7 @@ const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
     }
 }));
 
-const DrawerButtonSecondary = styled(DrawerButton)(({ theme }) => ({
+export const DrawerButtonSecondary = styled(DrawerButton)(({ theme }) => ({
     color: theme.palette.text.primary,
     border: '1px solid',
     borderColor: theme.palette.text.primary,
@@ -115,21 +115,21 @@ const DrawerButtonSecondary = styled(DrawerButton)(({ theme }) => ({
     }
 }));
 
-const TimeText = styled(Typography)(() => ({
+export const TimeText = styled(Typography)(() => ({
     fontSize: '24px',
     padding: '8px'
 }));
 
-const TimeTextBold = styled(TimeText)(() => ({
+export const TimeTextBold = styled(TimeText)(() => ({
     fontWeight: 'bold'
 }));
 
-const AvailableText = styled(Typography)(() => ({
+export const AvailableText = styled(Typography)(() => ({
     fontSize: '16px',
     color: '#82716F'
 }));
 
-const SmallText = styled(Typography)(() => ({
+export const SmallText = styled(Typography)(() => ({
     textTransform: 'uppercase',
     fontSize: '12px',
     lineHeight: '12px',
@@ -138,7 +138,7 @@ const SmallText = styled(Typography)(() => ({
     margin: '24px 8px 0 0'
 }));
 
-const Spacer = styled('div')(() => ({
+export const Spacer = styled('div')(() => ({
     padding: '8px'
 }));
 
@@ -154,7 +154,6 @@ interface Props {
     onAddTimeUntilNext: (minutes: number) => void;
     availableMinutes: number;
     room?: Room;
-    handleDurationChange: (duration: number) => void;
 }
 
 const BookingDrawer = (props: Props) => {
@@ -260,7 +259,7 @@ const BookingDrawer = (props: Props) => {
                 </RowCentered>
                 <RowCentered>
                     <AvailableText>
-                        Available for {getTimeAvailable(room)}
+                        Maximum {getTimeAvailable(room)} available
                     </AvailableText>
                 </RowCentered>
                 <Row>

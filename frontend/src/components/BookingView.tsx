@@ -8,6 +8,7 @@ import { Room, Booking, Preferences } from '../types';
 import CurrentBooking from './CurrentBooking';
 import AvailableRoomList from './AvailableRoomList';
 import CenteredProgress from './util/CenteredProgress';
+import DurationPicker from './DurationPicker';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
@@ -33,6 +34,7 @@ function BookingView(props: BookingViewProps) {
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [bookings, setBookings] = useState<Booking[]>([]);
+    const [bookingDuration, setBookingDuration] = useState(15);
 
     const updateRooms = useCallback(() => {
         if (preferences) {
@@ -42,6 +44,10 @@ function BookingView(props: BookingViewProps) {
                 .catch((error) => console.log(error));
         }
     }, [preferences]);
+
+    const handleDurationChange = (newDuration: number) => {
+        setBookingDuration(newDuration);
+    };
 
     const updateBookings = useCallback(() => {
         getBookings()
@@ -81,7 +87,7 @@ function BookingView(props: BookingViewProps) {
     }, [updateData]);
 
     return (
-        <div id="booking-view">
+        <Box id="current booking" textAlign="center" p={'16px'}>
             <Typography
                 onClick={moveToChooseOfficePage}
                 textAlign="left"
@@ -94,13 +100,6 @@ function BookingView(props: BookingViewProps) {
                 <ArrowBackIcon style={{ fontSize: 'small' }}></ArrowBackIcon>
                 {preferences?.building ? preferences.building.name : 'Back'}
             </Typography>
-
-            <CurrentBooking
-                bookings={bookings}
-                updateRooms={updateRooms}
-                updateBookings={updateBookings}
-                setBookings={setBookings}
-            />
             <Typography py={2} variant="h2" textAlign="center">
                 Available rooms
             </Typography>
@@ -128,16 +127,27 @@ function BookingView(props: BookingViewProps) {
                     </Typography>
                 </Box>
             ) : null}
+
+            <DurationPicker onChange={handleDurationChange} title="duration" />
+
+            <CurrentBooking
+                bookings={bookings}
+                updateRooms={updateRooms}
+                updateBookings={updateBookings}
+                setBookings={setBookings}
+            />
+
             {!areRoomsFetched(rooms) ? (
                 <CenteredProgress />
             ) : (
                 <AvailableRoomList
+                    bookingDuration={bookingDuration}
                     rooms={rooms}
                     bookings={bookings}
                     updateData={updateData}
                 />
             )}
-        </div>
+        </Box>
     );
 }
 

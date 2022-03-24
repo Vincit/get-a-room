@@ -4,7 +4,6 @@ import { makeBooking } from '../services/bookingService';
 import { Booking, BookingDetails, Room } from '../types';
 import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
-import DurationPicker from './DurationPicker';
 import RoomCard from './RoomCard';
 import BookingDrawer from './BookingDrawer';
 
@@ -28,13 +27,14 @@ function isAvailableFor(minutes: number, room: Room) {
 }
 
 type BookingListProps = {
+    bookingDuration: number;
     rooms: Room[];
     bookings: Booking[];
     updateData: () => void;
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
-    const { rooms, bookings, updateData } = props;
+    const { bookingDuration, rooms, bookings, updateData } = props;
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -44,7 +44,6 @@ const AvailableRoomList = (props: BookingListProps) => {
         false as boolean
     );
     const [expandBookingDrawer, setexpandBookingDrawer] = useState(false);
-    const [bookingDuration, setBookingDuration] = useState(15);
     const [additionalDuration, setAdditionalDuration] = useState(0);
     const [availableMinutes, setAvailableMinutes] = useState(0);
     const [selectedRoom, setSelectedRoom] = useState<Room | undefined>(
@@ -53,10 +52,6 @@ const AvailableRoomList = (props: BookingListProps) => {
 
     const handleAllFeaturesCollapse = () => {
         setExpandedFeaturesAll(!expandedFeaturesAll);
-    };
-
-    const handleDurationChange = (duration: number) => {
-        setBookingDuration(duration);
     };
 
     const handleAdditionaDurationChange = (additionalMinutes: number) => {
@@ -145,7 +140,7 @@ const AvailableRoomList = (props: BookingListProps) => {
             });
     };
     return (
-        <Box id="available-room-list" textAlign="center" p={'16px'}>
+        <Box id="available-room-list">
             <div id="drawer-container">
                 <BookingDrawer
                     open={expandBookingDrawer}
@@ -153,7 +148,6 @@ const AvailableRoomList = (props: BookingListProps) => {
                     bookRoom={handleReservation}
                     room={selectedRoom}
                     duration={bookingDuration}
-                    handleDurationChange={handleDurationChange}
                     additionalDuration={additionalDuration}
                     availableMinutes={availableMinutes}
                     onAddTime={handleAdditionaDurationChange}
@@ -163,7 +157,6 @@ const AvailableRoomList = (props: BookingListProps) => {
                 />
             </div>
 
-            <DurationPicker onChange={handleDurationChange} title="duration" />
             <FormControlLabel
                 label={
                     <Typography
