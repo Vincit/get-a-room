@@ -9,7 +9,7 @@ import Group from '@mui/icons-material/People';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { CardActionArea, CircularProgress, styled } from '@mui/material';
-import { getTimeLeft, getTimeLeftMinutes } from './util/TimeLeft';
+import { getTimeLeftMinutes } from './util/TimeLeft';
 import { minutesToSimpleString } from './BookingDrawer';
 
 function getName(room: Room) {

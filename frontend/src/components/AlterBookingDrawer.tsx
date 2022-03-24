@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { Box, Button, styled, Typography } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
 
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import { Booking, Room } from '../types';
-import { getTimeLeft } from './util/TimeLeft';
 import {
     AvailableText,
     DrawerButtonPrimary,

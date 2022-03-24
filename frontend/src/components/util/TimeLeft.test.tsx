@@ -41,15 +41,4 @@ describe('TimeLeft', () => {
             expect(timeLeftValue).toHaveTextContent('Time Left: 44 min')
         );
     });
-
-    it('shows time left as all day', async () => {
-        const timeForBooking = DateTime.local().endOf('day').toString();
-
-        render(<TimeLeft timeLeftText="Free for: " endTime={timeForBooking} />);
-
-        const timeLeftValue = await screen.findByTestId('TimeLeftTest');
-        await waitFor(() =>
-            expect(timeLeftValue).toHaveTextContent('Free for: All day')
-        );
-    });
 });

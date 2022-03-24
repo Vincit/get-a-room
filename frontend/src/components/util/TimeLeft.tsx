@@ -2,7 +2,6 @@ import { Box, Typography } from '@mui/material';
 import { DateTime, Duration } from 'luxon';
 
 export const getTimeLeftMinutes = (endTime: string) => {
-    let endOfDay = DateTime.local().endOf('day').toUTC();
     let nextReservationTime = DateTime.fromISO(endTime).toUTC();
 
     let duration = Duration.fromObject(
@@ -12,7 +11,6 @@ export const getTimeLeftMinutes = (endTime: string) => {
 };
 
 export const getTimeLeft = (endTime: string) => {
-    let endOfDay = DateTime.local().endOf('day').toUTC();
     let nextReservationTime = DateTime.fromISO(endTime).toUTC();
 
     let duration = Duration.fromObject(

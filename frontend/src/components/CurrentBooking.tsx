@@ -1,60 +1,19 @@
 import React, { useState } from 'react';
-import {
-    Box,
-    Card,
-    CardActions,
-    CardContent,
-    Collapse,
-    IconButton,
-    List,
-    Typography,
-    Button,
-    CircularProgress
-} from '@mui/material';
+import { Box, List, Typography } from '@mui/material';
 import { Booking, AddTimeDetails, Room } from '../types';
-import { ExpandLess, ExpandMore, Group } from '@mui/icons-material';
 import {
     updateBooking,
     deleteBooking,
     endBooking
 } from '../services/bookingService';
-import TimeLeft, { getTimeLeftMinutes } from './util/TimeLeft';
+import { getTimeLeftMinutes } from './util/TimeLeft';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
 import AlterBookingDrawer from './AlterBookingDrawer';
 import { getTimeAvailableMinutes } from './RoomCard';
 
-function getBookingRoomName(booking: Booking) {
-    return booking.room.name;
-}
-
-function getNextCalendarEvent(room: Room) {
-    return room.nextCalendarEvent;
-}
-
 function areBookingsFetched(bookings: Booking[]) {
     return Array.isArray(bookings) && bookings.length > 0;
-}
-
-function getCapacity(booking: Booking) {
-    return booking.room.capacity;
-}
-
-function getFeatures(booking: Booking) {
-    let featureArray = booking.room.features;
-    let featuresDisplay = [];
-
-    // Format booking.room features
-    if (featureArray) {
-        for (let feature = 0; feature < featureArray.length; feature++) {
-            featuresDisplay.push(featureArray[feature]);
-            if (feature !== featureArray.length - 1) {
-                featuresDisplay.push(', ');
-            }
-        }
-    }
-
-    return featuresDisplay;
 }
 
 function getBookingTimeLeft(booking: Booking | undefined) {
@@ -77,19 +36,12 @@ const CurrentBooking = (props: CurrentBookingProps) => {
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
 
-    const [expandedFeatures, setExpandedFeatures] = useState('false');
     const [selectedId, setSelectedId] = useState('false');
     const [bookingProcessing, setBookingProcessing] = useState('false');
     const [selectedBooking, setSelectedBooking] = useState<Booking | undefined>(
         undefined
     );
     const [isOpenDrawer, setIsOpenDrawer] = useState(false);
-
-    const handleFeaturesCollapse = (booking: Booking) => {
-        setExpandedFeatures(
-            expandedFeatures === booking.id ? 'false' : booking.id
-        );
-    };
 
     const toggleDrawer = (open: boolean) => {
         if (open === false) {
@@ -102,11 +54,6 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         setSelectedBooking(booking);
         setSelectedId(room.id);
         toggleDrawer(true);
-    };
-
-    // Get the next booking time in the reserved room
-    const getNextCalendarEvent = (booking: Booking) => {
-        return booking.room.nextCalendarEvent;
     };
 
     // Add extra time for the reserved room
@@ -175,15 +122,17 @@ const CurrentBooking = (props: CurrentBookingProps) => {
 
     return (
         <Box id="current booking" marginTop={'24px'}>
-            <AlterBookingDrawer
-                open={isOpenDrawer}
-                toggle={toggleDrawer}
-                duration={getBookingTimeLeft(selectedBooking)}
-                onAlterTime={handleAddExtraTime}
-                availableMinutes={getTimeAvailableMinutes(selectedBooking)}
-                booking={selectedBooking}
-                endBooking={handleEndBooking}
-            />
+            <div id="drawer-container">
+                <AlterBookingDrawer
+                    open={isOpenDrawer}
+                    toggle={toggleDrawer}
+                    duration={getBookingTimeLeft(selectedBooking)}
+                    onAlterTime={handleAddExtraTime}
+                    availableMinutes={getTimeAvailableMinutes(selectedBooking)}
+                    booking={selectedBooking}
+                    endBooking={handleEndBooking}
+                />
+            </div>
 
             <Typography variant="subtitle1" textAlign="left">
                 booked to you
@@ -192,6 +141,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 {bookings.map((booking) => (
                     <li key={booking.id}>
                         <RoomCard
+                            data-testid={'CurrentBookingCard'}
                             room={booking.room}
                             booking={booking}
                             onClick={handleCardClick}
