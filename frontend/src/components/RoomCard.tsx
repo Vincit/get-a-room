@@ -10,6 +10,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { CardActionArea, CircularProgress, styled } from '@mui/material';
 import { getTimeLeft, getTimeLeftMinutes } from './util/TimeLeft';
+import { minutesToSimpleString } from './BookingDrawer';
 
 function getName(room: Room) {
     return room.name;
@@ -179,10 +180,12 @@ const RoomCard = (props: RoomCardProps) => {
 
                     <Row>
                         {isReserved ? (
-                            <TimeLeft
-                                timeLeftText="Available for another"
-                                endTime={getNextCalendarEvent(room)}
-                            />
+                            <Typography>
+                                Available for another{' '}
+                                {minutesToSimpleString(
+                                    getTimeAvailableMinutes(booking)
+                                )}
+                            </Typography>
                         ) : (
                             <TimeLeft
                                 timeLeftText="Available for "

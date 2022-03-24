@@ -7,9 +7,19 @@ import { DateTime, Duration } from 'luxon';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import { Booking, Room } from '../types';
 import { getTimeLeft } from './util/TimeLeft';
-import { minutesToSimpleString } from './BookingDrawer';
+import {
+    AvailableText,
+    DrawerButtonPrimary,
+    DrawerButtonSecondary,
+    minutesToSimpleString,
+    RowCentered,
+    SmallText,
+    Spacer,
+    TimeTextBold
+} from './BookingDrawer';
 
 const MIN_DURATION = 15;
+const LAST_HOUR = 17;
 
 function getName(room: Room | undefined) {
     return room === undefined ? '' : room.name;
@@ -31,81 +41,12 @@ const Row = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
-const RowCentered = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    padding: '0px',
-    width: '100%'
-}));
-
-const DrawerButton = styled(Button)(({ theme }) => ({
-    textTransform: 'none',
-    fontSize: '16px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: '50px',
-    width: '100%',
-    margin: '8px 0px'
-}));
-
-const DrawerButtonPrimary = styled(DrawerButton)(({ theme }) => ({
-    color: theme.palette.background.default,
-    background: theme.palette.text.primary,
-    '&.Mui-disabled': {
-        color: '#7d6b6a',
-        background: theme.palette.background.default
-    },
-    '&:hover': {
-        backgroundColor: theme.palette.text.primary
-    }
-}));
-
-const DrawerButtonSecondary = styled(DrawerButton)(({ theme }) => ({
-    color: theme.palette.text.primary,
-    border: '1px solid',
-    borderColor: theme.palette.text.primary,
-    '&.Mui-disabled': {
-        color: theme.palette.text.disabled,
-        borderColor: theme.palette.text.disabled
-    }
-}));
-
-const TimeText = styled(Typography)(() => ({
-    fontSize: '24px',
-    padding: '8px'
-}));
-
-const TimeTextBold = styled(TimeText)(() => ({
-    fontWeight: 'bold'
-}));
-
 const TimeTextBoldGreen = styled(TimeTextBold)(({ theme }) => ({
     color: theme.palette.success.main
 }));
 
-const AvailableText = styled(Typography)(() => ({
-    fontSize: '16px',
-    color: '#82716F'
-}));
-
 const AvailableTextGreen = styled(AvailableText)(({ theme }) => ({
     color: theme.palette.success.main
-}));
-
-const SmallText = styled(Typography)(() => ({
-    textTransform: 'uppercase',
-    fontSize: '12px',
-    lineHeight: '12px',
-    fontWeight: 'bold',
-    fontStyle: 'normal',
-    margin: '24px 8px 0 0'
-}));
-
-const Spacer = styled('div')(() => ({
-    padding: '8px'
 }));
 
 interface Props {
@@ -167,10 +108,17 @@ const AlterBookingDrawer = (props: Props) => {
     };
 
     const disableNextHalfHour = () => {
+        if (booking === undefined) {
+            return true;
+        }
         const timeNow = DateTime.now();
-        const minutes = Math.floor(
-            nextHalfHour().diff(timeNow, 'minute').minutes
-        );
+        const endTime = DateTime.fromISO(booking.endTime);
+        const nextHalf = nextHalfHour();
+        if (nextHalf < endTime) {
+            return false;
+        }
+
+        const minutes = Math.floor(nextHalf.diff(timeNow, 'minute').minutes);
         return minutes > availableMinutes;
     };
 
@@ -183,15 +131,17 @@ const AlterBookingDrawer = (props: Props) => {
     };
 
     const disableNextFullHour = () => {
+        if (booking === undefined) {
+            return true;
+        }
         const timeNow = DateTime.now();
-        const endTime = timeNow.toObject();
+        const endTime = DateTime.fromISO(booking.endTime);
+        const nextFull = nextFullHour();
+        if (nextFull < endTime) {
+            return false;
+        }
 
-        endTime.hour = endTime.hour + 1;
-        endTime.minute = 0;
-
-        const minutes = Math.floor(
-            DateTime.fromObject(endTime).diff(timeNow, 'minute').minutes
-        );
+        const minutes = Math.floor(nextFull.diff(timeNow, 'minute').minutes);
 
         return minutes > availableMinutes;
     };
@@ -202,6 +152,17 @@ const AlterBookingDrawer = (props: Props) => {
 
     const disableAddTime = () => {
         return availableMinutes < 15;
+    };
+
+    const handleUntillNextMeeting = () => {
+        const timeNow = DateTime.now();
+        if (timeNow.hour >= LAST_HOUR) {
+            handleAdditionalTime(availableMinutes - 1);
+        } else {
+            const time1700 = DateTime.fromObject({ hour: LAST_HOUR });
+            const minutes = time1700.diff(timeNow, 'minutes').minutes;
+            handleAdditionalTime(Math.floor(minutes - duration));
+        }
     };
 
     const handleEndBooking = () => {
@@ -279,7 +240,10 @@ const AlterBookingDrawer = (props: Props) => {
                     </DrawerButtonSecondary>
                 </Row>
                 <Row>
-                    <DrawerButtonSecondary disabled>
+                    <DrawerButtonSecondary
+                        aria-label="untill next meeting"
+                        onClick={handleUntillNextMeeting}
+                    >
                         Untill next meeting
                     </DrawerButtonSecondary>
                 </Row>
