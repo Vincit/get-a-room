@@ -25,6 +25,8 @@ const MainView = () => {
 
     const [name, setName] = useState<String>();
 
+    const [expandBookingDrawer, setexpandBookingDrawer] = useState(false);
+
     const history = useHistory();
 
     const { createSuccessNotification } = useCreateNotification();
@@ -42,7 +44,8 @@ const MainView = () => {
         getPreferencesWithGPS()
             .then((preference) => {
                 setPreferences(preference);
-                createSuccessNotification('Office set according to GPS');
+                //createSuccessNotification(preference.building?.name + ' was selected as your office based on your GPS location');
+                toggleDrawn(true);
             })
             .catch((e) => {
                 // Redirected to login
@@ -78,6 +81,10 @@ const MainView = () => {
         }
     }, [preferences, goToMainView]);
 
+    const toggleDrawn = (newOpen: boolean) => {
+        setexpandBookingDrawer(newOpen);
+    };
+
     return (
         <Box
             id="main-view"
@@ -100,7 +107,11 @@ const MainView = () => {
                         />
                     </Route>
                     <Route path="/">
-                        <BookingView preferences={preferences} />
+                        <BookingView
+                            preferences={preferences}
+                            open={expandBookingDrawer}
+                            toggle={toggleDrawn}
+                        />
                     </Route>
                 </Switch>
             </Box>
