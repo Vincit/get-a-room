@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box, Button, styled, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import { Booking, Room } from '../types';
@@ -15,19 +15,11 @@ function getName(room: Room | undefined) {
     return room === undefined ? '' : room.name;
 }
 
-function getNextCalendarEvent(room: Room | undefined) {
-    return room === undefined ? '' : room.nextCalendarEvent;
-}
-
-function getTimeAvailable(room: Room | undefined) {
-    return room === undefined ? '' : getTimeLeft(getNextCalendarEvent(room));
-}
-
 function getSimpleEndTime(booking: Booking | undefined) {
     if (booking === undefined) {
         return;
     }
-    let time = DateTime.fromISO(booking.endTime).toUTC();
+    let time = DateTime.fromISO(booking.endTime);
     return time.toLocaleString(DateTime.TIME_24_SIMPLE);
 }
 
@@ -144,8 +136,68 @@ const AlterBookingDrawer = (props: Props) => {
         onAlterTime(booking, minutes);
     };
 
+    const handleNextHalfHour = () => {
+        const timeNow = DateTime.now();
+        const minutes = Math.floor(
+            nextHalfHour().diff(timeNow, 'minute').minutes
+        );
+        handleAdditionalTime(minutes - duration);
+    };
+
+    const nextHalfHour = () => {
+        const newEndTime = DateTime.now().toObject();
+        if (newEndTime.minute >= 30) {
+            newEndTime.hour = newEndTime.hour + 1;
+        }
+        newEndTime.minute = 30;
+        newEndTime.second = 0;
+        newEndTime.millisecond = 0;
+
+        return DateTime.fromObject(newEndTime);
+    };
+
+    const nextFullHour = () => {
+        const newEndTime = DateTime.now().toObject();
+        newEndTime.hour = newEndTime.hour + 1;
+        newEndTime.minute = 0;
+        newEndTime.second = 0;
+        newEndTime.millisecond = 0;
+
+        return DateTime.fromObject(newEndTime);
+    };
+
+    const disableNextHalfHour = () => {
+        const timeNow = DateTime.now();
+        const minutes = Math.floor(
+            nextHalfHour().diff(timeNow, 'minute').minutes
+        );
+        return minutes > availableMinutes;
+    };
+
+    const handleNextFullHour = () => {
+        const timeNow = DateTime.now();
+        const minutes = Math.floor(
+            nextFullHour().diff(timeNow, 'minute').minutes
+        );
+        handleAdditionalTime(minutes - duration);
+    };
+
+    const disableNextFullHour = () => {
+        const timeNow = DateTime.now();
+        const endTime = timeNow.toObject();
+
+        endTime.hour = endTime.hour + 1;
+        endTime.minute = 0;
+
+        const minutes = Math.floor(
+            DateTime.fromObject(endTime).diff(timeNow, 'minute').minutes
+        );
+
+        return minutes > availableMinutes;
+    };
+
     const disableSubtractTime = () => {
-        return true;
+        return duration < MIN_DURATION;
     };
 
     const disableAddTime = () => {
@@ -210,17 +262,25 @@ const AlterBookingDrawer = (props: Props) => {
                     </DrawerButtonPrimary>
                 </Row>
                 <Row>
-                    <DrawerButtonSecondary disabled>
-                        Spaceholder
+                    <DrawerButtonSecondary
+                        aria-label="next half hour"
+                        onClick={handleNextHalfHour}
+                        disabled={disableNextHalfHour()}
+                    >
+                        {nextHalfHour().toLocaleString(DateTime.TIME_24_SIMPLE)}
                     </DrawerButtonSecondary>
                     <Spacer />
-                    <DrawerButtonSecondary disabled>
-                        Spaceholder
+                    <DrawerButtonSecondary
+                        aria-label="next full hour"
+                        onClick={handleNextFullHour}
+                        disabled={disableNextFullHour()}
+                    >
+                        {nextFullHour().toLocaleString(DateTime.TIME_24_SIMPLE)}
                     </DrawerButtonSecondary>
                 </Row>
                 <Row>
                     <DrawerButtonSecondary disabled>
-                        Spaceholder
+                        Untill next meeting
                     </DrawerButtonSecondary>
                 </Row>
                 <Row>
