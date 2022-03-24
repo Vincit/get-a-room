@@ -1,4 +1,4 @@
-import RoomList from './RoomList';
+import BuildingList from './BuildingList';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import useCreateNotification from '../hooks/useCreateNotification';
@@ -26,6 +26,8 @@ const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
 
     // Updates distances every time user goes to the choose office page. Also fixes a bug with
     // mozilla browser where distances were not updating the first time loading the application
+    // eslint disabled as parameter dependency setBuildings never changes during run time. Can
+    // be also solved with useRef and isDeepEqual but that would require an extra library.
     useEffect(() => {
         getBuildingsWithPosition()
             .then(setBuildings)
@@ -68,7 +70,7 @@ const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
 
     if (!preferences) return <CenteredProgress />;
     return (
-        <RoomList
+        <BuildingList
             buildings={buildings}
             selectedBuildingId={selectedBuildingId}
             setSelectedBuildingId={setSelecedBuildingId}
