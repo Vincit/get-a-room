@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, styled, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
 
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import { Room } from '../types';
-import { getTimeLeft } from './util/TimeLeft';
+import { getTimeLeft, getTimeLeftMinutes } from './util/TimeLeft';
 
 const MIN_DURATION = 15;
 
@@ -20,6 +20,14 @@ function getNextCalendarEvent(room: Room | undefined) {
 
 function getTimeAvailable(room: Room | undefined) {
     return room === undefined ? '' : getTimeLeft(getNextCalendarEvent(room));
+}
+
+function getTimeAvailableMinutes(room: Room | undefined): number {
+    if (room === undefined) {
+        return 0;
+    }
+
+    return getTimeLeftMinutes(getNextCalendarEvent(room));
 }
 
 /**
@@ -141,8 +149,12 @@ interface Props {
     duration: number;
     additionalDuration: number;
     onAddTime: (minutes: number) => void;
+    onAddTimeUntilHalf: () => void;
+    onAddTimeUntilFull: () => void;
+    onAddTimeUntilNext: (minutes: number) => void;
     availableMinutes: number;
     room?: Room;
+    handleDurationChange: (duration: number) => void;
 }
 
 const BookingDrawer = (props: Props) => {
@@ -154,11 +166,35 @@ const BookingDrawer = (props: Props) => {
         duration,
         additionalDuration,
         onAddTime,
+        onAddTimeUntilHalf,
+        onAddTimeUntilFull,
+        onAddTimeUntilNext,
         availableMinutes
     } = props;
 
+    useEffect(() => {
+        updateHalfHour();
+        updateFullHour();
+    });
+
+    // Placeholder values
+    const [nextHalfHour, setNextHalfHour] = useState('00:30');
+    const [nextFullHour, setNextFullHour] = useState('01:00');
+
     const handleAdditionalTime = (minutes: number) => {
         onAddTime(minutes);
+    };
+
+    const handleNextHalfHour = () => {
+        onAddTimeUntilHalf();
+    };
+
+    const handleNextFullHour = () => {
+        onAddTimeUntilFull();
+    };
+
+    const handleUntilNext = (minutes: number) => {
+        onAddTimeUntilNext(minutes);
     };
 
     const disableSubtractTime = () => {
@@ -167,6 +203,41 @@ const BookingDrawer = (props: Props) => {
 
     const disableAddTime = () => {
         return duration + additionalDuration + 15 > availableMinutes;
+    };
+
+    const disableNextHalfHour = () => {
+        let currentTime = DateTime.now().toObject();
+        if (currentTime.minute >= 30) {
+            return 60 - (currentTime.minute - 30) > availableMinutes;
+        } else {
+            return 30 - currentTime.minute > availableMinutes;
+        }
+    };
+
+    const disableNextFullHour = () => {
+        let currentTime = DateTime.now().toObject();
+        return 60 - currentTime.minute > availableMinutes;
+    };
+
+    const updateHalfHour = () => {
+        let halfHour = DateTime.now().toObject();
+        if (halfHour.minute >= 30) {
+            halfHour.hour = halfHour.hour + 1;
+        }
+        halfHour.minute = 30;
+
+        let halfHourString =
+            halfHour.hour.toString() + ':' + halfHour.minute.toString();
+        setNextHalfHour(halfHourString);
+    };
+
+    const updateFullHour = () => {
+        let fullHour = DateTime.now().toObject();
+        fullHour.minute = 0;
+        fullHour.hour = fullHour.hour + 1;
+        let fullHourString =
+            fullHour.hour.toString() + ':' + fullHour.minute.toString() + '0';
+        setNextFullHour(fullHourString);
     };
 
     return (
@@ -215,17 +286,28 @@ const BookingDrawer = (props: Props) => {
                     </DrawerButtonPrimary>
                 </Row>
                 <Row>
-                    <DrawerButtonSecondary disabled>
-                        Spaceholder
+                    <DrawerButtonSecondary
+                        onClick={() => handleNextHalfHour()}
+                        disabled={disableNextHalfHour()}
+                    >
+                        Until {nextHalfHour}
                     </DrawerButtonSecondary>
                     <Spacer />
-                    <DrawerButtonSecondary disabled>
-                        Spaceholder
+                    <DrawerButtonSecondary
+                        onClick={() => handleNextFullHour()}
+                        disabled={disableNextFullHour()}
+                    >
+                        Until {nextFullHour}
                     </DrawerButtonSecondary>
                 </Row>
                 <Row>
-                    <DrawerButtonSecondary disabled>
-                        Spaceholder
+                    <DrawerButtonSecondary
+                        aria-label="until next meeting"
+                        onClick={() =>
+                            handleUntilNext(getTimeAvailableMinutes(room))
+                        }
+                    >
+                        Until next meeting
                     </DrawerButtonSecondary>
                 </Row>
                 <Row>
