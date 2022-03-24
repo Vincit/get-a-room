@@ -1,10 +1,9 @@
 // @ts-nocheck
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import CurrentBooking, { handleAddExtraTime } from './CurrentBooking';
+import CurrentBooking from './CurrentBooking';
 import userEvent from '@testing-library/user-event';
 import { unmountComponentAtNode } from 'react-dom';
-import useCreateNotification from '../hooks/useCreateNotification';
 import { updateBooking, endBooking } from '../services/bookingService';
 
 jest.mock('../hooks/useCreateNotification', () => () => {

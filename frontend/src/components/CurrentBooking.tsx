@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { Box, List, Typography } from '@mui/material';
 import { Booking, AddTimeDetails, Room } from '../types';
-import {
-    updateBooking,
-    deleteBooking,
-    endBooking
-} from '../services/bookingService';
+import { updateBooking, endBooking } from '../services/bookingService';
 import { getTimeLeftMinutes } from './util/TimeLeft';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
@@ -31,7 +27,7 @@ type CurrentBookingProps = {
 };
 
 const CurrentBooking = (props: CurrentBookingProps) => {
-    const { bookings, setBookings, updateRooms, updateBookings } = props;
+    const { bookings, updateBookings } = props;
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -76,24 +72,6 @@ const CurrentBooking = (props: CurrentBookingProps) => {
             .catch(() => {
                 setBookingProcessing('false');
                 createErrorNotification('Could not add time to booking');
-            });
-    };
-
-    // Delete booking and add the room back to the available rooms list LEGACY new end booking
-    const handleDeleteBooking = (booking: Booking) => {
-        setBookingProcessing(booking.id);
-
-        deleteBooking(booking.id)
-            .then(() => {
-                setBookingProcessing('false');
-                setBookings(bookings.filter((b) => b.id !== booking.id));
-                createSuccessNotification('Booking deleted succesfully');
-
-                updateRooms();
-            })
-            .catch(() => {
-                setBookingProcessing('false');
-                createErrorNotification('Could not delete booking');
             });
     };
 
