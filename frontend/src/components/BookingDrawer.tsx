@@ -154,7 +154,6 @@ interface Props {
     onAddTimeUntilNext: (minutes: number) => void;
     availableMinutes: number;
     room?: Room;
-    handleDurationChange: (duration: number) => void;
 }
 
 const BookingDrawer = (props: Props) => {

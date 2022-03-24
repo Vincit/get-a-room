@@ -101,7 +101,6 @@ function BookingView(props: BookingViewProps) {
                 {preferences?.building ? preferences.building.name : 'Back'}
             </Typography>
             <Typography py={2} variant="h2" textAlign="center">
-
                 Available rooms
             </Typography>
 

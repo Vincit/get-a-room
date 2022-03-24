@@ -148,7 +148,6 @@ const AvailableRoomList = (props: BookingListProps) => {
                     bookRoom={handleReservation}
                     room={selectedRoom}
                     duration={bookingDuration}
-                    handleDurationChange={handleDurationChange}
                     additionalDuration={additionalDuration}
                     availableMinutes={availableMinutes}
                     onAddTime={handleAdditionaDurationChange}

@@ -7,7 +7,7 @@ export const getTimeLeftMinutes = (endTime: string) => {
     let duration = Duration.fromObject(
         nextReservationTime.diffNow(['minutes']).toObject()
     );
-    return duration.minutes;
+    return Math.floor(duration.minutes);
 };
 
 export const getTimeLeft = (endTime: string) => {
@@ -26,7 +26,7 @@ export const getTimeLeft = (endTime: string) => {
         : duration.hours + ' h ' + Math.floor(duration.minutes) + ' min';
 };
 
-export const getTimeLeftMinutes = (endTime: string) => {
+export const getTimeLeftMinutes2 = (endTime: string) => {
     let endOfDay = DateTime.local().endOf('day').toUTC();
     let nextReservationTime = DateTime.fromISO(endTime).toUTC();
 
