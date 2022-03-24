@@ -58,6 +58,42 @@ const AvailableRoomList = (props: BookingListProps) => {
         setAdditionalDuration(additionalDuration + additionalMinutes);
     };
 
+    const handleUntilHalf = () => {
+        let halfTime = DateTime.now().toObject();
+        if (halfTime.minute >= 30) {
+            halfTime.hour = halfTime.hour + 1;
+        }
+        halfTime.minute = 30;
+        halfTime.second = 0;
+        halfTime.millisecond = 0;
+        let bookUntil = DateTime.fromObject(halfTime);
+        let durationToBookUntil = Duration.fromObject(
+            bookUntil.diffNow(['minutes']).toObject()
+        );
+        setAdditionalDuration(
+            Math.ceil(durationToBookUntil.minutes) - bookingDuration
+        );
+    };
+
+    const handleUntilFull = () => {
+        let fullTime = DateTime.now().toObject();
+        fullTime.hour = fullTime.hour + 1;
+        fullTime.minute = 0;
+        fullTime.second = 0;
+        fullTime.millisecond = 0;
+        let bookUntil = DateTime.fromObject(fullTime);
+        let durationToBookUntil = Duration.fromObject(
+            bookUntil.diffNow(['minutes']).toObject()
+        );
+        setAdditionalDuration(
+            Math.ceil(durationToBookUntil.minutes) - bookingDuration
+        );
+    };
+
+    const handleUntilNextDurationChange = (additionalMinutes: number) => {
+        setAdditionalDuration(additionalMinutes - bookingDuration);
+    };
+
     const handleReservation = () => {
         book(selectedRoom, bookingDuration + additionalDuration);
         setAdditionalDuration(0);
@@ -112,9 +148,13 @@ const AvailableRoomList = (props: BookingListProps) => {
                     bookRoom={handleReservation}
                     room={selectedRoom}
                     duration={bookingDuration}
+                    handleDurationChange={handleDurationChange}
                     additionalDuration={additionalDuration}
                     availableMinutes={availableMinutes}
                     onAddTime={handleAdditionaDurationChange}
+                    onAddTimeUntilHalf={handleUntilHalf}
+                    onAddTimeUntilFull={handleUntilFull}
+                    onAddTimeUntilNext={handleUntilNextDurationChange}
                 />
             </div>
 

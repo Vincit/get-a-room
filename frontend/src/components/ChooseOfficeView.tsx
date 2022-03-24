@@ -1,25 +1,38 @@
-import { Stack, Typography } from '@mui/material';
+import BuildingList from './BuildingList';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import useCreateNotification from '../hooks/useCreateNotification';
 import { updatePreferences } from '../services/preferencesService';
 import { Building, Preferences } from '../types';
-import BuildingSelect from './BuildingSelect';
 import CenteredProgress from './util/CenteredProgress';
-import FormButtons from './util/FormButtons';
+import { getBuildingsWithPosition } from '../services/buildingService';
 
-type PreferencesViewProps = {
+type ChooseOfficeViewProps = {
     buildings: Building[];
     preferences?: Preferences;
     setPreferences: (preferences?: Preferences) => any;
+    name: String | undefined;
+    setBuildings: (buildings: Building[]) => any;
 };
 
-const PreferencesView = (props: PreferencesViewProps) => {
-    const { buildings, preferences, setPreferences } = props;
+const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
+    const { buildings, preferences, setPreferences, name, setBuildings } =
+        props;
 
     const [selectedBuildingId, setSelecedBuildingId] = useState('');
+
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
+
+    // Updates distances every time user goes to the choose office page. Also fixes a bug with
+    // mozilla browser where distances were not updating the first time loading the application
+    // eslint disabled as parameter dependency setBuildings never changes during run time. Can
+    // be also solved with useRef and isDeepEqual but that would require an extra library.
+    useEffect(() => {
+        getBuildingsWithPosition()
+            .then(setBuildings)
+            .catch((e) => console.log(e));
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     // If current building found, show it in building select
     useEffect(() => {
@@ -38,48 +51,33 @@ const PreferencesView = (props: PreferencesViewProps) => {
         history.push('/');
     };
 
-    const handlePreferencesSubmit = () => {
+    const handlePreferencesSubmit = (buildingId: string) => {
         const foundBuilding = buildings.find(
-            (building) => building.id === selectedBuildingId
+            (building) => building.id === buildingId
         );
         if (foundBuilding) {
             updatePreferences({ building: foundBuilding })
                 .then((savedPreferences) => {
                     setPreferences(savedPreferences);
-                    createSuccessNotification(
-                        'Preferences updated successfully'
-                    );
+                    createSuccessNotification('Chose building ' + buildingId);
                     goToMainView();
                 })
                 .catch(() => {
-                    createErrorNotification('Could not update preferences');
+                    createErrorNotification('Could not choose building');
                 });
         }
     };
 
     if (!preferences) return <CenteredProgress />;
     return (
-        <Stack
-            id="preferences-view"
-            height="100%"
-            justifyContent="space-around"
-        >
-            <Typography textAlign="center" variant="h2">
-                Preferences
-            </Typography>
-            <BuildingSelect
-                buildings={buildings}
-                selectedBuildingId={selectedBuildingId}
-                setSelectedBuildingId={setSelecedBuildingId}
-            />
-            <FormButtons
-                submitText="Save"
-                handleSubmit={handlePreferencesSubmit}
-                cancelText="Cancel"
-                handleCancel={goToMainView}
-            />
-        </Stack>
+        <BuildingList
+            buildings={buildings}
+            selectedBuildingId={selectedBuildingId}
+            setSelectedBuildingId={setSelecedBuildingId}
+            handlePreferencesSubmit={handlePreferencesSubmit}
+            name={name}
+        />
     );
 };
 
-export default PreferencesView;
+export default ChooseOfficeView;

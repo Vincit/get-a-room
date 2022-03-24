@@ -1,31 +1,82 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import BookingView from './BookingView';
-import PreferencesView from './PreferencesView';
+import ChooseOfficeView from './ChooseOfficeView';
 import { Building, Preferences } from '../types';
-import { getPreferences } from '../services/preferencesService';
-import { getBuildings } from '../services/buildingService';
-import PreferencesLoader from './PreferencesLoader';
+import {
+    getPreferences,
+    getPreferencesWithGPS
+} from '../services/preferencesService';
+import {
+    getBuildings,
+    getBuildingsWithPosition
+} from '../services/buildingService';
 import { Box } from '@mui/material';
 import NavBar from './NavBar';
+import { getName } from '../services/nameService';
+import { useHistory } from 'react-router-dom';
+import useCreateNotification from '../hooks/useCreateNotification';
 
 const MainView = () => {
     const [preferences, setPreferences] = useState<Preferences | undefined>();
 
     const [buildings, setBuildings] = useState<Building[]>([]);
 
-    useEffect(() => {
-        getBuildings().then(setBuildings);
-    }, []);
+    const [name, setName] = useState<String>();
+
+    const history = useHistory();
+
+    const { createSuccessNotification } = useCreateNotification();
 
     useEffect(() => {
         getPreferences()
             .then(setPreferences)
-            .catch(() => {
+            .catch((e) => {
                 // Redirected to login
+                console.log(e);
             });
     }, []);
+
+    useEffect(() => {
+        getPreferencesWithGPS()
+            .then((preference) => {
+                setPreferences(preference);
+                createSuccessNotification('Office set according to GPS');
+            })
+            .catch((e) => {
+                // Redirected to login
+                console.log(e);
+            });
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        getBuildings()
+            .then(setBuildings)
+            .catch((e) => console.log(e));
+    }, []);
+
+    useEffect(() => {
+        getBuildingsWithPosition()
+            .then(setBuildings)
+            .catch((e) => console.log(e));
+    }, []);
+
+    useEffect(() => {
+        getName().then(setName);
+    }, []);
+
+    const goToMainView = useCallback(() => {
+        // Use replace in place of push because it's a temporary page and wouln't work if navigated back to
+        history.replace('/');
+    }, [history]);
+
+    useEffect(() => {
+        if (preferences?.building?.id) {
+            // Preferences already set
+            goToMainView();
+        }
+    }, [preferences, goToMainView]);
 
     return (
         <Box
@@ -39,18 +90,13 @@ const MainView = () => {
                 sx={{ flexGrow: 1, overflowY: 'scroll' }}
             >
                 <Switch>
-                    <Route path="/preferences">
-                        <PreferencesView
+                    <Route path="/(preferences|auth/success)/">
+                        <ChooseOfficeView
                             preferences={preferences}
                             setPreferences={setPreferences}
                             buildings={buildings}
-                        />
-                    </Route>
-                    <Route path="/auth/success">
-                        <PreferencesLoader
-                            preferences={preferences}
-                            setPreferences={setPreferences}
-                            buildings={buildings}
+                            name={name}
+                            setBuildings={setBuildings}
                         />
                     </Route>
                     <Route path="/">

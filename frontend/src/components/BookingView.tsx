@@ -10,6 +10,9 @@ import AvailableRoomList from './AvailableRoomList';
 import CenteredProgress from './util/CenteredProgress';
 import DurationPicker from './DurationPicker';
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useHistory } from 'react-router-dom';
+
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
 
@@ -52,6 +55,12 @@ function BookingView(props: BookingViewProps) {
             .catch((error) => console.log(error));
     }, []);
 
+    const history = useHistory();
+
+    const moveToChooseOfficePage = () => {
+        history.push('/preferences');
+    };
+
     const updateData = useCallback(() => {
         updateRooms();
         updateBookings();
@@ -79,9 +88,23 @@ function BookingView(props: BookingViewProps) {
 
     return (
         <Box id="current booking" textAlign="center" p={'16px'}>
-            <Typography py={2} variant="h4" textAlign="center">
+            <Typography
+                onClick={moveToChooseOfficePage}
+                textAlign="left"
+                variant="subtitle1"
+                color={'#ce3b20'}
+                paddingLeft="20px"
+                paddingTop="20px"
+                style={{ cursor: 'pointer' }}
+            >
+                <ArrowBackIcon style={{ fontSize: 'small' }}></ArrowBackIcon>
+                {preferences?.building ? preferences.building.name : 'Back'}
+            </Typography>
+            <Typography py={2} variant="h2" textAlign="center">
+
                 Available rooms
             </Typography>
+
             {isActiveBooking(bookings) ? (
                 <Box
                     sx={{
