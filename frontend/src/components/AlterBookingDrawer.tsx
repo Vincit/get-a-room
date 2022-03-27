@@ -81,7 +81,7 @@ const AlterBookingDrawer = (props: Props) => {
         const minutes = Math.floor(
             nextHalfHour().diff(timeNow, 'minute').minutes
         );
-        handleAdditionalTime(minutes - duration);
+        handleAdditionalTime(minutes - duration - 1);
     };
 
     const nextHalfHour = () => {
@@ -126,7 +126,7 @@ const AlterBookingDrawer = (props: Props) => {
         const minutes = Math.floor(
             nextFullHour().diff(timeNow, 'minute').minutes
         );
-        handleAdditionalTime(minutes - duration);
+        handleAdditionalTime(minutes - duration - 1);
     };
 
     const disableNextFullHour = () => {
@@ -134,13 +134,13 @@ const AlterBookingDrawer = (props: Props) => {
             return true;
         }
         const timeNow = DateTime.now();
-        const endTime = DateTime.fromISO(booking.endTime);
+        const endTime = DateTime.fromISO(booking.room.nextCalendarEvent);
         const nextFull = nextFullHour();
-        if (nextFull < endTime) {
+        if (nextFull <= endTime) {
             return false;
         }
 
-        const minutes = Math.floor(nextFull.diff(timeNow, 'minute').minutes);
+        const minutes = Math.ceil(nextFull.diff(timeNow, 'minute').minutes);
 
         return minutes > availableMinutes;
     };
@@ -155,12 +155,23 @@ const AlterBookingDrawer = (props: Props) => {
 
     const handleUntillNextMeeting = () => {
         const timeNow = DateTime.now();
+        if (booking === undefined) {
+            return;
+        }
         if (timeNow.hour >= LAST_HOUR) {
             handleAdditionalTime(availableMinutes - 1);
         } else {
             const time1700 = DateTime.fromObject({ hour: LAST_HOUR });
-            const minutes = time1700.diff(timeNow, 'minutes').minutes;
-            handleAdditionalTime(Math.floor(minutes - duration));
+            const endTime = DateTime.now().plus({ minutes: availableMinutes });
+            if (endTime < time1700) {
+                return handleAdditionalTime(availableMinutes);
+            }
+            const minutes = time1700.diff(
+                DateTime.fromISO(booking?.endTime),
+                'minutes'
+            ).minutes;
+            console.log(minutes);
+            handleAdditionalTime(Math.floor(minutes));
         }
     };
 

@@ -7,7 +7,7 @@ export const getTimeLeftMinutes = (endTime: string) => {
     let duration = Duration.fromObject(
         nextReservationTime.diffNow(['minutes']).toObject()
     );
-    return Math.floor(duration.minutes);
+    return Math.floor(duration.minutes - 1);
 };
 
 export const getTimeLeft = (endTime: string) => {
