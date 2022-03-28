@@ -81,7 +81,9 @@ export const updatePreferencesToDatabase = () => {
             const preferences: Preferences = {
                 building: {
                     id: res.locals.buildingId,
-                    name: res.locals.buildingName
+                    name: res.locals.buildingName,
+                    latitude: res.locals.latitude,
+                    longitude: res.locals.longitude
                 }
             };
 

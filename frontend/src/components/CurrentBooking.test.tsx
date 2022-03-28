@@ -1,11 +1,10 @@
 // @ts-nocheck
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import CurrentBooking, { handleAddExtraTime } from './CurrentBooking';
+import CurrentBooking from './CurrentBooking';
 import userEvent from '@testing-library/user-event';
 import { unmountComponentAtNode } from 'react-dom';
-import useCreateNotification from '../hooks/useCreateNotification';
-import { updateBooking, deleteBooking } from '../services/bookingService';
+import { updateBooking, endBooking } from '../services/bookingService';
 
 jest.mock('../hooks/useCreateNotification', () => () => {
     return {
@@ -49,53 +48,62 @@ describe('CurrentBooking', () => {
 
     it('renders booking data with correct name', async () => {
         render(<CurrentBooking bookings={fakeBooking} />, container);
-        const items = await screen.queryByTestId('CurrentBookingCard');
-        await waitFor(() =>
-            expect(items).toHaveClass('CurrentBookingCardClass')
-        );
+
         const title = await screen.queryByTestId('BookingRoomTitle');
         await waitFor(() => expect(title).toHaveTextContent('Amor'));
     });
 
-    it('shows capacity after expanding', async () => {
-        render(<CurrentBooking bookings={fakeBooking} />, container);
-        const expansionButton = await screen.queryByTestId('ExpansionButton');
-        userEvent.click(expansionButton);
-        await waitFor(() => expect(screen.getByText('Jabra, TV, Webcam')));
-    });
-
-    it('updates booking', async () => {
+    it('renders alter booking drawer', async () => {
         (updateBooking as jest.Mock).mockResolvedValueOnce({
             timeToAdd: 15
         });
 
         render(<CurrentBooking bookings={fakeBooking} />), container;
 
-        const extraTimebutton = await screen.queryByTestId('ExtraTimeButton');
-        userEvent.click(extraTimebutton);
+        const bookingCard = await screen.queryByTestId('CardActiveArea');
+        userEvent.click(bookingCard);
 
-        await waitFor(() =>
-            expect(updateBooking as jest.Mock).toHaveBeenCalledWith(
-                {
-                    timeToAdd: 15
-                },
-                fakeBooking[0].id
-            )
-        );
+        const drawer = screen.queryByTestId('BookingDrawer');
+        await waitFor(() => expect(drawer).toBeTruthy());
     });
 
-    it('deletes booking', async () => {
-        (deleteBooking as jest.Mock).mockResolvedValueOnce({
+    it('extend booking by 15 min', async () => {
+        (updateBooking as jest.Mock).mockResolvedValueOnce({
+            timeToAdd: 15,
             bookingId: fakeBooking[0].id
         });
 
         render(<CurrentBooking bookings={fakeBooking} />), container;
 
-        const deleteButton = await screen.queryByTestId('DeleteButton');
-        userEvent.click(deleteButton);
+        const bookingCard = await screen.queryByTestId('CardActiveArea');
+        userEvent.click(bookingCard);
+
+        const alterButton = await screen.queryByTestId('add15');
+        userEvent.click(alterButton);
 
         await waitFor(() =>
-            expect(deleteBooking as jest.Mock).toHaveBeenCalledWith(
+            expect(updateBooking as jest.Mock).toHaveBeenCalledWith(
+                { timeToAdd: 15 },
+                fakeBooking[0].id
+            )
+        );
+    });
+
+    it('ends booking', async () => {
+        (endBooking as jest.Mock).mockResolvedValueOnce({
+            bookingId: fakeBooking[0].id
+        });
+
+        render(<CurrentBooking bookings={fakeBooking} />), container;
+
+        const bookingCard = await screen.queryByTestId('CardActiveArea');
+        userEvent.click(bookingCard);
+
+        const endBookingButton = await screen.queryByTestId('EndBookingButton');
+        userEvent.click(endBookingButton);
+
+        await waitFor(() =>
+            expect(endBooking as jest.Mock).toHaveBeenCalledWith(
                 fakeBooking[0].id
             )
         );

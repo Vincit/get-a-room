@@ -64,11 +64,15 @@ describe('buildingsController', () => {
             mockedGetBuildings.mockResolvedValueOnce([
                 {
                     id: 'test2',
-                    name: 'First'
+                    name: 'First',
+                    latitude: 61.4957056,
+                    longitude: 23.7993984
                 },
                 {
                     id: 'test3',
-                    name: 'Second'
+                    name: 'Second',
+                    latitude: 61.4957056,
+                    longitude: 23.7993984
                 }
             ]);
 
@@ -104,6 +108,7 @@ describe('buildingsController', () => {
 
             expect(mockedGetBuildings).toBeCalledTimes(1);
             expect(mockedInternalServerError).not.toBeCalled();
+            expect(mockedBadRequest).toBeCalledTimes(0);
             expect(mockNext).toBeCalledWith();
             expect(mockNext).toBeCalledTimes(1);
         });
