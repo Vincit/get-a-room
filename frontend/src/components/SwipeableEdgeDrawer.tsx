@@ -9,6 +9,7 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { IconButton } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
+import MapIcon from '@mui/icons-material/Map';
 
 const drawerBleeding = 56;
 
@@ -71,11 +72,30 @@ interface Props {
 }
 
 const SwipeableEdgeDrawer = (props: Props) => {
-    const { children, headerTitle, isOpen, toggle, disableSwipeToOpen } = props;
+    const {
+        children,
+        headerTitle,
+        iconLeft,
+        isOpen,
+        toggle,
+        disableSwipeToOpen
+    } = props;
 
     const toggleDrawer = (newOpen: boolean) => () => {
         toggle(newOpen);
     };
+
+    var left;
+    var title;
+    if (iconLeft === 'Map') {
+        left = <MapIcon sx={{ color: '#219653' }} />;
+        title = (
+            <DrawerTitle sx={{ color: '#219653' }}>{headerTitle}</DrawerTitle>
+        );
+    } else {
+        left = <AccessTimeIcon />;
+        title = <DrawerTitle>{headerTitle}</DrawerTitle>;
+    }
 
     return (
         <Root>
@@ -101,9 +121,9 @@ const SwipeableEdgeDrawer = (props: Props) => {
                 }}
             >
                 <DrawerHeader>
-                    <AccessTimeIcon />
+                    {left}
                     <Puller />
-                    <DrawerTitle>{headerTitle}</DrawerTitle>
+                    {title}
                     <Puller />
                     <IconButton
                         aria-label="close drawer"

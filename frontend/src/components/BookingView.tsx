@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, styled } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import { getRooms } from '../services/roomService';
@@ -12,6 +12,7 @@ import DurationPicker from './DurationPicker';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
+import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -25,12 +26,23 @@ function isActiveBooking(bookings: Booking[]) {
     return bookings.length > 0;
 }
 
+const RowCentered = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    padding: '5px',
+    width: '100%'
+}));
+
 type BookingViewProps = {
     preferences?: Preferences;
+    open: boolean;
+    toggle: (open: boolean) => void;
 };
 
 function BookingView(props: BookingViewProps) {
-    const { preferences } = props;
+    const { preferences, open, toggle } = props;
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -88,6 +100,28 @@ function BookingView(props: BookingViewProps) {
 
     return (
         <Box id="current booking" textAlign="center" p={'16px'}>
+            <div id="drawer-container">
+                <SwipeableEdgeDrawer
+                    headerTitle={'GPS has your back!'}
+                    iconLeft={'Map'}
+                    iconRight={'Close'}
+                    isOpen={open}
+                    toggle={toggle}
+                    disableSwipeToOpen={true}
+                >
+                    <DrawerContent>
+                        <RowCentered>
+                            <Typography
+                                variant="body1"
+                                sx={{ color: '#000000', font: 'Roboto Mono' }}
+                            >
+                                {preferences?.building?.name} was selected as
+                                your office based on your GPS location
+                            </Typography>
+                        </RowCentered>
+                    </DrawerContent>
+                </SwipeableEdgeDrawer>
+            </div>
             <Typography
                 onClick={moveToChooseOfficePage}
                 textAlign="left"
