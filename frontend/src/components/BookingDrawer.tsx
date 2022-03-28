@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
 
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import { Room } from '../types';
-import { getTimeLeft, getTimeLeftMinutes } from './util/TimeLeft';
+import { getTimeLeft, getTimeLeftMinutes2 } from './util/TimeLeft';
 
 const MIN_DURATION = 15;
 
@@ -27,7 +27,7 @@ function getTimeAvailableMinutes(room: Room | undefined): number {
         return 0;
     }
 
-    return getTimeLeftMinutes(getNextCalendarEvent(room));
+    return getTimeLeftMinutes2(getNextCalendarEvent(room));
 }
 
 /**
