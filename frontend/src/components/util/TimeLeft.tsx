@@ -1,19 +1,21 @@
 import { Box, Typography } from '@mui/material';
 import { DateTime, Duration } from 'luxon';
 
+export const getTimeLeftMinutes = (endTime: string) => {
+    let nextReservationTime = DateTime.fromISO(endTime).toUTC();
+
+    let duration = Duration.fromObject(
+        nextReservationTime.diffNow(['minutes']).toObject()
+    );
+    return Math.floor(duration.minutes);
+};
+
 export const getTimeLeft = (endTime: string) => {
-    let endOfDay = DateTime.local().endOf('day').toUTC();
     let nextReservationTime = DateTime.fromISO(endTime).toUTC();
 
     let duration = Duration.fromObject(
         nextReservationTime.diffNow(['hours', 'minutes']).toObject()
     );
-
-    // If nextReservationTime equals to end of the day, then that means that the
-    // room has no current reservations for that day and is free all day.
-    if (nextReservationTime.equals(endOfDay) || duration.hours >= 24) {
-        return 'All day';
-    }
 
     if (duration.hours === 0 && duration.minutes < 1) {
         return '< 1 min';
@@ -24,7 +26,7 @@ export const getTimeLeft = (endTime: string) => {
         : duration.hours + ' h ' + Math.floor(duration.minutes) + ' min';
 };
 
-export const getTimeLeftMinutes = (endTime: string) => {
+export const getTimeLeftMinutes2 = (endTime: string) => {
     let endOfDay = DateTime.local().endOf('day').toUTC();
     let nextReservationTime = DateTime.fromISO(endTime).toUTC();
 
