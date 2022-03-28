@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Global } from '@emotion/react';
 import { styled } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { green, grey } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
@@ -76,7 +76,6 @@ const SwipeableEdgeDrawer = (props: Props) => {
         children,
         headerTitle,
         iconLeft,
-        iconRight,
         isOpen,
         toggle,
         disableSwipeToOpen
