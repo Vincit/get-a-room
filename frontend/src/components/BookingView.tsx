@@ -12,7 +12,6 @@ import CenteredProgress from './util/CenteredProgress';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
-import GpsNotificationDrawer from './GpsNotificationDrawer';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;

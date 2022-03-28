@@ -16,7 +16,6 @@ import { Box } from '@mui/material';
 import NavBar from './NavBar';
 import { getName } from '../services/nameService';
 import { useHistory } from 'react-router-dom';
-import useCreateNotification from '../hooks/useCreateNotification';
 
 const MainView = () => {
     const [preferences, setPreferences] = useState<Preferences | undefined>();
@@ -28,8 +27,6 @@ const MainView = () => {
     const [expandBookingDrawer, setexpandBookingDrawer] = useState(false);
 
     const history = useHistory();
-
-    const { createSuccessNotification } = useCreateNotification();
 
     useEffect(() => {
         getPreferences()
@@ -44,7 +41,6 @@ const MainView = () => {
         getPreferencesWithGPS()
             .then((preference) => {
                 setPreferences(preference);
-                //createSuccessNotification(preference.building?.name + ' was selected as your office based on your GPS location');
                 toggleDrawn(true);
             })
             .catch((e) => {
