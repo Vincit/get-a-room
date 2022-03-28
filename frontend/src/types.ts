@@ -25,7 +25,7 @@ export interface Building {
 
 export interface Preferences {
     building?: Building;
-    fav_rooms?: String;
+    fav_rooms?: string; //change to array
 }
 
 export interface Room {

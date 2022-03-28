@@ -2,7 +2,10 @@ import * as React from 'react';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Room, Booking } from '../types';
+import { Room, Booking, Preferences } from '../types';
+import { updatePreferences } from '../services/preferencesService';
+import useCreateNotification from '../hooks/useCreateNotification';
+
 import TimeLeft from './util/TimeLeft';
 
 import Group from '@mui/icons-material/People';
@@ -113,6 +116,8 @@ type RoomCardProps = {
     room: Room;
     booking?: Booking;
     onClick: (room: Room, booking?: Booking) => void;
+    preferences?: Preferences;
+    setPreferences: (preferences?: Preferences) => any;
     bookingLoading: string;
     disableBooking: boolean;
     isReserved?: boolean;
@@ -125,12 +130,16 @@ const RoomCard = (props: RoomCardProps) => {
         room,
         booking,
         onClick,
+        setPreferences,
         bookingLoading,
         disableBooking,
         isReserved,
         isSelected,
         expandFeatures
     } = props;
+
+    const { createSuccessNotification, createErrorNotification } =
+        useCreateNotification();
 
     const handleClick = () => {
         if (disableBooking) {
@@ -141,6 +150,16 @@ const RoomCard = (props: RoomCardProps) => {
 
     const handleFavoriteClick = () => {
         alert('clicked favorite \n' + room.id);
+        updatePreferences({ fav_rooms: room.id })
+            .then((savedPreferences) => {
+                setPreferences(savedPreferences);
+                createSuccessNotification('Favorited room: ' + room.name);
+            })
+            .catch(() => {
+                createErrorNotification(
+                    'Could not favorite room: ' + room.name
+                );
+            });
     };
 
     const cardStyle = () => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { List, Typography, Box, Switch, FormControlLabel } from '@mui/material';
 import { makeBooking } from '../services/bookingService';
-import { Booking, BookingDetails, Room } from '../types';
+import { Booking, BookingDetails, Room, Preferences } from '../types';
 import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
@@ -34,6 +34,8 @@ type BookingListProps = {
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
+    const [preferences, setPreferences] = useState<Preferences | undefined>();
+
     const { bookingDuration, rooms, bookings, updateData } = props;
 
     const { createSuccessNotification, createErrorNotification } =
@@ -186,6 +188,8 @@ const AvailableRoomList = (props: BookingListProps) => {
                                     disableBooking={disableBooking(bookings)}
                                     isSelected={selectedRoom === room}
                                     expandFeatures={expandedFeaturesAll}
+                                    preferences={preferences}
+                                    setPreferences={setPreferences}
                                 />
                             </li>
                         ) : null
