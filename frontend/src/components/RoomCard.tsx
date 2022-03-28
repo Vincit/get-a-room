@@ -8,7 +8,13 @@ import TimeLeft from './util/TimeLeft';
 import Group from '@mui/icons-material/People';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { CardActionArea, CircularProgress, styled } from '@mui/material';
+import {
+    CardActionArea,
+    CircularProgress,
+    getAlertUtilityClass,
+    IconButton,
+    styled
+} from '@mui/material';
 import { getTimeLeftMinutes } from './util/TimeLeft';
 import { minutesToSimpleString } from './BookingDrawer';
 
@@ -133,6 +139,10 @@ const RoomCard = (props: RoomCardProps) => {
         onClick(room, booking);
     };
 
+    const handleFavoriteClick = () => {
+        alert('clicked favorite \n' + room.id);
+    };
+
     const cardStyle = () => {
         if (isSelected && isReserved) {
             return selectedReservedVars;
@@ -195,7 +205,10 @@ const RoomCard = (props: RoomCardProps) => {
                         {bookingLoading === room.id ? (
                             <CircularProgress color="primary" />
                         ) : null}
-                        <FavoriteBorderIcon />
+
+                        <IconButton onClick={handleFavoriteClick}>
+                            <FavoriteBorderIcon />
+                        </IconButton>
                     </Row>
 
                     {expandFeatures ? (
