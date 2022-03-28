@@ -18,6 +18,9 @@ export interface BookingDetails {
 export interface Building {
     id: string;
     name: string;
+    latitude: number;
+    longitude: number;
+    distance?: number;
 }
 
 export interface Preferences {
@@ -31,4 +34,8 @@ export interface Room {
     capacity?: number;
     features?: Array<string>;
     nextCalendarEvent: string;
+}
+
+export interface Name {
+    name: string;
 }

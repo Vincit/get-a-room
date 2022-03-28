@@ -9,7 +9,8 @@ import Group from '@mui/icons-material/People';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { CardActionArea, CircularProgress, styled } from '@mui/material';
-import { getTimeLeft } from './util/TimeLeft';
+import { getTimeLeftMinutes } from './util/TimeLeft';
+import { minutesToSimpleString } from './BookingDrawer';
 
 function getName(room: Room) {
     return room.name;
@@ -37,6 +38,23 @@ function getFeatures(room: Room) {
         }
     }
     return featuresDisplay;
+}
+
+export function getBookingTimeLeft(booking: Booking | undefined) {
+    if (booking === undefined) {
+        return 0;
+    }
+    return Math.floor(getTimeLeftMinutes(booking.endTime));
+}
+
+export function getTimeAvailableMinutes(booking: Booking | undefined) {
+    if (booking === undefined) {
+        return 0;
+    }
+    let timeLeft = getTimeLeftMinutes(booking.endTime);
+    let availableFor = getTimeLeftMinutes(getNextCalendarEvent(booking.room));
+
+    return Math.ceil(availableFor - timeLeft);
 }
 
 const GridContainer = styled(Box)(({ theme }) => ({
@@ -81,10 +99,14 @@ const selectedVars = {
     '--border': '1px solid #443938'
 } as React.CSSProperties;
 
+const selectedReservedVars = {
+    '--border': '2px solid #219653'
+} as React.CSSProperties;
+
 type RoomCardProps = {
     room: Room;
     booking?: Booking;
-    onClick: (room: Room) => void;
+    onClick: (room: Room, booking?: Booking) => void;
     bookingLoading: string;
     disableBooking: boolean;
     isReserved?: boolean;
@@ -95,6 +117,7 @@ type RoomCardProps = {
 const RoomCard = (props: RoomCardProps) => {
     const {
         room,
+        booking,
         onClick,
         bookingLoading,
         disableBooking,
@@ -107,14 +130,22 @@ const RoomCard = (props: RoomCardProps) => {
         if (disableBooking) {
             return;
         }
-        onClick(room);
+        onClick(room, booking);
+    };
+
+    const cardStyle = () => {
+        if (isSelected && isReserved) {
+            return selectedReservedVars;
+        }
+        if (isSelected) {
+            return selectedVars;
+        }
+
+        return defaultVars;
     };
 
     return (
-        <CustomCard
-            data-testid="AvailableRoomListCard"
-            style={isSelected ? selectedVars : defaultVars}
-        >
+        <CustomCard data-testid="AvailableRoomListCard" style={cardStyle()}>
             <CardActionArea data-testid="CardActiveArea" onClick={handleClick}>
                 <GridContainer>
                     <Row>
@@ -141,17 +172,26 @@ const RoomCard = (props: RoomCardProps) => {
                                 color="success.main"
                                 margin={'0 0 0 5px'}
                             >
-                                Booked to you for{' '}
-                                {getTimeLeft(getNextCalendarEvent(room))}
+                                Booked to you for {getBookingTimeLeft(booking)}{' '}
+                                minutes.
                             </Typography>
                         </StartBox>
                     ) : null}
 
                     <Row>
-                        <TimeLeft
-                            timeLeftText="Available for "
-                            endTime={getNextCalendarEvent(room)}
-                        />
+                        {isReserved ? (
+                            <Typography>
+                                Available for another{' '}
+                                {minutesToSimpleString(
+                                    getTimeAvailableMinutes(booking)
+                                )}
+                            </Typography>
+                        ) : (
+                            <TimeLeft
+                                timeLeftText="Available for "
+                                endTime={getNextCalendarEvent(room)}
+                            />
+                        )}
                         {bookingLoading === room.id ? (
                             <CircularProgress color="primary" />
                         ) : null}

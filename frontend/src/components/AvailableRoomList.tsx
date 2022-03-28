@@ -4,7 +4,6 @@ import { makeBooking } from '../services/bookingService';
 import { Booking, BookingDetails, Room } from '../types';
 import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
-import DurationPicker from './DurationPicker';
 import RoomCard from './RoomCard';
 import BookingDrawer from './BookingDrawer';
 
@@ -12,22 +11,30 @@ function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
 }
 
-function isAvailableFor(minutes: number, room: Room) {
+function availableForMinutes(room: Room | undefined) {
+    if (room === undefined) {
+        return 0;
+    }
     let availableUntill = DateTime.fromISO(room.nextCalendarEvent).toUTC();
     let duration = Duration.fromObject(
         availableUntill.diffNow('minutes').toObject()
     );
-    return minutes <= duration.minutes;
+    return Math.ceil(duration.minutes);
+}
+
+function isAvailableFor(minutes: number, room: Room) {
+    return minutes <= availableForMinutes(room);
 }
 
 type BookingListProps = {
+    bookingDuration: number;
     rooms: Room[];
     bookings: Booking[];
     updateData: () => void;
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
-    const { rooms, bookings, updateData } = props;
+    const { bookingDuration, rooms, bookings, updateData } = props;
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -37,7 +44,8 @@ const AvailableRoomList = (props: BookingListProps) => {
         false as boolean
     );
     const [expandBookingDrawer, setexpandBookingDrawer] = useState(false);
-    const [bookingDuration, setBookingDuration] = useState(15);
+    const [additionalDuration, setAdditionalDuration] = useState(0);
+    const [availableMinutes, setAvailableMinutes] = useState(0);
     const [selectedRoom, setSelectedRoom] = useState<Room | undefined>(
         undefined
     );
@@ -46,23 +54,63 @@ const AvailableRoomList = (props: BookingListProps) => {
         setExpandedFeaturesAll(!expandedFeaturesAll);
     };
 
-    const handleDurationChange = (duration: number) => {
-        setBookingDuration(duration);
+    const handleAdditionaDurationChange = (additionalMinutes: number) => {
+        setAdditionalDuration(additionalDuration + additionalMinutes);
+    };
+
+    const handleUntilHalf = () => {
+        let halfTime = DateTime.now().toObject();
+        if (halfTime.minute >= 30) {
+            halfTime.hour = halfTime.hour + 1;
+        }
+        halfTime.minute = 30;
+        halfTime.second = 0;
+        halfTime.millisecond = 0;
+        let bookUntil = DateTime.fromObject(halfTime);
+        let durationToBookUntil = Duration.fromObject(
+            bookUntil.diffNow(['minutes']).toObject()
+        );
+        setAdditionalDuration(
+            Math.ceil(durationToBookUntil.minutes) - bookingDuration
+        );
+    };
+
+    const handleUntilFull = () => {
+        let fullTime = DateTime.now().toObject();
+        fullTime.hour = fullTime.hour + 1;
+        fullTime.minute = 0;
+        fullTime.second = 0;
+        fullTime.millisecond = 0;
+        let bookUntil = DateTime.fromObject(fullTime);
+        let durationToBookUntil = Duration.fromObject(
+            bookUntil.diffNow(['minutes']).toObject()
+        );
+        setAdditionalDuration(
+            Math.ceil(durationToBookUntil.minutes) - bookingDuration
+        );
+    };
+
+    const handleUntilNextDurationChange = (additionalMinutes: number) => {
+        setAdditionalDuration(additionalMinutes - bookingDuration);
     };
 
     const handleReservation = () => {
-        book(selectedRoom, bookingDuration);
+        book(selectedRoom, bookingDuration + additionalDuration);
+        setAdditionalDuration(0);
         toggleDrawn(false);
     };
 
     const handleCardClick = (room: Room) => {
         setexpandBookingDrawer(true);
         setSelectedRoom(room);
+        setAvailableMinutes(availableForMinutes(room));
     };
 
     const toggleDrawn = (newOpen: boolean) => {
         if (newOpen === false) {
             setSelectedRoom(undefined);
+            setAdditionalDuration(0);
+            setAvailableMinutes(0);
         }
         setexpandBookingDrawer(newOpen);
     };
@@ -92,7 +140,7 @@ const AvailableRoomList = (props: BookingListProps) => {
             });
     };
     return (
-        <Box id="available-room-list" textAlign="center" p={'16px'}>
+        <Box id="available-room-list">
             <div id="drawer-container">
                 <BookingDrawer
                     open={expandBookingDrawer}
@@ -100,10 +148,15 @@ const AvailableRoomList = (props: BookingListProps) => {
                     bookRoom={handleReservation}
                     room={selectedRoom}
                     duration={bookingDuration}
+                    additionalDuration={additionalDuration}
+                    availableMinutes={availableMinutes}
+                    onAddTime={handleAdditionaDurationChange}
+                    onAddTimeUntilHalf={handleUntilHalf}
+                    onAddTimeUntilFull={handleUntilFull}
+                    onAddTimeUntilNext={handleUntilNextDurationChange}
                 />
             </div>
 
-            <DurationPicker onChange={handleDurationChange} title="duration" />
             <FormControlLabel
                 label={
                     <Typography
