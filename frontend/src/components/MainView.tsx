@@ -111,7 +111,6 @@ const MainView = () => {
                     </Route>
                 </Switch>
             </Box>
-            <NavBar />
         </Box>
     );
 };

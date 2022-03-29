@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, styled } from '@mui/material';
+import { Typography, Box, styled, Button } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import { getRooms } from '../services/roomService';
@@ -48,7 +48,7 @@ function BookingView(props: BookingViewProps) {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
-    const [expandFilteringDrawer, setexpandFilteringDrawer] = useState(true);
+    const [expandFilteringDrawer, setexpandFilteringDrawer] = useState(false);
 
     const updateRooms = useCallback(() => {
         if (preferences) {
@@ -103,6 +103,10 @@ function BookingView(props: BookingViewProps) {
             window.removeEventListener('focus', updateData);
         };
     }, [updateData]);
+
+    const handleFilteringClick = () => {
+        setexpandFilteringDrawer(true);
+    };
 
     return (
         <Box id="current booking" textAlign="center" p={'16px'}>
@@ -169,7 +173,9 @@ function BookingView(props: BookingViewProps) {
             ) : null}
 
             <DurationPicker onChange={handleDurationChange} title="duration" />
-
+            <Button onClick={handleFilteringClick}>
+                Open filtering drawer
+            </Button>
             <CurrentBooking
                 bookings={bookings}
                 updateRooms={updateRooms}

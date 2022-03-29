@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, styled, Typography } from '@mui/material';
+import { Box, styled, Typography } from '@mui/material';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import TextField from '@mui/material/TextField';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -9,15 +9,6 @@ export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
-    padding: '0px',
-    width: '100%'
-}));
-
-export const RowCentered = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
     padding: '0px',
     width: '100%'
 }));
@@ -41,10 +32,6 @@ export const SpacerMiddle = styled('div')(() => ({
 
 export const SpacerLast = styled('div')(() => ({
     padding: '8px 0px 8px 8px'
-}));
-
-export const SpacedToggleButton = styled(ToggleButton)(() => ({
-    margin: '8px'
 }));
 
 interface Props {

@@ -92,17 +92,25 @@ const SwipeableEdgeDrawer = (props: Props) => {
 
     var left;
     var title;
+    var right;
     if (iconLeft === 'Map') {
         left = <MapIcon sx={{ color: '#219653' }} />;
         title = (
             <DrawerTitle sx={{ color: '#219653' }}>{headerTitle}</DrawerTitle>
         );
+        right = <CloseIcon />;
     } else if (iconLeft === 'FilterList') {
         left = <FilterListIcon />;
         title = <DrawerTitle>{headerTitle}</DrawerTitle>;
+        if (isOpen) {
+            right = <ExpandMoreIcon />;
+        } else {
+            right = <ExpandLessIcon />;
+        }
     } else {
         left = <AccessTimeIcon />;
         title = <DrawerTitle>{headerTitle}</DrawerTitle>;
+        right = <CloseIcon />;
     }
 
     React.useEffect(() => {
@@ -138,11 +146,8 @@ const SwipeableEdgeDrawer = (props: Props) => {
                     <Puller />
                     {title}
                     <Puller />
-                    <IconButton
-                        aria-label="close drawer"
-                        onClick={toggleDrawer(false)}
-                    >
-                        <CloseIcon />
+                    <IconButton onClick={toggleDrawer(false)}>
+                        {right}
                     </IconButton>
                 </DrawerHeader>
 
