@@ -10,8 +10,11 @@ import { IconButton } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
 import MapIcon from '@mui/icons-material/Map';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const drawerBleeding = 56;
+const drawerBleeding = 70;
 
 const Root = styled('div')(({ theme }) => ({
     height: '100%',
@@ -81,6 +84,8 @@ const SwipeableEdgeDrawer = (props: Props) => {
         disableSwipeToOpen
     } = props;
 
+    const [mount, setMount] = React.useState(false);
+
     const toggleDrawer = (newOpen: boolean) => () => {
         toggle(newOpen);
     };
@@ -92,10 +97,19 @@ const SwipeableEdgeDrawer = (props: Props) => {
         title = (
             <DrawerTitle sx={{ color: '#219653' }}>{headerTitle}</DrawerTitle>
         );
+    } else if (iconLeft === 'FilterList') {
+        left = <FilterListIcon />;
+        title = <DrawerTitle>{headerTitle}</DrawerTitle>;
     } else {
         left = <AccessTimeIcon />;
         title = <DrawerTitle>{headerTitle}</DrawerTitle>;
     }
+
+    React.useEffect(() => {
+        if (headerTitle === 'Filtering') {
+            setMount(true);
+        }
+    }, []);
 
     return (
         <Root>
@@ -116,8 +130,7 @@ const SwipeableEdgeDrawer = (props: Props) => {
                 swipeAreaWidth={drawerBleeding}
                 disableSwipeToOpen={disableSwipeToOpen}
                 ModalProps={{
-                    container: document.getElementById('drawer-container'),
-                    keepMounted: false
+                    keepMounted: mount
                 }}
             >
                 <DrawerHeader>

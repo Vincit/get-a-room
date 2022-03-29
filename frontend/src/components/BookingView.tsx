@@ -9,6 +9,7 @@ import CurrentBooking from './CurrentBooking';
 import AvailableRoomList from './AvailableRoomList';
 import CenteredProgress from './util/CenteredProgress';
 import DurationPicker from './DurationPicker';
+import FilteringDrawer from './FilteringDrawer';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
@@ -47,6 +48,7 @@ function BookingView(props: BookingViewProps) {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
+    const [expandFilteringDrawer, setexpandFilteringDrawer] = useState(true);
 
     const updateRooms = useCallback(() => {
         if (preferences) {
@@ -77,6 +79,10 @@ function BookingView(props: BookingViewProps) {
         updateRooms();
         updateBookings();
     }, [updateRooms, updateBookings]);
+
+    const toggleDrawn = (newOpen: boolean) => {
+        setexpandFilteringDrawer(newOpen);
+    };
 
     // Update data periodically
     useEffect(() => {
@@ -181,6 +187,12 @@ function BookingView(props: BookingViewProps) {
                     updateData={updateData}
                 />
             )}
+            <div id="filtering-container">
+                <FilteringDrawer
+                    open={expandFilteringDrawer}
+                    toggle={toggleDrawn}
+                />
+            </div>
         </Box>
     );
 }
