@@ -117,7 +117,13 @@ const SwipeableEdgeDrawer = (props: Props) => {
         if (headerTitle === 'Filtering') {
             setMount(true);
         }
-    }, []);
+    }, [headerTitle]);
+
+    const handleClick = () => {
+        if (headerTitle === 'Filtering' && isOpen === true) {
+            toggle(false);
+        }
+    };
 
     return (
         <Root>
@@ -141,7 +147,7 @@ const SwipeableEdgeDrawer = (props: Props) => {
                     keepMounted: mount
                 }}
             >
-                <DrawerHeader>
+                <DrawerHeader onClick={handleClick}>
                     {left}
                     <Puller />
                     {title}

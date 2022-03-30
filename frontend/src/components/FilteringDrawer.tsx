@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import { Box, styled, Typography } from '@mui/material';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import TextField from '@mui/material/TextField';
@@ -49,7 +48,7 @@ const FilteringDrawer = (props: Props) => {
             iconRight={'Expand'}
             isOpen={open}
             toggle={toggle}
-            disableSwipeToOpen={true}
+            disableSwipeToOpen={false}
         >
             <DrawerContent>
                 <Row>

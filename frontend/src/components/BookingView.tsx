@@ -108,6 +108,12 @@ function BookingView(props: BookingViewProps) {
         setexpandFilteringDrawer(true);
     };
 
+    const openFiltering = () => {
+        if (expandFilteringDrawer === false) {
+            setexpandFilteringDrawer(true);
+        }
+    };
+
     return (
         <Box id="current booking" textAlign="center" p={'16px'}>
             <div id="drawer-container">
@@ -193,7 +199,7 @@ function BookingView(props: BookingViewProps) {
                     updateData={updateData}
                 />
             )}
-            <div id="filtering-container">
+            <div id="filtering-container" onClick={openFiltering}>
                 <FilteringDrawer
                     open={expandFilteringDrawer}
                     toggle={toggleDrawn}
