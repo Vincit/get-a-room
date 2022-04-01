@@ -20,7 +20,7 @@ export const preferencesSchema = new Schema<Preferences>(
         },
         fav_rooms: {
             required: false,
-            type: String //change to array when works
+            type: Array
         }
     },
     { _id: false }

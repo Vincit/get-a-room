@@ -3,18 +3,22 @@ import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Room, Booking, Preferences } from '../types';
-import { updatePreferences } from '../services/preferencesService';
+import {
+    getPreferences,
+    updatePreferences
+} from '../services/preferencesService';
 import useCreateNotification from '../hooks/useCreateNotification';
 
 import TimeLeft from './util/TimeLeft';
 
 import Group from '@mui/icons-material/People';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import Favorite from '@mui/icons-material/Favorite';
+
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {
     CardActionArea,
     CircularProgress,
-    getAlertUtilityClass,
     IconButton,
     styled
 } from '@mui/material';
@@ -122,6 +126,7 @@ type RoomCardProps = {
     disableBooking: boolean;
     isReserved?: boolean;
     isSelected: boolean;
+    isFavorite: boolean;
     expandFeatures: boolean;
 };
 
@@ -135,6 +140,7 @@ const RoomCard = (props: RoomCardProps) => {
         disableBooking,
         isReserved,
         isSelected,
+        isFavorite,
         expandFeatures
     } = props;
 
@@ -149,17 +155,19 @@ const RoomCard = (props: RoomCardProps) => {
     };
 
     const handleFavoriteClick = () => {
-        alert('clicked favorite \n' + room.id);
-        updatePreferences({ fav_rooms: room.id })
-            .then((savedPreferences) => {
-                setPreferences(savedPreferences);
-                createSuccessNotification('Favorited room: ' + room.name);
-            })
-            .catch(() => {
-                createErrorNotification(
-                    'Could not favorite room: ' + room.name
-                );
-            });
+        // alert('clicked favorite \n' + room.id);
+        getPreferences().then((pref) => {
+            updatePreferences({ fav_rooms: pref.fav_rooms.push(room.id) })
+                .then((savedPreferences) => {
+                    setPreferences(savedPreferences);
+                    createSuccessNotification('Favorited room: ' + room.name);
+                })
+                .catch(() => {
+                    createErrorNotification(
+                        'Could not favorite room: ' + room.name
+                    );
+                });
+        });
     };
 
     const cardStyle = () => {
@@ -226,7 +234,7 @@ const RoomCard = (props: RoomCardProps) => {
                         ) : null}
 
                         <IconButton onClick={handleFavoriteClick}>
-                            <FavoriteBorderIcon />
+                            {isFavorite ? <Favorite /> : <FavoriteBorderIcon />}
                         </IconButton>
                     </Row>
 

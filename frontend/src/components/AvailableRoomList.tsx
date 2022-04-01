@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { List, Typography, Box, Switch, FormControlLabel } from '@mui/material';
 import { makeBooking } from '../services/bookingService';
 import { Booking, BookingDetails, Room, Preferences } from '../types';
+import { getPreferences } from '../services/preferencesService';
 import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
@@ -9,6 +10,19 @@ import BookingDrawer from './BookingDrawer';
 
 function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
+}
+
+// doesnt work right now, the bottom return is read
+export function isFavoriteCheck(room: Room) {
+    getPreferences()
+        .then((pref) => {
+            return pref.fav_rooms.includes(room.id);
+        })
+        .catch(() => {
+            return false;
+        });
+
+    return false;
 }
 
 function availableForMinutes(room: Room | undefined) {
@@ -187,6 +201,7 @@ const AvailableRoomList = (props: BookingListProps) => {
                                     bookingLoading={bookingLoading}
                                     disableBooking={disableBooking(bookings)}
                                     isSelected={selectedRoom === room}
+                                    isFavorite={isFavoriteCheck(room)}
                                     expandFeatures={expandedFeaturesAll}
                                     preferences={preferences}
                                     setPreferences={setPreferences}
