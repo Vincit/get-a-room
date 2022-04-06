@@ -92,7 +92,7 @@ export const fetchAvailability = () => {
             // The query can support maximum of 50 items, so we need to split the rooms into
             // 50 item chunks and run the requests with those chunks.
             for (let i = 0; i < calendarIds.length; i += 50) {
-                const result = await calendar.freeBusyQuery(
+                const result = await calendar.freeBusyQueryData(
                     client,
                     _.slice(calendarIds, i, 50 + i),
                     start,
@@ -128,7 +128,16 @@ export const writeReservationData = () => {
             const reservations = res.locals.roomReservations;
 
             _.forEach(rooms, (room: roomData) => {
-                room.nextCalendarEvent = reservations[room.id as string];
+                const busy = reservations[room.id as string];
+                room.busy = busy;
+                if (Array.isArray(busy) && busy.length > 0) {
+                    room.nextCalendarEvent = busy[0].start as string;
+                } else {
+                    room.nextCalendarEvent = DateTime.now()
+                        .toUTC()
+                        .endOf('day')
+                        .toISO();
+                }
             });
 
             next();
