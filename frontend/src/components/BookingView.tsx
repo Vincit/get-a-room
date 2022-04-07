@@ -13,6 +13,7 @@ import DurationPicker from './DurationPicker';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
+import BusyRoomList from './BusyRoomList';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -199,6 +200,8 @@ function BookingView(props: BookingViewProps) {
                     updateData={updateData}
                 />
             )}
+
+            {areRoomsFetched(rooms) ? <BusyRoomList rooms={rooms} /> : null}
         </Box>
     );
 }
