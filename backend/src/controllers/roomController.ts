@@ -133,9 +133,10 @@ export const writeReservationData = () => {
                 if (Array.isArray(busy) && busy.length > 0) {
                     room.nextCalendarEvent = busy[0].start as string;
                 } else {
-                    room.nextCalendarEvent = DateTime.now()
+                    room.nextCalendarEvent = DateTime.fromISO(
+                        req.query.until as string
+                    )
                         .toUTC()
-                        .endOf('day')
                         .toISO();
                 }
             });
