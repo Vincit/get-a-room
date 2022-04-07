@@ -78,7 +78,11 @@ const BuildingList = (props: BuildingSelectProps) => {
                 <Card
                     elevation={3}
                     key={building.name}
-                    sx={{ borderRadius: '10px' }}
+                    sx={{
+                        borderRadius: '10px',
+                        marginTop: '16px',
+                        marginBottom: '16px'
+                    }}
                 >
                     <CardActionArea onClick={() => clickFunction(building.id)}>
                         <CardContent>
@@ -132,7 +136,7 @@ const BuildingList = (props: BuildingSelectProps) => {
                     style={{
                         height: '100%',
                         width: '100%',
-                        padding: '0px 24px'
+                        padding: '0px 16px'
                     }}
                 >
                     <FormGroup sx={{ alignItems: 'left' }}>
@@ -140,8 +144,8 @@ const BuildingList = (props: BuildingSelectProps) => {
                             textAlign="left"
                             variant="subtitle1"
                             color={'#ce3b20'}
-                            paddingTop="10px"
-                            paddingBottom="5px"
+                            paddingTop="8px"
+                            paddingBottom="8px"
                         >
                             Welcome, {name}
                         </Typography>
@@ -151,8 +155,8 @@ const BuildingList = (props: BuildingSelectProps) => {
                         <Typography
                             textAlign="left"
                             variant="subtitle1"
-                            paddingTop="20px"
-                            paddingBottom="10px"
+                            paddingTop="24px"
+                            paddingBottom="8px"
                         >
                             SORT BASED ON
                         </Typography>
@@ -165,10 +169,19 @@ const BuildingList = (props: BuildingSelectProps) => {
                     value={alignment}
                     exclusive
                     onChange={handleChange}
-                    style={{ overflow: 'auto' }}
+                    style={{
+                        overflow: 'auto',
+                        display: 'flex',
+                        padding: '0px',
+                        width: '100%'
+                    }}
                 >
                     <ToggleButton
-                        style={{ minWidth: '150px', maxWidth: '150px' }}
+                        style={{
+                            minWidth: '150px',
+                            maxWidth: '250px',
+                            width: '50%'
+                        }}
                         value="proximity"
                     >
                         <GpsFixed style={{ minWidth: '40px' }}></GpsFixed>
@@ -176,7 +189,11 @@ const BuildingList = (props: BuildingSelectProps) => {
                     </ToggleButton>
 
                     <ToggleButton
-                        style={{ minWidth: '150px', maxWidth: '150px' }}
+                        style={{
+                            minWidth: '150px',
+                            maxWidth: '250px',
+                            width: '50%'
+                        }}
                         value="names"
                     >
                         <SortByAlphaIcon
@@ -185,6 +202,22 @@ const BuildingList = (props: BuildingSelectProps) => {
                         Names
                     </ToggleButton>
                 </ToggleButtonGroup>
+                <div
+                    style={{
+                        height: '100%',
+                        width: '100%',
+                        padding: '0px 16px'
+                    }}
+                >
+                    <Typography
+                        textAlign="left"
+                        variant="subtitle1"
+                        paddingTop="24px"
+                        marginBottom="-8px"
+                    >
+                        OFFICES
+                    </Typography>
+                </div>
             </Stack>
 
             {renderBuildingList()}
