@@ -1,3 +1,5 @@
+type TimePeriod = { start?: string | null; end?: string | null };
+
 type RoomData = {
     id: string | null | undefined;
     name: string | null | undefined;
@@ -6,6 +8,7 @@ type RoomData = {
     floor: string | null | undefined;
     features: string[] | null | undefined;
     nextCalendarEvent: string | null | undefined;
+    busy?: TimePeriod[] | null | undefined;
     location: string | null | undefined;
 };
 
