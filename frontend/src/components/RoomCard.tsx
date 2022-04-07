@@ -126,7 +126,6 @@ type RoomCardProps = {
     disableBooking: boolean;
     isReserved?: boolean;
     isSelected: boolean;
-    isFavorite: boolean;
     expandFeatures: boolean;
 };
 
@@ -140,7 +139,6 @@ const RoomCard = (props: RoomCardProps) => {
         disableBooking,
         isReserved,
         isSelected,
-        isFavorite,
         expandFeatures
     } = props;
 
@@ -155,7 +153,8 @@ const RoomCard = (props: RoomCardProps) => {
     };
 
     const handleFavoriteClick = () => {
-        // alert('clicked favorite \n' + room.id);
+        room.favorited = !room.favorited;
+
         getPreferences().then((pref) => {
             updatePreferences({ fav_rooms: pref.fav_rooms.push(room.id) })
                 .then((savedPreferences) => {
@@ -234,7 +233,11 @@ const RoomCard = (props: RoomCardProps) => {
                         ) : null}
 
                         <IconButton onClick={handleFavoriteClick}>
-                            {isFavorite ? <Favorite /> : <FavoriteBorderIcon />}
+                            {room.favorited ? (
+                                <Favorite sx={{ color: '#F04E30' }} />
+                            ) : (
+                                <FavoriteBorderIcon />
+                            )}
                         </IconButton>
                     </Row>
 

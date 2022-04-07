@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Box, List, Typography } from '@mui/material';
 import { Booking, AddTimeDetails, Room, Preferences } from '../types';
 import { updateBooking, endBooking } from '../services/bookingService';
-import { isFavoriteCheck } from '../components/AvailableRoomList';
 import { getTimeLeftMinutes } from './util/TimeLeft';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
@@ -130,7 +129,6 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                             disableBooking={false}
                             isSelected={booking.room.id === selectedId}
                             isReserved={true}
-                            isFavorite={isFavoriteCheck(booking.room)}
                             expandFeatures={true}
                             preferences={preferences}
                             setPreferences={setPreferences}

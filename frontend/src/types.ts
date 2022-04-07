@@ -35,6 +35,7 @@ export interface Room {
     capacity?: number;
     features?: Array<string>;
     nextCalendarEvent: string;
+    favorited: boolean;
 }
 
 export interface Name {

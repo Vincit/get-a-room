@@ -12,17 +12,17 @@ function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
 }
 
-// doesnt work right now, the bottom return is read
-export function isFavoriteCheck(room: Room) {
-    getPreferences()
-        .then((pref) => {
-            return pref.fav_rooms.includes(room.id);
-        })
-        .catch(() => {
-            return false;
-        });
-
-    return false;
+export async function isFavorited(room: Room) {
+    try {
+        const pref = await getPreferences();
+        if (pref.fav_rooms.includes(room.id)) {
+            room.favorited = true;
+        } else {
+            room.favorited = false;
+        }
+    } catch {
+        room.favorited = true;
+    }
 }
 
 function availableForMinutes(room: Room | undefined) {
@@ -192,22 +192,27 @@ const AvailableRoomList = (props: BookingListProps) => {
             <List>
                 {rooms
                     .sort((a, b) => (a.name < b.name ? -1 : 1))
+                    .sort((value) => (value.favorited ? -1 : 1))
                     .map((room) =>
-                        isAvailableFor(bookingDuration, room) ? (
-                            <li key={room.id}>
-                                <RoomCard
-                                    room={room}
-                                    onClick={handleCardClick}
-                                    bookingLoading={bookingLoading}
-                                    disableBooking={disableBooking(bookings)}
-                                    isSelected={selectedRoom === room}
-                                    isFavorite={isFavoriteCheck(room)}
-                                    expandFeatures={expandedFeaturesAll}
-                                    preferences={preferences}
-                                    setPreferences={setPreferences}
-                                />
-                            </li>
-                        ) : null
+                        isAvailableFor(bookingDuration, room)
+                            ? (isFavorited(room),
+                              (
+                                  <li key={room.id}>
+                                      <RoomCard
+                                          room={room}
+                                          onClick={handleCardClick}
+                                          bookingLoading={bookingLoading}
+                                          disableBooking={disableBooking(
+                                              bookings
+                                          )}
+                                          isSelected={selectedRoom === room}
+                                          expandFeatures={expandedFeaturesAll}
+                                          preferences={preferences}
+                                          setPreferences={setPreferences}
+                                      />
+                                  </li>
+                              ))
+                            : null
                     )}
             </List>
         </Box>
