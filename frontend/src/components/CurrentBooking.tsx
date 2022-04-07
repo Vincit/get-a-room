@@ -2,21 +2,13 @@ import React, { useState } from 'react';
 import { Box, List, Typography } from '@mui/material';
 import { Booking, AddTimeDetails, Room } from '../types';
 import { updateBooking, endBooking } from '../services/bookingService';
-import { getTimeLeftMinutes } from './util/TimeLeft';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
 import AlterBookingDrawer from './AlterBookingDrawer';
-import { getTimeAvailableMinutes } from './RoomCard';
+import { getTimeAvailableMinutes, getBookingTimeLeft } from './RoomCard';
 
 function areBookingsFetched(bookings: Booking[]) {
     return Array.isArray(bookings) && bookings.length > 0;
-}
-
-function getBookingTimeLeft(booking: Booking | undefined) {
-    if (booking === undefined) {
-        return 0;
-    }
-    return Math.floor(getTimeLeftMinutes(booking.endTime));
 }
 
 type CurrentBookingProps = {

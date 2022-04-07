@@ -12,11 +12,9 @@ export const getTimeLeftMinutes = (endTime: string) => {
 
 export const getTimeLeft = (endTime: string) => {
     let nextReservationTime = DateTime.fromISO(endTime).toUTC();
-
     let duration = Duration.fromObject(
         nextReservationTime.diffNow(['hours', 'minutes']).toObject()
     );
-
     if (duration.hours === 0 && duration.minutes < 1) {
         return '< 1 min';
     }
