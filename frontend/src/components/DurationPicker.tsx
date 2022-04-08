@@ -35,6 +35,7 @@ const DurationPicker = (props: DucationPickerProps) => {
                 variant="subtitle1"
                 textAlign="left"
                 marginBottom={'8px'}
+                marginLeft={'24px'}
             >
                 {title}
             </Typography>

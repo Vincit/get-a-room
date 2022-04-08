@@ -104,7 +104,11 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 />
             </div>
 
-            <Typography variant="subtitle1" textAlign="left">
+            <Typography
+                variant="subtitle1"
+                textAlign="left"
+                marginLeft={'24px'}
+            >
                 booked to you
             </Typography>
             <List>

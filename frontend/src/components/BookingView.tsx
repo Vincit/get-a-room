@@ -128,14 +128,32 @@ function BookingView(props: BookingViewProps) {
                 textAlign="left"
                 variant="subtitle1"
                 color={'#ce3b20'}
-                paddingLeft="20px"
+                paddingLeft="24px"
                 paddingTop="20px"
                 style={{ cursor: 'pointer' }}
+                display="flex"
             >
-                <ArrowBackIcon style={{ fontSize: 'small' }}></ArrowBackIcon>
-                {preferences?.building ? preferences.building.name : 'Back'}
+                <ArrowBackIcon
+                    style={{ width: '20px', height: '20px' }}
+                ></ArrowBackIcon>
+                <Typography
+                    style={{
+                        marginLeft: '8px',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                    }}
+                >
+                    {preferences?.building ? preferences.building.name : 'Back'}
+                </Typography>
             </Typography>
-            <Typography py={2} variant="h2" textAlign="center">
+            <Typography
+                py={2}
+                variant="h2"
+                textAlign="left"
+                marginLeft="24px"
+                paddingTop="0px"
+                paddingBottom="24px"
+            >
                 Available rooms
             </Typography>
 

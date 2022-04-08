@@ -170,7 +170,7 @@ const AvailableRoomList = (props: BookingListProps) => {
                 }
                 control={<Switch onChange={handleAllFeaturesCollapse} />}
             />
-            <Typography variant="subtitle1" textAlign="left">
+            <Typography variant="subtitle1" textAlign="left" marginLeft="24px">
                 Available rooms
             </Typography>
             <List>
