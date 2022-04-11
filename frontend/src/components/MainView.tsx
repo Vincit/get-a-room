@@ -16,7 +16,6 @@ import { Box } from '@mui/material';
 import NavBar from './NavBar';
 import { getName } from '../services/nameService';
 import { useHistory } from 'react-router-dom';
-import useCreateNotification from '../hooks/useCreateNotification';
 
 const MainView = () => {
     const [preferences, setPreferences] = useState<Preferences | undefined>();
@@ -25,9 +24,9 @@ const MainView = () => {
 
     const [name, setName] = useState<String>();
 
-    const history = useHistory();
+    const [expandBookingDrawer, setexpandBookingDrawer] = useState(false);
 
-    const { createSuccessNotification } = useCreateNotification();
+    const history = useHistory();
 
     useEffect(() => {
         getPreferences()
@@ -42,7 +41,7 @@ const MainView = () => {
         getPreferencesWithGPS()
             .then((preference) => {
                 setPreferences(preference);
-                createSuccessNotification('Office set according to GPS');
+                toggleDrawn(true);
             })
             .catch((e) => {
                 // Redirected to login
@@ -78,6 +77,10 @@ const MainView = () => {
         }
     }, [preferences, goToMainView]);
 
+    const toggleDrawn = (newOpen: boolean) => {
+        setexpandBookingDrawer(newOpen);
+    };
+
     return (
         <Box
             id="main-view"
@@ -100,7 +103,11 @@ const MainView = () => {
                         />
                     </Route>
                     <Route path="/">
-                        <BookingView preferences={preferences} />
+                        <BookingView
+                            preferences={preferences}
+                            open={expandBookingDrawer}
+                            toggle={toggleDrawn}
+                        />
                     </Route>
                 </Switch>
             </Box>

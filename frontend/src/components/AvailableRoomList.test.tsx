@@ -86,7 +86,11 @@ describe('AvailableRoomList', () => {
 
     it('renders room data', async () => {
         render(
-            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            <AvailableRoomList
+                rooms={fakeRooms}
+                bookings={fakeBookings}
+                bookingDuration={15}
+            />,
             container
         );
 
@@ -99,7 +103,11 @@ describe('AvailableRoomList', () => {
 
     it('filters rooms available for less than 15 min', async () => {
         render(
-            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            <AvailableRoomList
+                rooms={fakeRooms}
+                bookings={fakeBookings}
+                bookingDuration={15}
+            />,
             container
         );
         const items = screen.queryAllByTestId('AvailableRoomListCard');
@@ -108,50 +116,53 @@ describe('AvailableRoomList', () => {
 
     it('filters rooms available less than 30 min', async () => {
         render(
-            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            <AvailableRoomList
+                rooms={fakeRooms}
+                bookings={fakeBookings}
+                bookingDuration={30}
+            />,
             container
         );
-        const durationButton30 = screen.queryByTestId('DurationPicker30');
-        fireEvent.click(durationButton30);
+
         const items = screen.queryAllByTestId('AvailableRoomListCard');
         await waitFor(() => expect(items).toHaveLength(3));
     });
 
     it('filters rooms available for less than 60 min', async () => {
         render(
-            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            <AvailableRoomList
+                rooms={fakeRooms}
+                bookings={fakeBookings}
+                bookingDuration={60}
+            />,
             container
         );
-        const durationButton60 = screen.queryByTestId('DurationPicker60');
-        fireEvent.click(durationButton60);
+
         const items = screen.queryAllByTestId('AvailableRoomListCard');
         await waitFor(() => expect(items).toHaveLength(2));
     });
 
     it('filters rooms available for less than 120 min', async () => {
         render(
-            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            <AvailableRoomList
+                rooms={fakeRooms}
+                bookings={fakeBookings}
+                bookingDuration={120}
+            />,
             container
         );
-        const durationButton120 = screen.queryByTestId('DurationPicker120');
-        fireEvent.click(durationButton120);
+
         const items = screen.queryAllByTestId('AvailableRoomListCard');
         await waitFor(() => expect(items).toHaveLength(1));
     });
 
-    it('renders duration picker', async () => {
-        render(
-            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
-            container
-        );
-
-        const items = screen.queryByTestId('DurationPicker');
-        await waitFor(() => expect(items).toBeTruthy());
-    });
-
     it('renders booking drawer', async () => {
         render(
-            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            <AvailableRoomList
+                rooms={fakeRooms}
+                bookings={fakeBookings}
+                bookingDuration={15}
+            />,
             container
         );
 
@@ -172,7 +183,11 @@ describe('AvailableRoomList', () => {
         });
 
         render(
-            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            <AvailableRoomList
+                rooms={fakeRooms}
+                bookings={fakeBookings}
+                bookingDuration={15}
+            />,
             container
         );
 
@@ -198,12 +213,14 @@ describe('AvailableRoomList', () => {
         });
 
         render(
-            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            <AvailableRoomList
+                rooms={fakeRooms}
+                bookings={fakeBookings}
+                bookingDuration={30}
+            />,
             container
         );
 
-        const durationButton30 = screen.queryByTestId('DurationPicker30');
-        fireEvent.click(durationButton30);
         const card = screen.queryAllByTestId('CardActiveArea');
         fireEvent.click(card[0]);
         const bookButton = screen.queryByTestId('BookNowButton');
@@ -226,12 +243,14 @@ describe('AvailableRoomList', () => {
         });
 
         render(
-            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            <AvailableRoomList
+                rooms={fakeRooms}
+                bookings={fakeBookings}
+                bookingDuration={60}
+            />,
             container
         );
 
-        const durationButton60 = screen.queryByTestId('DurationPicker60');
-        fireEvent.click(durationButton60);
         const card = screen.queryAllByTestId('CardActiveArea');
         fireEvent.click(card[0]);
         const bookButton = screen.queryByTestId('BookNowButton');
@@ -254,12 +273,14 @@ describe('AvailableRoomList', () => {
         });
 
         render(
-            <AvailableRoomList rooms={fakeRooms} bookings={fakeBookings} />,
+            <AvailableRoomList
+                rooms={fakeRooms}
+                bookings={fakeBookings}
+                bookingDuration={120}
+            />,
             container
         );
 
-        const durationButton120 = screen.queryByTestId('DurationPicker120');
-        fireEvent.click(durationButton120);
         const card = screen.queryAllByTestId('CardActiveArea');
         fireEvent.click(card[0]);
         const bookButton = screen.queryByTestId('BookNowButton');

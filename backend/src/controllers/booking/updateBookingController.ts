@@ -121,6 +121,10 @@ export const checkRoomIsFree = () => {
             const event: schema.EventData = res.locals.event;
             const timeToAdd: number = req.body.timeToAdd;
 
+            if (timeToAdd < 0) {
+                return next();
+            }
+
             // New end time
             const endTime = DateTime.fromISO(event.end?.dateTime as string)
                 .plus({ minutes: timeToAdd })

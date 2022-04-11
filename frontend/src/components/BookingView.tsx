@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, styled } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import { getRooms } from '../services/roomService';
@@ -8,9 +8,12 @@ import { Room, Booking, Preferences } from '../types';
 import CurrentBooking from './CurrentBooking';
 import AvailableRoomList from './AvailableRoomList';
 import CenteredProgress from './util/CenteredProgress';
+import DurationPicker from './DurationPicker';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
+import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
+import BusyRoomList from './BusyRoomList';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -24,15 +27,27 @@ function isActiveBooking(bookings: Booking[]) {
     return bookings.length > 0;
 }
 
+const RowCentered = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    padding: '5px',
+    width: '100%'
+}));
+
 type BookingViewProps = {
     preferences?: Preferences;
+    open: boolean;
+    toggle: (open: boolean) => void;
 };
 
 function BookingView(props: BookingViewProps) {
-    const { preferences } = props;
+    const { preferences, open, toggle } = props;
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [bookings, setBookings] = useState<Booking[]>([]);
+    const [bookingDuration, setBookingDuration] = useState(15);
 
     const updateRooms = useCallback(() => {
         if (preferences) {
@@ -42,6 +57,10 @@ function BookingView(props: BookingViewProps) {
                 .catch((error) => console.log(error));
         }
     }, [preferences]);
+
+    const handleDurationChange = (newDuration: number) => {
+        setBookingDuration(newDuration);
+    };
 
     const updateBookings = useCallback(() => {
         getBookings()
@@ -81,27 +100,60 @@ function BookingView(props: BookingViewProps) {
     }, [updateData]);
 
     return (
-        <div id="booking-view">
+        <Box id="current booking" textAlign="center" p={'16px'}>
+            <div id="drawer-container">
+                <SwipeableEdgeDrawer
+                    headerTitle={'GPS has your back!'}
+                    iconLeft={'Map'}
+                    iconRight={'Close'}
+                    isOpen={open}
+                    toggle={toggle}
+                    disableSwipeToOpen={true}
+                >
+                    <DrawerContent>
+                        <RowCentered>
+                            <Typography
+                                variant="body1"
+                                sx={{ color: '#000000', font: 'Roboto Mono' }}
+                            >
+                                {preferences?.building?.name} was selected as
+                                your office based on your GPS location
+                            </Typography>
+                        </RowCentered>
+                    </DrawerContent>
+                </SwipeableEdgeDrawer>
+            </div>
             <Typography
                 onClick={moveToChooseOfficePage}
                 textAlign="left"
                 variant="subtitle1"
                 color={'#ce3b20'}
-                paddingLeft="20px"
+                paddingLeft="24px"
                 paddingTop="20px"
                 style={{ cursor: 'pointer' }}
+                display="flex"
             >
-                <ArrowBackIcon style={{ fontSize: 'small' }}></ArrowBackIcon>
-                {preferences?.building ? preferences.building.name : 'Back'}
+                <ArrowBackIcon
+                    style={{ width: '20px', height: '20px' }}
+                ></ArrowBackIcon>
+                <Typography
+                    style={{
+                        marginLeft: '8px',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                    }}
+                >
+                    {preferences?.building ? preferences.building.name : 'Back'}
+                </Typography>
             </Typography>
-
-            <CurrentBooking
-                bookings={bookings}
-                updateRooms={updateRooms}
-                updateBookings={updateBookings}
-                setBookings={setBookings}
-            />
-            <Typography py={2} variant="h2" textAlign="center">
+            <Typography
+                py={2}
+                variant="h2"
+                textAlign="left"
+                marginLeft="24px"
+                paddingTop="0px"
+                paddingBottom="24px"
+            >
                 Available rooms
             </Typography>
 
@@ -128,16 +180,29 @@ function BookingView(props: BookingViewProps) {
                     </Typography>
                 </Box>
             ) : null}
+
+            <DurationPicker onChange={handleDurationChange} title="duration" />
+
+            <CurrentBooking
+                bookings={bookings}
+                updateRooms={updateRooms}
+                updateBookings={updateBookings}
+                setBookings={setBookings}
+            />
+
             {!areRoomsFetched(rooms) ? (
                 <CenteredProgress />
             ) : (
                 <AvailableRoomList
+                    bookingDuration={bookingDuration}
                     rooms={rooms}
                     bookings={bookings}
                     updateData={updateData}
                 />
             )}
-        </div>
+
+            {areRoomsFetched(rooms) ? <BusyRoomList rooms={rooms} /> : null}
+        </Box>
     );
 }
 

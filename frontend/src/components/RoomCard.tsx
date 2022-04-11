@@ -9,7 +9,10 @@ import Group from '@mui/icons-material/People';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { CardActionArea, CircularProgress, styled } from '@mui/material';
-import { getTimeLeft } from './util/TimeLeft';
+import { getTimeLeftMinutes } from './util/TimeLeft';
+import { minutesToSimpleString } from './BookingDrawer';
+import { DateTime } from 'luxon';
+import { roomFreeIn } from './BusyRoomList';
 
 function getName(room: Room) {
     return room.name;
@@ -37,6 +40,37 @@ function getFeatures(room: Room) {
         }
     }
     return featuresDisplay;
+}
+
+export function getBookingTimeLeft(booking: Booking | undefined) {
+    if (booking === undefined) {
+        return 0;
+    }
+    return Math.ceil(getTimeLeftMinutes(booking.endTime)) + 2;
+}
+
+export function getTimeAvailableMinutes(booking: Booking | undefined) {
+    if (booking === undefined) {
+        return 0;
+    }
+    let timeLeft = getTimeLeftMinutes(booking.endTime);
+    let availableFor = getTimeLeftMinutes(getNextCalendarEvent(booking.room));
+
+    return Math.ceil(availableFor - timeLeft);
+}
+
+function busyAvailableFor(room: Room) {
+    let end = DateTime.now().endOf('day');
+    let start = DateTime.now();
+
+    if (Array.isArray(room.busy) && room.busy.length > 0) {
+        start = DateTime.fromISO(room.busy[0].end as string);
+        if (room.busy.length > 1) {
+            end = DateTime.fromISO(room.busy[1].start as string);
+        }
+    }
+    const minutes = end.diff(start, 'minutes').minutes;
+    return Math.round(minutes);
 }
 
 const GridContainer = styled(Box)(({ theme }) => ({
@@ -81,53 +115,71 @@ const selectedVars = {
     '--border': '1px solid #443938'
 } as React.CSSProperties;
 
+const selectedReservedVars = {
+    '--border': '2px solid #219653'
+} as React.CSSProperties;
+
 type RoomCardProps = {
     room: Room;
     booking?: Booking;
-    onClick: (room: Room) => void;
+    onClick: (room: Room, booking?: Booking) => void;
     bookingLoading: string;
     disableBooking: boolean;
     isReserved?: boolean;
     isSelected: boolean;
     expandFeatures: boolean;
+    isBusy?: boolean;
 };
 
 const RoomCard = (props: RoomCardProps) => {
     const {
         room,
+        booking,
         onClick,
         bookingLoading,
         disableBooking,
         isReserved,
         isSelected,
-        expandFeatures
+        expandFeatures,
+        isBusy
     } = props;
 
     const handleClick = () => {
         if (disableBooking) {
             return;
         }
-        onClick(room);
+        onClick(room, booking);
+    };
+
+    const cardStyle = () => {
+        if (isSelected && isReserved) {
+            return selectedReservedVars;
+        }
+        if (isSelected) {
+            return selectedVars;
+        }
+
+        return defaultVars;
     };
 
     return (
-        <CustomCard
-            data-testid="AvailableRoomListCard"
-            style={isSelected ? selectedVars : defaultVars}
-        >
+        <CustomCard data-testid="AvailableRoomListCard" style={cardStyle()}>
             <CardActionArea data-testid="CardActiveArea" onClick={handleClick}>
                 <GridContainer>
                     <Row>
                         <Typography
                             data-testid="BookingRoomTitle"
                             variant="h3"
-                            color="text.main"
+                            color={isBusy ? 'text.disabled' : 'text.main'}
                         >
                             {getName(room)}
                         </Typography>
                         <EndBox>
-                            <Group />
-                            <Typography fontWeight="bold">
+                            <Group color={isBusy ? 'disabled' : 'inherit'} />
+                            <Typography
+                                fontWeight="bold"
+                                color={isBusy ? 'text.disabled' : 'text.main'}
+                            >
                                 {getCapacity(room)}
                             </Typography>
                         </EndBox>
@@ -141,21 +193,42 @@ const RoomCard = (props: RoomCardProps) => {
                                 color="success.main"
                                 margin={'0 0 0 5px'}
                             >
-                                Booked to you for{' '}
-                                {getTimeLeft(getNextCalendarEvent(room))}
+                                Booked to you for {getBookingTimeLeft(booking)}{' '}
+                                minutes.
                             </Typography>
                         </StartBox>
                     ) : null}
 
                     <Row>
-                        <TimeLeft
-                            timeLeftText="Available for "
-                            endTime={getNextCalendarEvent(room)}
-                        />
+                        {isReserved ? (
+                            <Typography>
+                                Available for another{' '}
+                                {minutesToSimpleString(
+                                    getTimeAvailableMinutes(booking)
+                                )}
+                            </Typography>
+                        ) : isBusy ? (
+                            <Typography
+                                variant="body1"
+                                color="text.disabled"
+                                align="left"
+                            >
+                                Available in <b>{roomFreeIn(room)} minutes</b>{' '}
+                                for{' '}
+                                {minutesToSimpleString(busyAvailableFor(room))}
+                            </Typography>
+                        ) : (
+                            <TimeLeft
+                                timeLeftText="Available for "
+                                endTime={getNextCalendarEvent(room)}
+                            />
+                        )}
                         {bookingLoading === room.id ? (
                             <CircularProgress color="primary" />
                         ) : null}
-                        <FavoriteBorderIcon />
+                        <FavoriteBorderIcon
+                            color={isBusy ? 'disabled' : 'inherit'}
+                        />
                     </Row>
 
                     {expandFeatures ? (

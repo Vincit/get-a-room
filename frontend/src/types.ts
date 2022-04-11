@@ -27,6 +27,8 @@ export interface Preferences {
     building?: Building;
 }
 
+type TimePeriod = { start?: string | null; end?: string | null };
+
 export interface Room {
     id: string;
     name: string;
@@ -34,6 +36,7 @@ export interface Room {
     capacity?: number;
     features?: Array<string>;
     nextCalendarEvent: string;
+    busy?: TimePeriod[] | undefined | null;
 }
 
 export interface Name {

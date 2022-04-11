@@ -7,6 +7,8 @@ import * as schema from '../../utils/googleSchema';
 const calendar = google.calendar('v3');
 
 type NextEventById = Record<string, string | null | undefined>;
+type TimePeriod = { start?: string | null; end?: string | null };
+type BusyById = Record<string, TimePeriod[] | null | undefined>;
 
 /**
  * Create an event, will not check if the rooms is free
@@ -107,6 +109,42 @@ export const freeBusyQuery = async (
         }
 
         results[id] = startOfReservation;
+    });
+
+    return results;
+};
+
+/**
+ * Run freeBusyQuery for items and return array containing objects
+ * with id and list of time ranges during which this calendar should be regarded as busy.
+ * @param client OAuth2Client
+ * @param items Items to query
+ * @param start Start time
+ * @param end End time
+ */
+export const freeBusyQueryData = async (
+    client: OAuth2Client,
+    items: schema.FreeBusyRequestItem[],
+    start: string,
+    end: string
+): Promise<BusyById> => {
+    const queryResult = await calendar.freebusy.query({
+        requestBody: {
+            timeMin: start,
+            timeMax: end,
+            items: items,
+            calendarExpansionMax: items.length
+        },
+        auth: client
+    });
+
+    const calendars = queryResult.data.calendars;
+    const results: BusyById = {};
+
+    _.forIn(calendars, (data: schema.FreeBusyCalendar, id: string) => {
+        if (Array.isArray(data.busy) && data.busy.length !== 0) {
+            results[id] = data.busy as TimePeriod[];
+        }
     });
 
     return results;

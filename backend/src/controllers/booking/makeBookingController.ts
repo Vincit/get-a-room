@@ -123,7 +123,7 @@ export const makeBooking = () => {
     ) => {
         try {
             const startTime = DateTime.now().toUTC().toISO();
-            const endTime = DateTime.now()
+            const endTime = DateTime.fromObject({ second: 0, millisecond: 0 })
                 .plus({ minutes: res.locals.duration })
                 .toUTC()
                 .toISO();
