@@ -14,7 +14,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const drawerBleeding = 70;
+const drawerBleeding = 65;
 
 const Root = styled('div')(({ theme }) => ({
     height: '100%',
@@ -72,6 +72,7 @@ interface Props {
     isOpen: boolean;
     toggle: (open: boolean) => void;
     disableSwipeToOpen: boolean;
+    mounted?: boolean;
 }
 
 const SwipeableEdgeDrawer = (props: Props) => {
@@ -81,10 +82,9 @@ const SwipeableEdgeDrawer = (props: Props) => {
         iconLeft,
         isOpen,
         toggle,
-        disableSwipeToOpen
+        disableSwipeToOpen,
+        mounted
     } = props;
-
-    const [mount, setMount] = React.useState(false);
 
     const toggleDrawer = (newOpen: boolean) => () => {
         toggle(newOpen);
@@ -113,13 +113,7 @@ const SwipeableEdgeDrawer = (props: Props) => {
         right = <CloseIcon />;
     }
 
-    React.useEffect(() => {
-        if (headerTitle === 'Filtering') {
-            setMount(true);
-        }
-    }, [headerTitle]);
-
-    const handleClick = () => {
+    const handleHeaderClick = () => {
         if (headerTitle === 'Filtering' && isOpen === true) {
             toggle(false);
         }
@@ -143,11 +137,9 @@ const SwipeableEdgeDrawer = (props: Props) => {
                 onOpen={toggleDrawer(true)}
                 swipeAreaWidth={drawerBleeding}
                 disableSwipeToOpen={disableSwipeToOpen}
-                ModalProps={{
-                    keepMounted: mount
-                }}
+                keepMounted={mounted}
             >
-                <DrawerHeader onClick={handleClick}>
+                <DrawerHeader onClick={handleHeaderClick}>
                     {left}
                     <Puller />
                     {title}

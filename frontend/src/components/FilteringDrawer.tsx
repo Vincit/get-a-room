@@ -1,8 +1,12 @@
+import React, { useState } from 'react';
 import { Box, styled, Typography } from '@mui/material';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import TextField from '@mui/material/TextField';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
+import SearchIcon from '@mui/icons-material/Search';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import InputAdornment from '@mui/material/InputAdornment';
 
 export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -14,23 +18,31 @@ export const Row = styled(Box)(({ theme }) => ({
 
 export const SmallText = styled(Typography)(() => ({
     textTransform: 'uppercase',
+    //fontFamily: 'Roboto Mono',
     fontSize: '12px',
     lineHeight: '12px',
     fontWeight: 'bold',
     fontStyle: 'normal',
-    margin: '24px 8px 0 0'
+    margin: '24px 8px 8px 0'
 }));
 
 export const SpacerFirst = styled('div')(() => ({
-    padding: '8px 8px 8px 0px'
+    margin: '0 12px 0 0'
 }));
 
 export const SpacerMiddle = styled('div')(() => ({
-    padding: '8px'
+    margin: '0 12px 0 12px'
 }));
 
 export const SpacerLast = styled('div')(() => ({
-    padding: '8px 0px 8px 8px'
+    margin: '0 0 0 8px'
+}));
+
+export const FilteringButton = styled(ToggleButton)(() => ({
+    //fontFamily: 'Roboto Mono',
+    fontStyle: 'normal',
+    fontWeight: 'bold',
+    fontSize: '16px'
 }));
 
 interface Props {
@@ -41,6 +53,29 @@ interface Props {
 const FilteringDrawer = (props: Props) => {
     const { open, toggle } = props;
 
+    const [customFilter, setCustomFilter] = useState('');
+    const [roomSize, setRoomSize] = useState<string[]>([]);
+    const [resources, setResources] = useState<string[]>([]);
+    const [onlyFavorites, setOnlyFavorites] = useState(false);
+
+    const handleRoomSizeChange = (
+        event: React.MouseEvent<HTMLElement>,
+        newRoomSize: string[]
+    ) => {
+        setRoomSize(newRoomSize);
+    };
+
+    const handleResourcesChange = (
+        event: React.MouseEvent<HTMLElement>,
+        newResources: string[]
+    ) => {
+        setRoomSize(newResources);
+    };
+
+    const handleCustomFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCustomFilter(event.target.value);
+    };
+
     return (
         <SwipeableEdgeDrawer
             headerTitle={'Filtering'}
@@ -49,16 +84,32 @@ const FilteringDrawer = (props: Props) => {
             isOpen={open}
             toggle={toggle}
             disableSwipeToOpen={false}
+            mounted={true}
         >
             <DrawerContent>
                 <Row>
                     <SmallText>Custom Filter</SmallText>
                 </Row>
-                <TextField />
+                <TextField
+                    onChange={handleCustomFilter}
+                    value={customFilter}
+                    placeholder="Room name, resource..."
+                    size="small"
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        )
+                    }}
+                />
                 <Row>
                     <SmallText>Room Size (People)</SmallText>
                 </Row>
-                <ToggleButtonGroup>
+                <ToggleButtonGroup
+                    value={roomSize}
+                    onChange={handleRoomSizeChange}
+                >
                     <SpacerFirst>
                         <ToggleButton value="1-2">1-2</ToggleButton>
                     </SpacerFirst>
@@ -78,7 +129,10 @@ const FilteringDrawer = (props: Props) => {
                 <Row>
                     <SmallText>Resources</SmallText>
                 </Row>
-                <ToggleButtonGroup>
+                <ToggleButtonGroup
+                    value={resources}
+                    onChange={handleResourcesChange}
+                >
                     <SpacerFirst>
                         <ToggleButton value="Jabra">Jabra</ToggleButton>
                     </SpacerFirst>
@@ -89,7 +143,16 @@ const FilteringDrawer = (props: Props) => {
                 <Row>
                     <SmallText>Favourites</SmallText>
                 </Row>
-                <ToggleButton value="favourites">Only Favourites</ToggleButton>
+                <ToggleButton
+                    value="favourites"
+                    selected={onlyFavorites}
+                    onChange={() => {
+                        setOnlyFavorites(!onlyFavorites);
+                    }}
+                >
+                    <FavoriteBorderIcon />
+                    &nbsp; Only Favourites
+                </ToggleButton>
             </DrawerContent>
         </SwipeableEdgeDrawer>
     );

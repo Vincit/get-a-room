@@ -199,7 +199,7 @@ function BookingView(props: BookingViewProps) {
                     updateData={updateData}
                 />
             )}
-            <div id="filtering-container" onClick={openFiltering}>
+            <div id="drawer-container" onClick={openFiltering}>
                 <FilteringDrawer
                     open={expandFilteringDrawer}
                     toggle={toggleDrawn}
