@@ -42,7 +42,7 @@ const EndBox = styled(Box)(({ theme }) => ({
     alignItems: 'center'
 }));
 
-const RoomList = (props: BuildingSelectProps) => {
+const BuildingList = (props: BuildingSelectProps) => {
     const { setSelectedBuildingId, buildings, handlePreferencesSubmit, name } =
         props;
     const [alignment, setAlignment] = React.useState('names');
@@ -61,7 +61,7 @@ const RoomList = (props: BuildingSelectProps) => {
         }
     };
 
-    const renderRoomList = (): JSX.Element[] => {
+    const renderBuildingList = (): JSX.Element[] => {
         if (alignment === 'names') {
             buildings.sort((a, b) => a.name.localeCompare(b.name));
         } else {
@@ -187,9 +187,9 @@ const RoomList = (props: BuildingSelectProps) => {
                 </ToggleButtonGroup>
             </Stack>
 
-            {renderRoomList()}
+            {renderBuildingList()}
         </div>
     );
 };
 
-export default RoomList;
+export default BuildingList;

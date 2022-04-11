@@ -47,6 +47,7 @@ describe('ChooseOfficeView', () => {
                 buildings={[]}
                 setPreferences={jest.fn()}
                 name="testname"
+                setBuildings={jest.fn()}
             />
         );
 
@@ -61,6 +62,7 @@ describe('ChooseOfficeView', () => {
                     buildings={TEST_BUILDINGS}
                     setPreferences={jest.fn()}
                     name="testname"
+                    setBuildings={jest.fn()}
                 />
             );
         });
@@ -82,6 +84,7 @@ describe('ChooseOfficeView', () => {
                 buildings={TEST_BUILDINGS}
                 setPreferences={jest.fn()}
                 name="testname"
+                setBuildings={jest.fn()}
             />
         );
 
@@ -96,6 +99,7 @@ describe('ChooseOfficeView', () => {
                     buildings={TEST_BUILDINGS}
                     setPreferences={jest.fn()}
                     name="testname"
+                    setBuildings={jest.fn()}
                 />
             );
         });
@@ -114,6 +118,7 @@ describe('ChooseOfficeView', () => {
                 buildings={TEST_BUILDINGS}
                 setPreferences={mockedSetPreferences}
                 name="testname"
+                setBuildings={jest.fn()}
             />
         );
 

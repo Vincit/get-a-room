@@ -1,54 +1,5 @@
 import { Building } from '../types';
 import { getBuildings } from './buildingService';
-import { updatePreferences } from './preferencesService';
-
-/**
- * Sets the building preference to the closest building
- * relative to users GPS position
- * @returns
- */
-export const setGPSLocationPreference = async () => {
-    if (!('geolocation' in navigator)) {
-        console.log('Geolocation not available');
-        return;
-    }
-
-    const buildings = await getBuildings();
-    if (buildings.length === 0) {
-        console.log('Could not find buildings');
-        return;
-    }
-
-    var closest = Number.MAX_SAFE_INTEGER;
-    var currentClosestBuilding: Building;
-    function success(position: any) {
-        var crd = position.coords;
-        for (var building of buildings) {
-            var dist = getDistanceFromLatLonInKm(
-                crd.latitude,
-                crd.longitude,
-                building.latitude,
-                building.longitude
-            );
-            building.distance = dist;
-            if (dist < closest) {
-                closest = dist;
-                currentClosestBuilding = building;
-            }
-        }
-        updatePreferences({ building: currentClosestBuilding });
-        return;
-    }
-    function error(err: any) {
-        console.warn(`ERROR(${err.code}): ${err.message}`);
-    }
-    var options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-    };
-    navigator.geolocation.getCurrentPosition(success, error, options);
-};
 
 /**
  *
