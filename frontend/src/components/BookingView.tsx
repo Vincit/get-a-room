@@ -14,6 +14,7 @@ import FilteringDrawer from './FilteringDrawer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
+import BusyRoomList from './BusyRoomList';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -143,14 +144,32 @@ function BookingView(props: BookingViewProps) {
                 textAlign="left"
                 variant="subtitle1"
                 color={'#ce3b20'}
-                paddingLeft="20px"
+                paddingLeft="24px"
                 paddingTop="20px"
                 style={{ cursor: 'pointer' }}
+                display="flex"
             >
-                <ArrowBackIcon style={{ fontSize: 'small' }}></ArrowBackIcon>
-                {preferences?.building ? preferences.building.name : 'Back'}
+                <ArrowBackIcon
+                    style={{ width: '20px', height: '20px' }}
+                ></ArrowBackIcon>
+                <Typography
+                    style={{
+                        marginLeft: '8px',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                    }}
+                >
+                    {preferences?.building ? preferences.building.name : 'Back'}
+                </Typography>
             </Typography>
-            <Typography py={2} variant="h2" textAlign="center">
+            <Typography
+                py={2}
+                variant="h2"
+                textAlign="left"
+                marginLeft="24px"
+                paddingTop="0px"
+                paddingBottom="24px"
+            >
                 Available rooms
             </Typography>
 
@@ -199,6 +218,9 @@ function BookingView(props: BookingViewProps) {
                     updateData={updateData}
                 />
             )}
+
+            {areRoomsFetched(rooms) ? <BusyRoomList rooms={rooms} /> : null}
+
             <div id="drawer-container" onClick={openFiltering}>
                 <FilteringDrawer
                     open={expandFilteringDrawer}

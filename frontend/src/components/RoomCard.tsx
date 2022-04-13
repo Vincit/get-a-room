@@ -11,6 +11,8 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { CardActionArea, CircularProgress, styled } from '@mui/material';
 import { getTimeLeftMinutes } from './util/TimeLeft';
 import { minutesToSimpleString } from './BookingDrawer';
+import { DateTime } from 'luxon';
+import { roomFreeIn } from './BusyRoomList';
 
 function getName(room: Room) {
     return room.name;
@@ -44,7 +46,7 @@ export function getBookingTimeLeft(booking: Booking | undefined) {
     if (booking === undefined) {
         return 0;
     }
-    return Math.floor(getTimeLeftMinutes(booking.endTime));
+    return Math.ceil(getTimeLeftMinutes(booking.endTime)) + 2;
 }
 
 export function getTimeAvailableMinutes(booking: Booking | undefined) {
@@ -55,6 +57,20 @@ export function getTimeAvailableMinutes(booking: Booking | undefined) {
     let availableFor = getTimeLeftMinutes(getNextCalendarEvent(booking.room));
 
     return Math.ceil(availableFor - timeLeft);
+}
+
+function busyAvailableFor(room: Room) {
+    let end = DateTime.now().endOf('day');
+    let start = DateTime.now();
+
+    if (Array.isArray(room.busy) && room.busy.length > 0) {
+        start = DateTime.fromISO(room.busy[0].end as string);
+        if (room.busy.length > 1) {
+            end = DateTime.fromISO(room.busy[1].start as string);
+        }
+    }
+    const minutes = end.diff(start, 'minutes').minutes;
+    return Math.round(minutes);
 }
 
 const GridContainer = styled(Box)(({ theme }) => ({
@@ -112,6 +128,7 @@ type RoomCardProps = {
     isReserved?: boolean;
     isSelected: boolean;
     expandFeatures: boolean;
+    isBusy?: boolean;
 };
 
 const RoomCard = (props: RoomCardProps) => {
@@ -123,7 +140,8 @@ const RoomCard = (props: RoomCardProps) => {
         disableBooking,
         isReserved,
         isSelected,
-        expandFeatures
+        expandFeatures,
+        isBusy
     } = props;
 
     const handleClick = () => {
@@ -152,13 +170,16 @@ const RoomCard = (props: RoomCardProps) => {
                         <Typography
                             data-testid="BookingRoomTitle"
                             variant="h3"
-                            color="text.main"
+                            color={isBusy ? 'text.disabled' : 'text.main'}
                         >
                             {getName(room)}
                         </Typography>
                         <EndBox>
-                            <Group />
-                            <Typography fontWeight="bold">
+                            <Group color={isBusy ? 'disabled' : 'inherit'} />
+                            <Typography
+                                fontWeight="bold"
+                                color={isBusy ? 'text.disabled' : 'text.main'}
+                            >
                                 {getCapacity(room)}
                             </Typography>
                         </EndBox>
@@ -186,6 +207,16 @@ const RoomCard = (props: RoomCardProps) => {
                                     getTimeAvailableMinutes(booking)
                                 )}
                             </Typography>
+                        ) : isBusy ? (
+                            <Typography
+                                variant="body1"
+                                color="text.disabled"
+                                align="left"
+                            >
+                                Available in <b>{roomFreeIn(room)} minutes</b>{' '}
+                                for{' '}
+                                {minutesToSimpleString(busyAvailableFor(room))}
+                            </Typography>
                         ) : (
                             <TimeLeft
                                 timeLeftText="Available for "
@@ -195,7 +226,9 @@ const RoomCard = (props: RoomCardProps) => {
                         {bookingLoading === room.id ? (
                             <CircularProgress color="primary" />
                         ) : null}
-                        <FavoriteBorderIcon />
+                        <FavoriteBorderIcon
+                            color={isBusy ? 'disabled' : 'inherit'}
+                        />
                     </Row>
 
                     {expandFeatures ? (

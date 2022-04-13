@@ -11,7 +11,7 @@ import {
 } from './roomController';
 import { badRequest, noContent } from '../utils/responses';
 import { getRoomData } from './googleAPI/adminAPI';
-import { freeBusyQuery } from './googleAPI/calendarAPI';
+import { freeBusyQueryData } from './googleAPI/calendarAPI';
 import { GaxiosError, GaxiosResponse } from 'gaxios';
 import RoomData from '../types/roomData';
 import { DateTime } from 'luxon';
@@ -26,7 +26,7 @@ jest.mock('../utils/responses');
 const mockedBadRequest = mocked(badRequest, false);
 const mockedNoContent = mocked(noContent, false);
 const mockedGetRoomData = mocked(getRoomData, false);
-const mockedFreeQuery = mocked(freeBusyQuery, false);
+const mockedFreeQuery = mocked(freeBusyQueryData, false);
 
 describe('roomController', () => {
     let mockRequest: Partial<Request>;
@@ -215,8 +215,8 @@ describe('roomController', () => {
             };
 
             const reservations = {
-                'test1@test.com': 'ISO time',
-                'test2@test.com': 'ISO time'
+                'test1@test.com': [{ start: 'event-test1', end: 'event-end1' }],
+                'test2@test.com': [{ start: 'event-test2', end: 'event-end2' }]
             };
 
             mockedFreeQuery.mockResolvedValueOnce(reservations);
@@ -296,8 +296,12 @@ describe('roomController', () => {
                         }
                     ],
                     roomReservations: {
-                        'test1@test.com': 'event-test1',
-                        'test2@test.com': 'event-test2'
+                        'test1@test.com': [
+                            { start: 'event-test1', end: 'event-end1' }
+                        ],
+                        'test2@test.com': [
+                            { start: 'event-test2', end: 'event-end2' }
+                        ]
                     }
                 }
             };
