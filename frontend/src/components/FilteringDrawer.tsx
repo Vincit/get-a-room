@@ -26,23 +26,12 @@ export const SmallText = styled(Typography)(() => ({
     margin: '24px 8px 8px 0'
 }));
 
-export const SpacerFirst = styled('div')(() => ({
-    margin: '0 12px 0 0'
-}));
-
-export const SpacerMiddle = styled('div')(() => ({
-    margin: '0 12px 0 12px'
-}));
-
-export const SpacerLast = styled('div')(() => ({
-    margin: '0 0 0 8px'
-}));
-
 export const FilteringButton = styled(ToggleButton)(() => ({
     //fontFamily: 'Roboto Mono',
     fontStyle: 'normal',
     fontWeight: 'bold',
-    fontSize: '16px'
+    fontSize: '16px',
+    marginLeft: '18px'
 }));
 
 interface Props {
@@ -56,7 +45,7 @@ const FilteringDrawer = (props: Props) => {
     const [customFilter, setCustomFilter] = useState('');
     const [roomSize, setRoomSize] = useState<string[]>([]);
     const [resources, setResources] = useState<string[]>([]);
-    const [onlyFavorites, setOnlyFavorites] = useState(false);
+    const [onlyFavourites, setOnlyFavourites] = useState(false);
 
     const handleRoomSizeChange = (
         event: React.MouseEvent<HTMLElement>,
@@ -69,7 +58,7 @@ const FilteringDrawer = (props: Props) => {
         event: React.MouseEvent<HTMLElement>,
         newResources: string[]
     ) => {
-        setRoomSize(newResources);
+        setResources(newResources);
     };
 
     const handleCustomFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,21 +99,11 @@ const FilteringDrawer = (props: Props) => {
                     value={roomSize}
                     onChange={handleRoomSizeChange}
                 >
-                    <SpacerFirst>
-                        <ToggleButton value="1-2">1-2</ToggleButton>
-                    </SpacerFirst>
-                    <SpacerMiddle>
-                        <ToggleButton value="3-5">3-5</ToggleButton>
-                    </SpacerMiddle>
-                    <SpacerMiddle>
-                        <ToggleButton value="6-7">6-7</ToggleButton>
-                    </SpacerMiddle>
-                    <SpacerMiddle>
-                        <ToggleButton value="8+">8+</ToggleButton>
-                    </SpacerMiddle>
-                    <SpacerLast>
-                        <ToggleButton value="Custom">Custom</ToggleButton>
-                    </SpacerLast>
+                    <ToggleButton value="1-2">1-2</ToggleButton>
+                    <ToggleButton value="3-5">3-5</ToggleButton>
+                    <ToggleButton value="6-7">6-7</ToggleButton>
+                    <ToggleButton value="8+">8+</ToggleButton>
+                    <ToggleButton value="Custom">Custom</ToggleButton>
                 </ToggleButtonGroup>
                 <Row>
                     <SmallText>Resources</SmallText>
@@ -133,21 +112,17 @@ const FilteringDrawer = (props: Props) => {
                     value={resources}
                     onChange={handleResourcesChange}
                 >
-                    <SpacerFirst>
-                        <ToggleButton value="Jabra">Jabra</ToggleButton>
-                    </SpacerFirst>
-                    <SpacerLast>
-                        <ToggleButton value="Webcam">Webcam</ToggleButton>
-                    </SpacerLast>
+                    <ToggleButton value="Jabra">Jabra</ToggleButton>
+                    <ToggleButton value="Webcam">Webcam</ToggleButton>
                 </ToggleButtonGroup>
                 <Row>
                     <SmallText>Favourites</SmallText>
                 </Row>
                 <ToggleButton
                     value="favourites"
-                    selected={onlyFavorites}
+                    selected={onlyFavourites}
                     onChange={() => {
-                        setOnlyFavorites(!onlyFavorites);
+                        setOnlyFavourites(!onlyFavourites);
                     }}
                 >
                     <FavoriteBorderIcon />

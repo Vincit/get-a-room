@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, styled, Button } from '@mui/material';
+import { Typography, Box, styled } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import { getRooms } from '../services/roomService';
@@ -105,10 +105,6 @@ function BookingView(props: BookingViewProps) {
         };
     }, [updateData]);
 
-    const handleFilteringClick = () => {
-        setexpandFilteringDrawer(true);
-    };
-
     const openFiltering = () => {
         if (expandFilteringDrawer === false) {
             setexpandFilteringDrawer(true);
@@ -198,9 +194,6 @@ function BookingView(props: BookingViewProps) {
             ) : null}
 
             <DurationPicker onChange={handleDurationChange} title="duration" />
-            <Button onClick={handleFilteringClick}>
-                Open filtering drawer
-            </Button>
             <CurrentBooking
                 bookings={bookings}
                 updateRooms={updateRooms}
