@@ -50,7 +50,7 @@ export const readPrefenceBody = () => {
     ) => {
         try {
             const building: BuildingData = req.body.building;
-            const favoriteroom: Array<string> = req.body.fav_rooms;
+            const favoriterooms: Array<string> = req.body.fav_rooms;
 
             if (!building || !building.id || !building.name) {
                 return responses.badRequest(req, res);
@@ -58,7 +58,7 @@ export const readPrefenceBody = () => {
 
             res.locals.buildingId = building.id;
             res.locals.buildingName = building.name;
-            res.locals.fav_rooms = favoriteroom;
+            res.locals.fav_rooms = favoriterooms;
             next();
         } catch (err) {
             next(err);
@@ -87,7 +87,7 @@ export const updatePreferencesToDatabase = () => {
                     latitude: res.locals.latitude,
                     longitude: res.locals.longitude
                 },
-                fav_rooms: res.locals.favoriteroom
+                fav_rooms: res.locals.favoriterooms
             };
 
             if (!sub) {

@@ -21,7 +21,8 @@ export async function isFavorited(room: Room) {
             room.favorited = false;
         }
     } catch {
-        room.favorited = true;
+        // add error notification
+        room.favorited = false;
     }
 }
 

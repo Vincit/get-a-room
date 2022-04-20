@@ -153,19 +153,40 @@ const RoomCard = (props: RoomCardProps) => {
     };
 
     const handleFavoriteClick = () => {
-        room.favorited = !room.favorited;
-
         getPreferences().then((pref) => {
-            updatePreferences({ fav_rooms: pref.fav_rooms.push(room.id) })
-                .then((savedPreferences) => {
-                    setPreferences(savedPreferences);
-                    createSuccessNotification('Favorited room: ' + room.name);
-                })
-                .catch(() => {
-                    createErrorNotification(
-                        'Could not favorite room: ' + room.name
-                    );
-                });
+            const fav_rooms_now = pref.fav_rooms;
+
+            if (pref.fav_rooms.includes(room.id)) {
+                var index = pref.fav_rooms.indexOf(room.id, 0);
+                delete fav_rooms_now[room.id];
+
+                updatePreferences({ fav_rooms: fav_rooms_now })
+                    .then((savedPreferences) => {
+                        setPreferences(savedPreferences);
+                        createSuccessNotification(
+                            'Unfavorited room: ' + room.name
+                        );
+                    })
+                    .catch(() => {
+                        createErrorNotification(
+                            'Could not unfavorite room: ' + room.name
+                        );
+                    });
+            } else {
+                fav_rooms_now.push(room.id);
+                updatePreferences({ fav_rooms: fav_rooms_now })
+                    .then((savedPreferences) => {
+                        setPreferences(savedPreferences);
+                        createSuccessNotification(
+                            'Favorited room: ' + room.name
+                        );
+                    })
+                    .catch(() => {
+                        createErrorNotification(
+                            'Could not favorite room: ' + room.name
+                        );
+                    });
+            }
         });
     };
 
