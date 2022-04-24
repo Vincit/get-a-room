@@ -47,18 +47,97 @@ function BookingView(props: BookingViewProps) {
     const { preferences, open, toggle } = props;
 
     const [rooms, setRooms] = useState<Room[]>([]);
+    const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms);
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
     const [expandFilteringDrawer, setexpandFilteringDrawer] = useState(false);
+
+    const [roomSize, setRoomSize] = useState<string[]>([]);
+    const [resources, setResources] = useState<string[]>([]);
 
     const updateRooms = useCallback(() => {
         if (preferences) {
             const buildingPreference = preferences.building?.id;
             getRooms(buildingPreference, GET_RESERVED)
-                .then(setRooms)
+                .then((rooms) => {
+                    setRooms(rooms);
+                    filterRooms(rooms);
+                })
                 .catch((error) => console.log(error));
         }
     }, [preferences]);
+
+    useEffect(() => {
+        filterRooms(rooms);
+    }, [roomSize]);
+
+    useEffect(() => {
+        console.log('aaaa');
+        filterRooms(rooms);
+    }, [resources]);
+
+    const filterRooms = (rooms: Room[]) => {
+        let filteredRooms: Room[] = filterByRoomSize(rooms);
+        filteredRooms = filterByResources(filteredRooms);
+        setDisplayRooms(filteredRooms);
+    };
+
+    /**
+     * Exracts the upper and lower bound values for room capacity from button
+     * states. Removes rooms that dont fit between min and max capacity.
+     * @param rooms Rooms to be filtered
+     * @returns filtered array of rooms
+     */
+    const filterByRoomSize = (rooms: Room[]) => {
+        if (roomSize.length === 0) {
+            return rooms;
+        }
+
+        let rangeNumbers: number[] = [];
+        for (var range of roomSize) {
+            for (var value of range.split('-')) {
+                var asNumber = parseInt(value);
+                if (isNaN(asNumber)) {
+                    continue;
+                } else {
+                    rangeNumbers.push(asNumber);
+                }
+            }
+        }
+        let minRoomSize: number = Math.min.apply(null, rangeNumbers);
+        let maxRoomSize: number = Math.max.apply(null, rangeNumbers);
+        let newRooms: Room[] = [];
+        for (var room of rooms) {
+            if (!room.capacity) {
+                continue;
+            }
+            if (room.capacity >= minRoomSize && room.capacity <= maxRoomSize) {
+                newRooms.push(room);
+            }
+        }
+        return newRooms;
+    };
+
+    const filterByResources = (rooms: Room[]) => {
+        console.log(rooms);
+        if (resources.length === 0) {
+            return rooms;
+        }
+        let newRooms: Room[] = [];
+        for (var room of rooms) {
+            if (!room.features) {
+                continue;
+            }
+            console.log(room.features);
+            for (var resource of resources) {
+                console.log(resource);
+                if (room.features.includes(resource)) {
+                    newRooms.push(room);
+                }
+            }
+        }
+        return newRooms;
+    };
 
     const handleDurationChange = (newDuration: number) => {
         setBookingDuration(newDuration);
@@ -206,7 +285,7 @@ function BookingView(props: BookingViewProps) {
             ) : (
                 <AvailableRoomList
                     bookingDuration={bookingDuration}
-                    rooms={rooms}
+                    rooms={displayRooms}
                     bookings={bookings}
                     updateData={updateData}
                 />
@@ -218,6 +297,10 @@ function BookingView(props: BookingViewProps) {
                 <FilteringDrawer
                     open={expandFilteringDrawer}
                     toggle={toggleDrawn}
+                    roomSize={roomSize}
+                    setRoomSize={setRoomSize}
+                    resources={resources}
+                    setResources={setResources}
                 />
             </div>
         </Box>

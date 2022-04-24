@@ -37,14 +37,18 @@ export const FilteringButton = styled(ToggleButton)(() => ({
 interface Props {
     open: boolean;
     toggle: (open: boolean) => void;
+    roomSize: string[];
+    setRoomSize: (size: string[]) => void;
+    resources: string[];
+    setResources: (resource: string[]) => void;
 }
 
+// Note: Actual filtering of the rooms is done one level up in booking view
 const FilteringDrawer = (props: Props) => {
-    const { open, toggle } = props;
+    const { open, toggle, roomSize, setRoomSize, resources, setResources } =
+        props;
 
     const [customFilter, setCustomFilter] = useState('');
-    const [roomSize, setRoomSize] = useState<string[]>([]);
-    const [resources, setResources] = useState<string[]>([]);
     const [onlyFavourites, setOnlyFavourites] = useState(false);
 
     const handleRoomSizeChange = (
@@ -102,8 +106,7 @@ const FilteringDrawer = (props: Props) => {
                     <ToggleButton value="1-2">1-2</ToggleButton>
                     <ToggleButton value="3-5">3-5</ToggleButton>
                     <ToggleButton value="6-7">6-7</ToggleButton>
-                    <ToggleButton value="8+">8+</ToggleButton>
-                    <ToggleButton value="Custom">Custom</ToggleButton>
+                    <ToggleButton value="8-999">8+</ToggleButton>
                 </ToggleButtonGroup>
                 <Row>
                     <SmallText>Resources</SmallText>
@@ -114,6 +117,7 @@ const FilteringDrawer = (props: Props) => {
                 >
                     <ToggleButton value="Jabra">Jabra</ToggleButton>
                     <ToggleButton value="Webcam">Webcam</ToggleButton>
+                    <ToggleButton value="TV">TV</ToggleButton>
                 </ToggleButtonGroup>
                 <Row>
                     <SmallText>Favourites</SmallText>
