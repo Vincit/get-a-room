@@ -41,12 +41,20 @@ interface Props {
     setRoomSize: (size: string[]) => void;
     resources: string[];
     setResources: (resource: string[]) => void;
+    allFeatures: string[];
 }
 
 // Note: Actual filtering of the rooms is done one level up in booking view
 const FilteringDrawer = (props: Props) => {
-    const { open, toggle, roomSize, setRoomSize, resources, setResources } =
-        props;
+    const {
+        open,
+        toggle,
+        roomSize,
+        setRoomSize,
+        resources,
+        setResources,
+        allFeatures
+    } = props;
 
     const [customFilter, setCustomFilter] = useState('');
     const [onlyFavourites, setOnlyFavourites] = useState(false);
@@ -115,9 +123,11 @@ const FilteringDrawer = (props: Props) => {
                     value={resources}
                     onChange={handleResourcesChange}
                 >
-                    <ToggleButton value="Jabra">Jabra</ToggleButton>
-                    <ToggleButton value="Webcam">Webcam</ToggleButton>
-                    <ToggleButton value="TV">TV</ToggleButton>
+                    {allFeatures.map((feature, i) => (
+                        <ToggleButton key={i} value={feature}>
+                            {feature}
+                        </ToggleButton>
+                    ))}
                 </ToggleButtonGroup>
                 <Row>
                     <SmallText>Favourites</SmallText>

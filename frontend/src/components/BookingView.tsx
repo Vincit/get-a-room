@@ -51,6 +51,7 @@ function BookingView(props: BookingViewProps) {
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
     const [expandFilteringDrawer, setexpandFilteringDrawer] = useState(false);
+    const [allFeatures, setAllfeatures] = useState<string[]>([]);
 
     const [roomSize, setRoomSize] = useState<string[]>([]);
     const [resources, setResources] = useState<string[]>([]);
@@ -62,6 +63,7 @@ function BookingView(props: BookingViewProps) {
                 .then((rooms) => {
                     setRooms(rooms);
                     filterRooms(rooms);
+                    setAllFeaturesFunction();
                 })
                 .catch((error) => console.log(error));
         }
@@ -72,7 +74,6 @@ function BookingView(props: BookingViewProps) {
     }, [roomSize]);
 
     useEffect(() => {
-        console.log('aaaa');
         filterRooms(rooms);
     }, [resources]);
 
@@ -118,8 +119,12 @@ function BookingView(props: BookingViewProps) {
         return newRooms;
     };
 
+    /**
+     * Matches resource filters to those in rooms
+     * @param rooms Rooms to be filtered
+     * @returns filtered array of rooms
+     */
     const filterByResources = (rooms: Room[]) => {
-        console.log(rooms);
         if (resources.length === 0) {
             return rooms;
         }
@@ -128,15 +133,25 @@ function BookingView(props: BookingViewProps) {
             if (!room.features) {
                 continue;
             }
-            console.log(room.features);
             for (var resource of resources) {
-                console.log(resource);
                 if (room.features.includes(resource)) {
                     newRooms.push(room);
                 }
             }
         }
         return newRooms;
+    };
+
+    const setAllFeaturesFunction = () => {
+        var allFeaturesSet = new Set<string>();
+        for (var room of rooms) {
+            if (room.features) {
+                for (var feature of room.features) {
+                    allFeaturesSet.add(feature);
+                }
+            }
+        }
+        setAllfeatures(Array.from(allFeaturesSet));
     };
 
     const handleDurationChange = (newDuration: number) => {
@@ -301,6 +316,7 @@ function BookingView(props: BookingViewProps) {
                     setRoomSize={setRoomSize}
                     resources={resources}
                     setResources={setResources}
+                    allFeatures={allFeatures}
                 />
             </div>
         </Box>
