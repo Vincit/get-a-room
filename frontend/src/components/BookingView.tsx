@@ -63,7 +63,15 @@ function BookingView(props: BookingViewProps) {
                 .then((rooms) => {
                     setRooms(rooms);
                     filterRooms(rooms);
-                    setAllFeaturesFunction();
+                    var allFeaturesSet = new Set<string>();
+                    for (var room of rooms) {
+                        if (room.features) {
+                            for (var feature of room.features) {
+                                allFeaturesSet.add(feature);
+                            }
+                        }
+                    }
+                    setAllfeatures(Array.from(allFeaturesSet));
                 })
                 .catch((error) => console.log(error));
         }
@@ -140,18 +148,6 @@ function BookingView(props: BookingViewProps) {
             }
         }
         return newRooms;
-    };
-
-    const setAllFeaturesFunction = () => {
-        var allFeaturesSet = new Set<string>();
-        for (var room of rooms) {
-            if (room.features) {
-                for (var feature of room.features) {
-                    allFeaturesSet.add(feature);
-                }
-            }
-        }
-        setAllfeatures(Array.from(allFeaturesSet));
     };
 
     const handleDurationChange = (newDuration: number) => {
