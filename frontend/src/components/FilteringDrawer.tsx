@@ -123,8 +123,8 @@ const FilteringDrawer = (props: Props) => {
                     value={resources}
                     onChange={handleResourcesChange}
                 >
-                    {allFeatures.map((feature, i) => (
-                        <ToggleButton key={i} value={feature}>
+                    {allFeatures.map((feature) => (
+                        <ToggleButton key={feature} value={feature}>
                             {feature}
                         </ToggleButton>
                     ))}

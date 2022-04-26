@@ -53,6 +53,7 @@ function BookingView(props: BookingViewProps) {
     const [expandFilteringDrawer, setexpandFilteringDrawer] = useState(false);
     const [allFeatures, setAllfeatures] = useState<string[]>([]);
 
+    // Filtering states
     const [roomSize, setRoomSize] = useState<string[]>([]);
     const [resources, setResources] = useState<string[]>([]);
 
@@ -60,11 +61,10 @@ function BookingView(props: BookingViewProps) {
         if (preferences) {
             const buildingPreference = preferences.building?.id;
             getRooms(buildingPreference, GET_RESERVED)
-                .then((rooms) => {
-                    setRooms(rooms);
-                    filterRooms(rooms);
+                .then((allRooms) => {
+                    setRooms(allRooms);
                     var allFeaturesSet = new Set<string>();
-                    for (var room of rooms) {
+                    for (var room of allRooms) {
                         if (room.features) {
                             for (var feature of room.features) {
                                 allFeaturesSet.add(feature);
@@ -78,14 +78,10 @@ function BookingView(props: BookingViewProps) {
     }, [preferences]);
 
     useEffect(() => {
-        filterRooms(rooms);
-    }, [roomSize]);
+        filterRooms();
+    }, [roomSize, resources, rooms]);
 
-    useEffect(() => {
-        filterRooms(rooms);
-    }, [resources]);
-
-    const filterRooms = (rooms: Room[]) => {
+    const filterRooms = () => {
         let filteredRooms: Room[] = filterByRoomSize(rooms);
         filteredRooms = filterByResources(filteredRooms);
         setDisplayRooms(filteredRooms);
@@ -141,10 +137,17 @@ function BookingView(props: BookingViewProps) {
             if (!room.features) {
                 continue;
             }
+            let addToRooms = false;
             for (var resource of resources) {
-                if (room.features.includes(resource)) {
-                    newRooms.push(room);
+                if (!room.features.includes(resource)) {
+                    addToRooms = false;
+                    break;
                 }
+                addToRooms = true;
+            }
+            if (addToRooms) {
+                newRooms.push(room);
+                addToRooms = false;
             }
         }
         return newRooms;
