@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, styled } from '@mui/material';
+import { Typography, Box, styled, IconButton } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import Person from '@mui/icons-material/Person';
 
 import { getRooms } from '../services/roomService';
 import { getBookings } from '../services/bookingService';
@@ -10,9 +12,14 @@ import AvailableRoomList from './AvailableRoomList';
 import CenteredProgress from './util/CenteredProgress';
 import DurationPicker from './DurationPicker';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Visibility } from '@mui/icons-material';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
+import UserDrawer from './UserDrawer';
+import { DrawerButtonSecondary } from './BookingDrawer';
+import { logout } from '../services/authService';
+import useCreateNotification from '../hooks/useCreateNotification';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -26,6 +33,14 @@ function isActiveBooking(bookings: Booking[]) {
     return bookings.length > 0;
 }
 
+export const Row = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'iconLeft',
+    padding: '0px',
+    width: '100%'
+}));
+
 const RowCentered = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
@@ -35,18 +50,26 @@ const RowCentered = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
+export const Spacer = styled('div')(() => ({
+    padding: '8px'
+}));
+
 type BookingViewProps = {
     preferences?: Preferences;
     open: boolean;
     toggle: (open: boolean) => void;
+    name: String | undefined;
 };
 
 function BookingView(props: BookingViewProps) {
-    const { preferences, open, toggle } = props;
+    const { preferences, open, toggle, name } = props;
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
+    const [expandSettingsDrawer, setexpandSettingsDrawer] = useState(false);
+    const { createSuccessNotification, createErrorNotification } =
+        useCreateNotification();
 
     const updateRooms = useCallback(() => {
         if (preferences) {
@@ -71,6 +94,10 @@ function BookingView(props: BookingViewProps) {
 
     const moveToChooseOfficePage = () => {
         history.push('/preferences');
+    };
+
+    const openSettingsDrawer = () => {
+        setexpandSettingsDrawer(true);
     };
 
     const updateData = useCallback(() => {
@@ -98,6 +125,18 @@ function BookingView(props: BookingViewProps) {
         };
     }, [updateData]);
 
+    const doLogout = () => {
+        logout()
+            .then(() => {
+                createSuccessNotification('Logout succesful');
+                history.push('/login');
+            })
+            .catch(() => {
+                createErrorNotification('Error in logout, try again later');
+                history.push('/login');
+            });
+    };
+
     return (
         <Box id="current booking" textAlign="center" p={'16px'}>
             <div id="drawer-container">
@@ -122,6 +161,7 @@ function BookingView(props: BookingViewProps) {
                     </DrawerContent>
                 </SwipeableEdgeDrawer>
             </div>
+
             <Typography
                 onClick={moveToChooseOfficePage}
                 textAlign="left"
@@ -134,9 +174,31 @@ function BookingView(props: BookingViewProps) {
                 <ArrowBackIcon style={{ fontSize: 'small' }}></ArrowBackIcon>
                 {preferences?.building ? preferences.building.name : 'Back'}
             </Typography>
-            <Typography py={2} variant="h2" textAlign="center">
-                Available rooms
-            </Typography>
+            <RowCentered>
+                <Typography py={2} variant="h2" textAlign="center">
+                    Available rooms
+                    <IconButton
+                        aria-label="profile menu"
+                        size="small"
+                        sx={{
+                            bgcolor: 'primary.main',
+                            color: '#fff',
+                            position: 'absolute',
+                            right: 50
+                        }}
+                        onClick={openSettingsDrawer}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <Person />
+                    </IconButton>
+                </Typography>
+            </RowCentered>
+
+            <UserDrawer
+                open={expandSettingsDrawer}
+                toggle={toggle}
+                name={name}
+            ></UserDrawer>
 
             {isActiveBooking(bookings) ? (
                 <Box

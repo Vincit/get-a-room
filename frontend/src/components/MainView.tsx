@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import BookingView from './BookingView';
 import ChooseOfficeView from './ChooseOfficeView';
+import UserDrawer from './UserDrawer';
 import { Building, Preferences } from '../types';
 import {
     getPreferences,
@@ -107,11 +108,11 @@ const MainView = () => {
                             preferences={preferences}
                             open={expandBookingDrawer}
                             toggle={toggleDrawn}
+                            name={name}
                         />
                     </Route>
                 </Switch>
             </Box>
-            <NavBar />
         </Box>
     );
 };

@@ -65,7 +65,7 @@ interface Props {
     children: React.ReactChild;
     iconLeft?: React.ReactNode;
     iconRight?: React.ReactNode;
-    headerTitle: string;
+    headerTitle: String | undefined;
     isOpen: boolean;
     toggle: (open: boolean) => void;
     disableSwipeToOpen: boolean;
