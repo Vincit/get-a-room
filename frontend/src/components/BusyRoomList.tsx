@@ -14,18 +14,32 @@ export function roomFreeIn(room: Room) {
     return 0;
 }
 
+function filterBusyRoom(room: Room, bookings: Booking[]): boolean {
+    // filter if room booked for the user
+    for (let i = 0; i < bookings.length; i++) {
+        const booking = bookings[i];
+        if (booking.room.id === room.id) {
+            return false;
+        }
+    }
+    if (Array.isArray(room.busy) && roomFreeIn(room) <= 30) {
+        return true;
+    }
+    return false;
+}
+
 type BusyRoomListProps = {
     rooms: Room[];
+    bookings: Booking[];
 };
 
 const BusyRoomList = (props: BusyRoomListProps) => {
-    const { rooms } = props;
+    const { rooms, bookings } = props;
 
     return (
         <Box id="available-in-30-min-room-list">
-            {rooms.filter(
-                (room) => Array.isArray(room.busy) && roomFreeIn(room) <= 30
-            ).length > 0 ? (
+            {rooms.filter((room) => filterBusyRoom(room, bookings)).length >
+            0 ? (
                 <Typography variant="subtitle1" textAlign="left">
                     rooms available in the next 30 min
                 </Typography>
@@ -34,10 +48,7 @@ const BusyRoomList = (props: BusyRoomListProps) => {
             <List>
                 {rooms
                     .sort((a, b) => (a.name < b.name ? -1 : 1))
-                    .filter(
-                        (room) =>
-                            Array.isArray(room.busy) && roomFreeIn(room) <= 30
-                    )
+                    .filter((room) => filterBusyRoom(room, bookings))
                     .map((room) => (
                         <li key={room.id}>
                             <RoomCard
