@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { Box, List, Typography } from '@mui/material';
 import { Booking, AddTimeDetails, Room } from '../types';
-import {
-    updateBooking,
-    endBooking,
-    deleteBooking
-} from '../services/bookingService';
+import { updateBooking, endBooking } from '../services/bookingService';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
 import AlterBookingDrawer from './AlterBookingDrawer';

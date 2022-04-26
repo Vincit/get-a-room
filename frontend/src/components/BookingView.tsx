@@ -88,7 +88,7 @@ function BookingView(props: BookingViewProps) {
             )
             .then(setBookings)
             .catch((error) => console.log(error));
-    }, []);
+    }, [createErrorNotification]);
 
     const history = useHistory();
 
