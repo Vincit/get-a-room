@@ -152,7 +152,13 @@ const allCurrentAndFutureBookings: schema.EventsData = {
             },
             end: {
                 dateTime: DateTime.now().toUTC().minus({ minutes: 1 }).toISO()
-            }
+            },
+            attendees: [
+                {
+                    resource: true,
+                    displayName: 'Hermia 5-2-Namu-Sofas (10) [TV]'
+                }
+            ]
         },
         {
             id: '3pt0pdqmgp0c4qa8a7o4ie0an4',
@@ -162,7 +168,13 @@ const allCurrentAndFutureBookings: schema.EventsData = {
             },
             end: {
                 dateTime: DateTime.now().toUTC().plus({ minutes: 30 }).toISO()
-            }
+            },
+            attendees: [
+                {
+                    resource: true,
+                    displayName: 'Hakaniemi-7-Höyhen (4) [TV]'
+                }
+            ]
         },
         {
             id: '1j17pp72bmld5dsksrpl5jewrt',
@@ -172,7 +184,13 @@ const allCurrentAndFutureBookings: schema.EventsData = {
             },
             end: {
                 dateTime: DateTime.now().toUTC().plus({ minutes: 61 }).toISO()
-            }
+            },
+            attendees: [
+                {
+                    resource: true,
+                    displayName: 'Arkadia-4-Arkadia (6) [TV]'
+                }
+            ]
         }
     ]
 };

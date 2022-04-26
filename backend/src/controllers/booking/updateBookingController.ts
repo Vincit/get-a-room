@@ -33,12 +33,14 @@ export const addTimeToBooking = () => {
                 .toUTC()
                 .toISO();
 
-            // Pretty hacky and there probably is a better way to do this
+            // Keep responseStatus as accepcted, because in case of
+            // conflicts in Google calendar, adding time to the existing
+            // booking should win over new bookings.
             const attendeeList: schema.EventAttendee[] = [
                 {
                     email: res.locals.roomId,
                     resource: true,
-                    responseStatus: 'needsAction'
+                    responseStatus: 'accepted'
                 },
                 { email: res.locals.email, responseStatus: 'accepted' }
             ];
@@ -121,10 +123,6 @@ export const checkRoomIsFree = () => {
             const event: schema.EventData = res.locals.event;
             const timeToAdd: number = req.body.timeToAdd;
 
-            if (timeToAdd < 0) {
-                return next();
-            }
-
             // New end time
             const endTime = DateTime.fromISO(event.end?.dateTime as string)
                 .plus({ minutes: timeToAdd })
@@ -135,7 +133,7 @@ export const checkRoomIsFree = () => {
                     client,
                     [{ id: roomId }],
                     event.end?.dateTime as string,
-                    endTime.toISO()
+                    DateTime.now().endOf('day').toUTC().toISO()
                 )
             )[roomId];
 
@@ -143,12 +141,13 @@ export const checkRoomIsFree = () => {
                 return responses.internalServerError(req, res);
             }
 
+            res.locals.freeBusyResult = freeBusyResult;
             const diff = DateTime.fromISO(freeBusyResult)
                 .toUTC()
                 .diff(endTime, 'seconds');
 
             // Allow difference of +- 15 seconds for conflict cases
-            if (Math.abs(diff.seconds) >= 15) {
+            if (diff.seconds < 0) {
                 return responses.custom(req, res, 409, 'Conflict');
             }
 
@@ -171,6 +170,10 @@ export const rollBackDeclinedUpdate = () => {
         res: Response,
         next: NextFunction
     ) => {
+        if (req.query?.noConfirmation || req.body.timeToAdd < 0) {
+            return next();
+        }
+
         try {
             const bookingId: string = req.params.bookingId;
             const client: OAuth2Client = res.locals.oAuthClient;

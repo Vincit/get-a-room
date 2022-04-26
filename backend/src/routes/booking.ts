@@ -61,6 +61,7 @@ router.delete('/:bookingId', deleteBooking(), (req: Request, res: Response) => {
 // Add time to a booking
 router.patch(
     '/:bookingId/addTime',
+    query('noConfirmation').toBoolean(true),
     body('timeToAdd').trim().escape().isNumeric(),
     getBooking(),
     updateBookingController.checkRoomIsFree(),
