@@ -7,6 +7,7 @@ export interface Booking {
     startTime: string;
     endTime: string;
     room: Room;
+    resourceStatus: string;
 }
 
 export interface BookingDetails {

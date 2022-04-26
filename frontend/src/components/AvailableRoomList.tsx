@@ -7,6 +7,8 @@ import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
 import BookingDrawer from './BookingDrawer';
 
+const SKIP_CONFIRMATION = true;
+
 function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
 }
@@ -30,11 +32,12 @@ type BookingListProps = {
     bookingDuration: number;
     rooms: Room[];
     bookings: Booking[];
+    setBookings: (bookings: Booking[]) => void;
     updateData: () => void;
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
-    const { bookingDuration, rooms, bookings, updateData } = props;
+    const { bookingDuration, rooms, bookings, setBookings, updateData } = props;
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -127,9 +130,15 @@ const AvailableRoomList = (props: BookingListProps) => {
 
         setBookingLoading(room.id);
 
-        makeBooking(bookingDetails)
+        makeBooking(bookingDetails, SKIP_CONFIRMATION)
             .then((madeBooking) => {
+                setBookings([madeBooking]);
                 updateData();
+                // update data after 2.5s, waits Google Calendar to
+                // accept the booking.
+                setTimeout(() => {
+                    updateData();
+                }, 2500);
                 createSuccessNotification('Booking was succesful');
                 setBookingLoading('false');
                 document.getElementById('main-view-content')?.scrollTo(0, 0);

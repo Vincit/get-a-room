@@ -8,6 +8,7 @@ import TimeLeft from './util/TimeLeft';
 import Group from '@mui/icons-material/People';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PendingIcon from '@mui/icons-material/Pending';
 import { CardActionArea, CircularProgress, styled } from '@mui/material';
 import { getTimeLeftMinutes } from './util/TimeLeft';
 import { minutesToSimpleString } from './BookingDrawer';
@@ -186,17 +187,33 @@ const RoomCard = (props: RoomCardProps) => {
                     </Row>
 
                     {isReserved ? (
-                        <StartBox>
-                            <CheckCircleIcon color="success" fontSize="small" />
-                            <Typography
-                                variant="subtitle1"
-                                color="success.main"
-                                margin={'0 0 0 5px'}
-                            >
-                                Booked to you for {getBookingTimeLeft(booking)}{' '}
-                                minutes.
-                            </Typography>
-                        </StartBox>
+                        booking?.resourceStatus === 'accepted' ? (
+                            <StartBox>
+                                <CheckCircleIcon
+                                    color="success"
+                                    fontSize="small"
+                                />
+                                <Typography
+                                    variant="subtitle1"
+                                    color="success.main"
+                                    margin={'0 0 0 5px'}
+                                >
+                                    Booked to you for{' '}
+                                    {getBookingTimeLeft(booking)} minutes.
+                                </Typography>
+                            </StartBox>
+                        ) : (
+                            <StartBox>
+                                <PendingIcon color="warning" fontSize="small" />
+                                <Typography
+                                    variant="subtitle1"
+                                    color="warning.main"
+                                    margin={'0 0 0 5px'}
+                                >
+                                    Waiting Google calendar confirmation.
+                                </Typography>
+                            </StartBox>
+                        )
                     ) : null}
 
                     <Row>

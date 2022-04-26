@@ -3,7 +3,7 @@ import { Typography, Box, styled } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import { getRooms } from '../services/roomService';
-import { getBookings } from '../services/bookingService';
+import { deleteBooking, getBookings } from '../services/bookingService';
 import { Room, Booking, Preferences } from '../types';
 import CurrentBooking from './CurrentBooking';
 import AvailableRoomList from './AvailableRoomList';
@@ -14,6 +14,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import BusyRoomList from './BusyRoomList';
+import useCreateNotification from '../hooks/useCreateNotification';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -26,6 +27,22 @@ function areRoomsFetched(rooms: Room[]) {
 function isActiveBooking(bookings: Booking[]) {
     return bookings.length > 0;
 }
+
+const deleteDeclinedBookings = (
+    notification: (message: string) => void,
+    bookings: Booking[]
+): Booking[] => {
+    const bookingsFiltered = bookings.filter((booking) => {
+        if (booking.resourceStatus === 'declined') {
+            const name = booking.room.name;
+            notification('Calendar declined booking: ' + name);
+            deleteBooking(booking.id);
+            return false;
+        }
+        return true;
+    });
+    return bookingsFiltered;
+};
 
 const RowCentered = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -49,6 +66,8 @@ function BookingView(props: BookingViewProps) {
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
 
+    const { createErrorNotification } = useCreateNotification();
+
     const updateRooms = useCallback(() => {
         if (preferences) {
             const buildingPreference = preferences.building?.id;
@@ -64,9 +83,12 @@ function BookingView(props: BookingViewProps) {
 
     const updateBookings = useCallback(() => {
         getBookings()
+            .then((bookings) =>
+                deleteDeclinedBookings(createErrorNotification, bookings)
+            )
             .then(setBookings)
             .catch((error) => console.log(error));
-    }, []);
+    }, [createErrorNotification]);
 
     const history = useHistory();
 
@@ -197,11 +219,14 @@ function BookingView(props: BookingViewProps) {
                     bookingDuration={bookingDuration}
                     rooms={rooms}
                     bookings={bookings}
+                    setBookings={setBookings}
                     updateData={updateData}
                 />
             )}
 
-            {areRoomsFetched(rooms) ? <BusyRoomList rooms={rooms} /> : null}
+            {areRoomsFetched(rooms) ? (
+                <BusyRoomList rooms={rooms} bookings={bookings} />
+            ) : null}
         </Box>
     );
 }

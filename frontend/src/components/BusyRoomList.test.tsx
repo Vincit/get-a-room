@@ -49,7 +49,7 @@ const fakeRooms = [
 
 let container = null;
 
-describe('AvailableRoomList', () => {
+describe('BusyRoomList', () => {
     beforeEach(() => {
         // Setup a DOM element as a render target
         container = document.createElement('div');
@@ -64,7 +64,7 @@ describe('AvailableRoomList', () => {
     });
 
     it('renders rooms available in 30 minutes', async () => {
-        render(<BusyRoomList rooms={fakeRooms} />, container);
+        render(<BusyRoomList rooms={fakeRooms} bookings={[]} />, container);
 
         const items = screen.queryAllByTestId('AvailableRoomListCard');
         expect(items).toBeTruthy();
@@ -72,7 +72,7 @@ describe('AvailableRoomList', () => {
     });
 
     it('renders correct room title', async () => {
-        render(<BusyRoomList rooms={fakeRooms} />, container);
+        render(<BusyRoomList rooms={fakeRooms} bookings={[]} />, container);
 
         const titles = screen.queryAllByTestId('BookingRoomTitle');
         expect(titles).toHaveLength(1);
