@@ -77,15 +77,11 @@ function BookingView(props: BookingViewProps) {
         }
     }, [preferences]);
 
-    useEffect(() => {
-        filterRooms();
-    }, [roomSize, resources, rooms]);
-
-    const filterRooms = () => {
-        let filteredRooms: Room[] = filterByRoomSize(rooms);
-        filteredRooms = filterByResources(filteredRooms);
+    const filterRooms = useCallback((roomSize, resources, rooms) => {
+        let filteredRooms: Room[] = filterByRoomSize(rooms, roomSize);
+        filteredRooms = filterByResources(filteredRooms, resources);
         setDisplayRooms(filteredRooms);
-    };
+    }, []);
 
     /**
      * Exracts the upper and lower bound values for room capacity from button
@@ -93,7 +89,7 @@ function BookingView(props: BookingViewProps) {
      * @param rooms Rooms to be filtered
      * @returns filtered array of rooms
      */
-    const filterByRoomSize = (rooms: Room[]) => {
+    const filterByRoomSize = (rooms: Room[], roomSize: string[]) => {
         if (roomSize.length === 0) {
             return rooms;
         }
@@ -128,7 +124,7 @@ function BookingView(props: BookingViewProps) {
      * @param rooms Rooms to be filtered
      * @returns filtered array of rooms
      */
-    const filterByResources = (rooms: Room[]) => {
+    const filterByResources = (rooms: Room[], resources: string[]) => {
         if (resources.length === 0) {
             return rooms;
         }
@@ -152,6 +148,10 @@ function BookingView(props: BookingViewProps) {
         }
         return newRooms;
     };
+
+    useEffect(() => {
+        filterRooms(roomSize, resources, rooms);
+    }, [roomSize, resources, rooms, filterRooms]);
 
     const handleDurationChange = (newDuration: number) => {
         setBookingDuration(newDuration);
