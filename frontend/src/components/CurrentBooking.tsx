@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { Box, List, Typography } from '@mui/material';
 import { Booking, AddTimeDetails, Room } from '../types';
-import { updateBooking, endBooking } from '../services/bookingService';
+import {
+    updateBooking,
+    endBooking,
+    deleteBooking
+} from '../services/bookingService';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
 import AlterBookingDrawer from './AlterBookingDrawer';
 import { getTimeAvailableMinutes, getBookingTimeLeft } from './RoomCard';
+
+const NO_CONFIRMATION = true;
 
 function areBookingsFetched(bookings: Booking[]) {
     return Array.isArray(bookings) && bookings.length > 0;
@@ -19,7 +25,7 @@ type CurrentBookingProps = {
 };
 
 const CurrentBooking = (props: CurrentBookingProps) => {
-    const { bookings, updateBookings } = props;
+    const { bookings, updateBookings, setBookings, updateRooms } = props;
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -53,8 +59,9 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         setBookingProcessing(booking.room.id);
         toggleDrawer(false);
 
-        updateBooking(addTimeDetails, booking.id)
+        updateBooking(addTimeDetails, booking.id, NO_CONFIRMATION)
             .then((updatedBooking) => {
+                setBookings([updatedBooking]);
                 setBookingProcessing('false');
                 // replace updated booking
                 updateBookings();
@@ -77,6 +84,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 setBookingProcessing('false');
                 // replace updated booking
                 updateBookings();
+                updateRooms();
                 createSuccessNotification('Booking ended');
                 window.scrollTo(0, 0);
             })

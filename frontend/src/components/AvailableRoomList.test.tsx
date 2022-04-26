@@ -197,11 +197,14 @@ describe('AvailableRoomList', () => {
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
-                duration: 15,
-                roomId: fakeRooms[0].id,
-                title: 'Reservation from Get a Room!'
-            })
+            expect(makeBooking as jest.Mock).toHaveBeenCalledWith(
+                {
+                    duration: 15,
+                    roomId: fakeRooms[0].id,
+                    title: 'Reservation from Get a Room!'
+                },
+                true
+            )
         );
     });
 
@@ -227,11 +230,14 @@ describe('AvailableRoomList', () => {
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
-                duration: 30,
-                roomId: fakeRooms[0].id,
-                title: 'Reservation from Get a Room!'
-            })
+            expect(makeBooking as jest.Mock).toHaveBeenCalledWith(
+                {
+                    duration: 30,
+                    roomId: fakeRooms[0].id,
+                    title: 'Reservation from Get a Room!'
+                },
+                true
+            )
         );
     });
 
@@ -257,11 +263,14 @@ describe('AvailableRoomList', () => {
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
-                duration: 60,
-                roomId: fakeRooms[0].id,
-                title: 'Reservation from Get a Room!'
-            })
+            expect(makeBooking as jest.Mock).toHaveBeenCalledWith(
+                {
+                    duration: 60,
+                    roomId: fakeRooms[0].id,
+                    title: 'Reservation from Get a Room!'
+                },
+                true
+            )
         );
     });
 
@@ -287,11 +296,14 @@ describe('AvailableRoomList', () => {
         fireEvent.click(bookButton);
 
         await waitFor(() =>
-            expect(makeBooking as jest.Mock).toHaveBeenCalledWith({
-                duration: 120,
-                roomId: fakeRooms[0].id,
-                title: 'Reservation from Get a Room!'
-            })
+            expect(makeBooking as jest.Mock).toHaveBeenCalledWith(
+                {
+                    duration: 120,
+                    roomId: fakeRooms[0].id,
+                    title: 'Reservation from Get a Room!'
+                },
+                true
+            )
         );
     });
 });
