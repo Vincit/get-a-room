@@ -312,7 +312,7 @@ const RoomCard = (props: RoomCardProps) => {
                         ) : null}
 
                         <IconButton
-                            aria-label='favorite room'
+                            aria-label="favorite room"
                             onClick={handleFavoriteClick}
                         >
                             {isFavorited(room, preferences) ? (
