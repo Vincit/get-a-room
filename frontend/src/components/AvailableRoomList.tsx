@@ -5,12 +5,17 @@ import { Booking, BookingDetails, Room } from '../types';
 import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
+import NoRoomsCard from './NoRoomsCard';
 import BookingDrawer from './BookingDrawer';
 
 const SKIP_CONFIRMATION = true;
 
 function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
+}
+
+function noAvailableRooms(rooms: Room[]) {
+    return rooms.length === 0;
 }
 
 function availableForMinutes(room: Room | undefined) {
@@ -183,22 +188,28 @@ const AvailableRoomList = (props: BookingListProps) => {
                 Available rooms
             </Typography>
             <List>
-                {rooms
-                    .sort((a, b) => (a.name < b.name ? -1 : 1))
-                    .map((room) =>
-                        isAvailableFor(bookingDuration, room) ? (
-                            <li key={room.id}>
-                                <RoomCard
-                                    room={room}
-                                    onClick={handleCardClick}
-                                    bookingLoading={bookingLoading}
-                                    disableBooking={disableBooking(bookings)}
-                                    isSelected={selectedRoom === room}
-                                    expandFeatures={expandedFeaturesAll}
-                                />
-                            </li>
-                        ) : null
-                    )}
+                {noAvailableRooms(rooms) ? (
+                    <NoRoomsCard />
+                ) : (
+                    rooms
+                        .sort((a, b) => (a.name < b.name ? -1 : 1))
+                        .map((room) =>
+                            isAvailableFor(bookingDuration, room) ? (
+                                <li key={room.id}>
+                                    <RoomCard
+                                        room={room}
+                                        onClick={handleCardClick}
+                                        bookingLoading={bookingLoading}
+                                        disableBooking={disableBooking(
+                                            bookings
+                                        )}
+                                        isSelected={selectedRoom === room}
+                                        expandFeatures={expandedFeaturesAll}
+                                    />
+                                </li>
+                            ) : null
+                        )
+                )}
             </List>
         </Box>
     );

@@ -40,7 +40,11 @@ const BusyRoomList = (props: BusyRoomListProps) => {
         <Box id="available-in-30-min-room-list">
             {rooms.filter((room) => filterBusyRoom(room, bookings)).length >
             0 ? (
-                <Typography variant="subtitle1" textAlign="left">
+                <Typography
+                    variant="subtitle1"
+                    textAlign="left"
+                    marginLeft="24px"
+                >
                     rooms available in the next 30 min
                 </Typography>
             ) : null}

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Room, Booking } from '../types';
@@ -9,7 +8,7 @@ import Group from '@mui/icons-material/People';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
-import { CardActionArea, CircularProgress, styled } from '@mui/material';
+import { Card, CardActionArea, CircularProgress, styled } from '@mui/material';
 import { getTimeLeftMinutes } from './util/TimeLeft';
 import { minutesToSimpleString } from './BookingDrawer';
 import { DateTime } from 'luxon';
@@ -74,14 +73,14 @@ function busyAvailableFor(room: Room) {
     return Math.round(minutes);
 }
 
-const GridContainer = styled(Box)(({ theme }) => ({
+export const GridContainer = styled(Box)(({ theme }) => ({
     container: true,
     flexDirection: 'column',
     alignItems: 'flex-start',
     padding: '16px'
 }));
 
-const Row = styled(Box)(({ theme }) => ({
+export const Row = styled(Box)(({ theme }) => ({
     display: 'flex',
     justifyContent: 'space-between',
     margin: '8px'
@@ -100,7 +99,7 @@ const StartBox = styled(Box)(({ theme }) => ({
     margin: '8px'
 }));
 
-const CustomCard = styled(Card)({
+export const CustomCard = styled(Card)({
     margin: '8px  0 24px 0',
     borderRadius: '10px',
     boxShadow:
