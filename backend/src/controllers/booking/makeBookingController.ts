@@ -64,6 +64,7 @@ export const checkRoomAccepted = () => {
 
 /**
  * Checks if the rooms if free before making a change
+ * Adds freeBusy result to res.locals.freeBusyResult.
  */
 export const checkRoomIsFree = () => {
     const middleware = async (
@@ -76,7 +77,7 @@ export const checkRoomIsFree = () => {
             const roomId: string = res.locals.roomId;
 
             const startTime = DateTime.now().toUTC().toISO();
-            const endTime = DateTime.now()
+            const endTime = DateTime.fromObject({ second: 0, millisecond: 0 })
                 .plus({ minutes: res.locals.duration })
                 .toUTC();
 
@@ -85,7 +86,7 @@ export const checkRoomIsFree = () => {
                     client,
                     [{ id: roomId }],
                     startTime,
-                    endTime.toISO()
+                    DateTime.now().endOf('day').toUTC().toISO()
                 )
             )[roomId];
 
@@ -93,12 +94,13 @@ export const checkRoomIsFree = () => {
                 return responses.internalServerError(req, res);
             }
 
+            res.locals.freeBusyResult = freeBusyResult;
             const diff = DateTime.fromISO(freeBusyResult)
                 .toUTC()
                 .diff(endTime, 'seconds');
 
             // Allow difference of +- 15 seconds for conflict cases
-            if (Math.abs(diff.seconds) >= 15) {
+            if (diff.seconds < 0) {
                 return responses.custom(req, res, 409, 'Conflict');
             }
 

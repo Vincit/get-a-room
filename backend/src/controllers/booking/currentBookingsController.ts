@@ -150,12 +150,14 @@ export const simplifyBookings = (
     const roomsSimplified: RoomData[] = simplifyRoomData(rooms);
 
     const simplifiedBookings = allBookings.map((booking: schema.EventData) => {
+        const attendees = booking.attendees;
         // TODO: Remove me
         const simpleEvent: CurrentBookingData = {
             id: booking.id,
             startTime: booking.start?.dateTime,
             endTime: booking.end?.dateTime,
             organizerEmail: booking?.organizer?.email,
+            resourceStatus: '',
             room: {
                 id: '',
                 name: null,
@@ -167,10 +169,14 @@ export const simplifyBookings = (
                 location: null
             }
         };
+        const bookingResource = attendees?.find(
+            (attendee) => attendee.resource
+        );
+        simpleEvent.resourceStatus = bookingResource?.responseStatus;
 
         // Finds the room information and includes it inside the simpleEvent
         const room = roomsSimplified.find((room: RoomData) => {
-            return room.location === booking.location;
+            return room.location === bookingResource?.displayName;
         });
 
         if (room) {
