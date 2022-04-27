@@ -1,14 +1,24 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Room, Booking } from '../types';
+import { Room, Booking, Preferences } from '../types';
+import { updatePreferences } from '../services/preferencesService';
+
 import TimeLeft from './util/TimeLeft';
 
 import Group from '@mui/icons-material/People';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import Favorite from '@mui/icons-material/Favorite';
+
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
-import { Card, CardActionArea, CircularProgress, styled } from '@mui/material';
+import {
+    Card,
+    CardActionArea,
+    CircularProgress,
+    styled,
+    IconButton
+} from '@mui/material';
 import { getTimeLeftMinutes } from './util/TimeLeft';
 import { minutesToSimpleString } from './BookingDrawer';
 import { DateTime } from 'luxon';
@@ -24,6 +34,17 @@ function getCapacity(room: Room) {
 
 function getNextCalendarEvent(room: Room) {
     return room.nextCalendarEvent;
+}
+
+function isFavorited(room: Room, pref?: Preferences) {
+    if (pref === undefined) {
+        return false;
+    }
+    const favoriteRooms = pref.fav_rooms;
+    if (Array.isArray(favoriteRooms)) {
+        return favoriteRooms.includes(room.id);
+    }
+    return false;
 }
 
 function getFeatures(room: Room) {
@@ -123,6 +144,8 @@ type RoomCardProps = {
     room: Room;
     booking?: Booking;
     onClick: (room: Room, booking?: Booking) => void;
+    preferences?: Preferences;
+    setPreferences: (pref: Preferences) => void;
     bookingLoading: string;
     disableBooking: boolean;
     isReserved?: boolean;
@@ -141,6 +164,8 @@ const RoomCard = (props: RoomCardProps) => {
         isReserved,
         isSelected,
         expandFeatures,
+        preferences,
+        setPreferences,
         isBusy
     } = props;
 
@@ -149,6 +174,45 @@ const RoomCard = (props: RoomCardProps) => {
             return;
         }
         onClick(room, booking);
+    };
+
+    const handleFavoriteClick = (
+        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
+        event.stopPropagation();
+        event.preventDefault();
+
+        if (preferences === undefined) {
+            console.log('undefined');
+            return;
+        }
+        let fav_rooms_now = preferences.fav_rooms as Array<string>;
+        const newPrefs = preferences;
+
+        if (isFavorited(room, preferences)) {
+            fav_rooms_now = fav_rooms_now.filter(
+                (roomId) => roomId !== room.id
+            );
+            newPrefs.fav_rooms = fav_rooms_now;
+
+            updatePreferences(newPrefs)
+                .then((savedPreferences) => {
+                    setPreferences(savedPreferences);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        } else {
+            fav_rooms_now.push(room.id);
+            newPrefs.fav_rooms = fav_rooms_now;
+            updatePreferences(newPrefs)
+                .then((savedPreferences) => {
+                    setPreferences(savedPreferences);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
     };
 
     const cardStyle = () => {
@@ -164,7 +228,11 @@ const RoomCard = (props: RoomCardProps) => {
 
     return (
         <CustomCard data-testid="AvailableRoomListCard" style={cardStyle()}>
-            <CardActionArea data-testid="CardActiveArea" onClick={handleClick}>
+            <CardActionArea
+                data-testid="CardActiveArea"
+                onClick={handleClick}
+                component={'div'}
+            >
                 <GridContainer>
                     <Row>
                         <Typography
@@ -242,9 +310,19 @@ const RoomCard = (props: RoomCardProps) => {
                         {bookingLoading === room.id ? (
                             <CircularProgress color="primary" />
                         ) : null}
-                        <FavoriteBorderIcon
-                            color={isBusy ? 'disabled' : 'inherit'}
-                        />
+
+                        <IconButton
+                            aria-label="favorite room"
+                            onClick={handleFavoriteClick}
+                        >
+                            {isFavorited(room, preferences) ? (
+                                <Favorite sx={{ color: '#F04E30' }} />
+                            ) : (
+                                <FavoriteBorderIcon
+                                    color={isBusy ? 'disabled' : 'inherit'}
+                                />
+                            )}
+                        </IconButton>
                     </Row>
 
                     {expandFeatures ? (

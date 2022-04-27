@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { List, Typography, Box, Switch, FormControlLabel } from '@mui/material';
 import { makeBooking } from '../services/bookingService';
-import { Booking, BookingDetails, Room } from '../types';
+import { Booking, BookingDetails, Room, Preferences } from '../types';
 import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
@@ -12,6 +12,22 @@ const SKIP_CONFIRMATION = true;
 
 function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
+}
+
+export async function isFavorited(room: Room, pref?: Preferences) {
+    try {
+        if (pref === undefined || pref.fav_rooms === undefined) {
+            return false;
+        }
+        if (pref.fav_rooms.includes(room.id)) {
+            room.favorited = true;
+        } else {
+            room.favorited = false;
+        }
+    } catch {
+        // add error notification
+        room.favorited = false;
+    }
 }
 
 function noAvailableRooms(rooms: Room[]) {
@@ -39,10 +55,20 @@ type BookingListProps = {
     bookings: Booking[];
     setBookings: (bookings: Booking[]) => void;
     updateData: () => void;
+    preferences?: Preferences;
+    setPreferences: (pref: Preferences) => void;
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
-    const { bookingDuration, rooms, bookings, setBookings, updateData } = props;
+    const {
+        bookingDuration,
+        rooms,
+        bookings,
+        setBookings,
+        updateData,
+        preferences,
+        setPreferences
+    } = props;
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -194,20 +220,27 @@ const AvailableRoomList = (props: BookingListProps) => {
                     rooms
                         .sort((a, b) => (a.name < b.name ? -1 : 1))
                         .map((room) =>
-                            isAvailableFor(bookingDuration, room) ? (
-                                <li key={room.id}>
-                                    <RoomCard
-                                        room={room}
-                                        onClick={handleCardClick}
-                                        bookingLoading={bookingLoading}
-                                        disableBooking={disableBooking(
-                                            bookings
-                                        )}
-                                        isSelected={selectedRoom === room}
-                                        expandFeatures={expandedFeaturesAll}
-                                    />
-                                </li>
-                            ) : null
+                            isAvailableFor(bookingDuration, room)
+                                ? (isFavorited(room, preferences),
+                                  (
+                                      <li key={room.id}>
+                                          <RoomCard
+                                              room={room}
+                                              onClick={handleCardClick}
+                                              bookingLoading={bookingLoading}
+                                              disableBooking={disableBooking(
+                                                  bookings
+                                              )}
+                                              isSelected={selectedRoom === room}
+                                              expandFeatures={
+                                                  expandedFeaturesAll
+                                              }
+                                              preferences={preferences}
+                                              setPreferences={setPreferences}
+                                          />
+                                      </li>
+                                  ))
+                                : null
                         )
                 )}
             </List>

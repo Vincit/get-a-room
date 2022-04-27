@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, List, Typography } from '@mui/material';
-import { Booking, AddTimeDetails, Room } from '../types';
+import { Booking, AddTimeDetails, Room, Preferences } from '../types';
 import { updateBooking, endBooking } from '../services/bookingService';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
@@ -18,10 +18,19 @@ type CurrentBookingProps = {
     setBookings: (bookings: Booking[]) => void;
     updateRooms: () => void;
     updateBookings: () => void;
+    preferences?: Preferences;
+    setPreferences: (pref: Preferences) => void;
 };
 
 const CurrentBooking = (props: CurrentBookingProps) => {
-    const { bookings, updateBookings, setBookings, updateRooms } = props;
+    const {
+        bookings,
+        updateBookings,
+        preferences,
+        setPreferences,
+        setBookings,
+        updateRooms
+    } = props;
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -128,6 +137,8 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                             isSelected={booking.room.id === selectedId}
                             isReserved={true}
                             expandFeatures={true}
+                            preferences={preferences}
+                            setPreferences={setPreferences}
                         />
                     </li>
                 ))}
