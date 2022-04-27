@@ -230,7 +230,12 @@ function BookingView(props: BookingViewProps) {
             )}
 
             {areRoomsFetched(rooms) ? (
-                <BusyRoomList rooms={rooms} bookings={bookings} />
+                <BusyRoomList
+                    rooms={rooms}
+                    bookings={bookings}
+                    preferences={preferences}
+                    setPreferences={setPreferences}
+                />
             ) : null}
         </Box>
     );
