@@ -5,7 +5,10 @@ import { Booking, BookingDetails, Room, Preferences } from '../types';
 import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
+import NoRoomsCard from './NoRoomsCard';
 import BookingDrawer from './BookingDrawer';
+
+const SKIP_CONFIRMATION = true;
 
 function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
@@ -27,6 +30,10 @@ export async function isFavorited(room: Room, pref?: Preferences) {
     }
 }
 
+function noAvailableRooms(rooms: Room[]) {
+    return rooms.length === 0;
+}
+
 function availableForMinutes(room: Room | undefined) {
     if (room === undefined) {
         return 0;
@@ -46,6 +53,7 @@ type BookingListProps = {
     bookingDuration: number;
     rooms: Room[];
     bookings: Booking[];
+    setBookings: (bookings: Booking[]) => void;
     updateData: () => void;
     preferences?: Preferences;
     setPreferences: (pref: Preferences) => void;
@@ -56,6 +64,7 @@ const AvailableRoomList = (props: BookingListProps) => {
         bookingDuration,
         rooms,
         bookings,
+        setBookings,
         updateData,
         preferences,
         setPreferences
@@ -152,9 +161,15 @@ const AvailableRoomList = (props: BookingListProps) => {
 
         setBookingLoading(room.id);
 
-        makeBooking(bookingDetails)
+        makeBooking(bookingDetails, SKIP_CONFIRMATION)
             .then((madeBooking) => {
+                setBookings([madeBooking]);
                 updateData();
+                // update data after 2.5s, waits Google Calendar to
+                // accept the booking.
+                setTimeout(() => {
+                    updateData();
+                }, 2500);
                 createSuccessNotification('Booking was succesful');
                 setBookingLoading('false');
                 document.getElementById('main-view-content')?.scrollTo(0, 0);
@@ -195,33 +210,39 @@ const AvailableRoomList = (props: BookingListProps) => {
                 }
                 control={<Switch onChange={handleAllFeaturesCollapse} />}
             />
-            <Typography variant="subtitle1" textAlign="left">
+            <Typography variant="subtitle1" textAlign="left" marginLeft="24px">
                 Available rooms
             </Typography>
             <List>
-                {rooms
-                    .sort((a, b) => (a.name < b.name ? -1 : 1))
-                    .map((room) =>
-                        isAvailableFor(bookingDuration, room)
-                            ? (isFavorited(room, preferences),
-                              (
-                                  <li key={room.id}>
-                                      <RoomCard
-                                          room={room}
-                                          onClick={handleCardClick}
-                                          bookingLoading={bookingLoading}
-                                          disableBooking={disableBooking(
-                                              bookings
-                                          )}
-                                          isSelected={selectedRoom === room}
-                                          expandFeatures={expandedFeaturesAll}
-                                          preferences={preferences}
-                                          setPreferences={setPreferences}
-                                      />
-                                  </li>
-                              ))
-                            : null
-                    )}
+                {noAvailableRooms(rooms) ? (
+                    <NoRoomsCard />
+                ) : (
+                    rooms
+                        .sort((a, b) => (a.name < b.name ? -1 : 1))
+                        .map((room) =>
+                            isAvailableFor(bookingDuration, room)
+                                ? (isFavorited(room, preferences),
+                                  (
+                                      <li key={room.id}>
+                                          <RoomCard
+                                              room={room}
+                                              onClick={handleCardClick}
+                                              bookingLoading={bookingLoading}
+                                              disableBooking={disableBooking(
+                                                  bookings
+                                              )}
+                                              isSelected={selectedRoom === room}
+                                              expandFeatures={
+                                                  expandedFeaturesAll
+                                              }
+                                              preferences={preferences}
+                                              setPreferences={setPreferences}
+                                          />
+                                      </li>
+                                  ))
+                                : null
+                        )
+                )}
             </List>
         </Box>
     );

@@ -6,8 +6,22 @@ import { SnackbarProvider } from 'notistack';
 import MainView from './MainView';
 import LoginView from './login/LoginView';
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { ReactComponent as MobileBackground } from './Background image.svg';
+import { ReactComponent as DesktopBackground } from './Background image desktop.svg';
 
 const App = () => {
+    // Basic solution for differiating between desktop and mobile. Switch from desktop to mobile resolution requires a page refresh
+    // to show background correctly.
+    let svgString = encodeURIComponent(
+        renderToStaticMarkup(<MobileBackground />)
+    );
+    if (window.innerWidth > 600) {
+        svgString = encodeURIComponent(
+            renderToStaticMarkup(<DesktopBackground />)
+        );
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -20,7 +34,15 @@ const App = () => {
                     vertical: 'bottom'
                 }}
             >
-                <div id="app">
+                <div
+                    id="app"
+                    style={{
+                        backgroundImage: `url("data:image/svg+xml,${svgString}")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
+                    }}
+                >
                     <Router history={history}>
                         <Switch>
                             <Route path="/login">

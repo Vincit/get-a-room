@@ -18,6 +18,7 @@ export const simplifyEventData = () => {
         try {
             const event: schema.EventData = res.locals.event;
             const roomId: string = res.locals.roomId;
+            const freeBusyResult = res.locals.freeBusyResult;
 
             if (!roomId) {
                 return responses.internalServerError(req, res);
@@ -28,6 +29,8 @@ export const simplifyEventData = () => {
                 roomId
             );
             const roomData = simplifySingleRoomData(roomResource);
+            roomData.nextCalendarEvent = freeBusyResult;
+
             const start = DateTime.fromISO(event.start?.dateTime as string)
                 .toUTC()
                 .toISO();
