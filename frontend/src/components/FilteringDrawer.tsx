@@ -41,6 +41,8 @@ interface Props {
     setRoomSize: (size: string[]) => void;
     resources: string[];
     setResources: (resource: string[]) => void;
+    customFilter: string;
+    setCustomFilter: (customFilter: string) => void;
     allFeatures: string[];
 }
 
@@ -53,10 +55,11 @@ const FilteringDrawer = (props: Props) => {
         setRoomSize,
         resources,
         setResources,
+        customFilter,
+        setCustomFilter,
         allFeatures
     } = props;
 
-    const [customFilter, setCustomFilter] = useState('');
     const [onlyFavourites, setOnlyFavourites] = useState(false);
 
     const handleRoomSizeChange = (

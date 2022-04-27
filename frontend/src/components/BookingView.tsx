@@ -73,6 +73,7 @@ function BookingView(props: BookingViewProps) {
     // Filtering states
     const [roomSize, setRoomSize] = useState<string[]>([]);
     const [resources, setResources] = useState<string[]>([]);
+    const [customFilter, setCustomFilter] = useState('');
 
     const { createErrorNotification } = useCreateNotification();
 
@@ -87,20 +88,31 @@ function BookingView(props: BookingViewProps) {
         }
     }, [preferences]);
 
-    const filterRooms = useCallback((roomSize, resources, rooms) => {
-        let filteredRooms: Room[] = filterByRoomSize(rooms, roomSize);
-        filteredRooms = filterByResources(filteredRooms, resources);
-        setDisplayRooms(filteredRooms);
-        var allFeaturesSet = new Set<string>();
-        for (var room of filteredRooms) {
-            if (room.features) {
-                for (var feature of room.features) {
-                    allFeaturesSet.add(feature);
+    /**
+     * Filters rooms and sets displayRooms to include matching rooms only
+     * Also collects all the different features in currently shown rooms
+     * so that the buttons for them can be updated.
+     */
+    const filterRooms = useCallback(
+        (roomSize, resources, rooms, customFilter) => {
+            let filteredRooms: Room[] = filterByRoomSize(rooms, roomSize);
+            filteredRooms = filterByResources(filteredRooms, resources);
+            filteredRooms = filterByCustomString(filteredRooms, customFilter);
+            setDisplayRooms(filteredRooms);
+
+            // Collect all features in the current displayed rooms to a set
+            var allFeaturesSet = new Set<string>();
+            for (var room of filteredRooms) {
+                if (room.features) {
+                    for (var feature of room.features) {
+                        allFeaturesSet.add(feature);
+                    }
                 }
             }
-        }
-        setAllfeatures(Array.from(allFeaturesSet));
-    }, []);
+            setAllfeatures(Array.from(allFeaturesSet));
+        },
+        []
+    );
 
     /**
      * Exracts the upper and lower bound values for room capacity from button
@@ -168,10 +180,37 @@ function BookingView(props: BookingViewProps) {
         return newRooms;
     };
 
+    const filterByCustomString = (rooms: Room[], customFilter: string) => {
+        if (customFilter === '') {
+            return rooms;
+        }
+        let newRooms: Room[] = [];
+        for (var room of rooms) {
+            var data = `${room.features?.toString()},${room.name},${
+                room.building
+            },${room.capacity?.toString()}`;
+            var data = data?.toLowerCase();
+            var customFilterArray = customFilter.split(' ');
+            let addToRooms = false;
+            for (var filter of customFilterArray) {
+                if (!data?.includes(filter.toLowerCase())) {
+                    addToRooms = false;
+                    break;
+                }
+                addToRooms = true;
+            }
+            if (addToRooms) {
+                newRooms.push(room);
+                addToRooms = false;
+            }
+        }
+        return newRooms;
+    };
+
     // Update displayed rooms when filters or rooms change
     useEffect(() => {
-        filterRooms(roomSize, resources, rooms);
-    }, [roomSize, resources, rooms, filterRooms]);
+        filterRooms(roomSize, resources, rooms, customFilter);
+    }, [roomSize, resources, rooms, customFilter, filterRooms]);
 
     const handleDurationChange = (newDuration: number) => {
         setBookingDuration(newDuration);
@@ -341,6 +380,8 @@ function BookingView(props: BookingViewProps) {
                     setRoomSize={setRoomSize}
                     resources={resources}
                     setResources={setResources}
+                    customFilter={customFilter}
+                    setCustomFilter={setCustomFilter}
                     allFeatures={allFeatures}
                 />
             </div>
