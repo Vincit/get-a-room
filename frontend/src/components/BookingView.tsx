@@ -56,12 +56,13 @@ const RowCentered = styled(Box)(({ theme }) => ({
 
 type BookingViewProps = {
     preferences?: Preferences;
+    setPreferences: (pref: Preferences) => void;
     open: boolean;
     toggle: (open: boolean) => void;
 };
 
 function BookingView(props: BookingViewProps) {
-    const { preferences, open, toggle } = props;
+    const { preferences, open, toggle, setPreferences } = props;
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms);
@@ -354,6 +355,8 @@ function BookingView(props: BookingViewProps) {
                 updateRooms={updateRooms}
                 updateBookings={updateBookings}
                 setBookings={setBookings}
+                preferences={preferences}
+                setPreferences={setPreferences}
             />
 
             {!areRoomsFetched(rooms) ? (
@@ -365,11 +368,18 @@ function BookingView(props: BookingViewProps) {
                     bookings={bookings}
                     setBookings={setBookings}
                     updateData={updateData}
+                    preferences={preferences}
+                    setPreferences={setPreferences}
                 />
             )}
 
             {areRoomsFetched(rooms) ? (
-                <BusyRoomList rooms={rooms} bookings={bookings} />
+                <BusyRoomList
+                    rooms={rooms}
+                    bookings={bookings}
+                    preferences={preferences}
+                    setPreferences={setPreferences}
+                />
             ) : null}
 
             <div id="drawer-container" onClick={openFiltering}>

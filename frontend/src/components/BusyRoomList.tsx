@@ -2,7 +2,7 @@ import React from 'react';
 import { List, Typography, Box } from '@mui/material';
 import { DateTime } from 'luxon';
 import RoomCard from './RoomCard';
-import { Booking, Room } from '../types';
+import { Booking, Preferences, Room } from '../types';
 
 export function roomFreeIn(room: Room) {
     let end;
@@ -31,10 +31,12 @@ function filterBusyRoom(room: Room, bookings: Booking[]): boolean {
 type BusyRoomListProps = {
     rooms: Room[];
     bookings: Booking[];
+    preferences?: Preferences;
+    setPreferences: (pref: Preferences) => void;
 };
 
 const BusyRoomList = (props: BusyRoomListProps) => {
-    const { rooms, bookings } = props;
+    const { rooms, bookings, preferences, setPreferences } = props;
 
     return (
         <Box id="available-in-30-min-room-list">
@@ -70,6 +72,8 @@ const BusyRoomList = (props: BusyRoomListProps) => {
                                 isSelected={false}
                                 isBusy={true}
                                 expandFeatures={false}
+                                setPreferences={setPreferences}
+                                preferences={preferences}
                             />
                         </li>
                     ))}

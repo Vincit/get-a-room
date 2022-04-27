@@ -17,6 +17,10 @@ export const preferencesSchema = new Schema<Preferences>(
         building: {
             required: false,
             type: buildingSchema
+        },
+        fav_rooms: {
+            required: false,
+            type: Array
         }
     },
     { _id: false }

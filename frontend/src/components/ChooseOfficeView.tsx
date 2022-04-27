@@ -56,7 +56,9 @@ const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
             (building) => building.id === buildingId
         );
         if (foundBuilding) {
-            updatePreferences({ building: foundBuilding })
+            let newPrefs = preferences as Preferences;
+            newPrefs.building = foundBuilding;
+            updatePreferences(newPrefs)
                 .then((savedPreferences) => {
                     setPreferences(savedPreferences);
                     createSuccessNotification('Chose building ' + buildingId);
