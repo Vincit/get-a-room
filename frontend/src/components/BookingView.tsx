@@ -37,12 +37,13 @@ const RowCentered = styled(Box)(({ theme }) => ({
 
 type BookingViewProps = {
     preferences?: Preferences;
+    setPreferences: (pref: Preferences) => void;
     open: boolean;
     toggle: (open: boolean) => void;
 };
 
 function BookingView(props: BookingViewProps) {
-    const { preferences, open, toggle } = props;
+    const { preferences, open, toggle, setPreferences } = props;
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -169,6 +170,8 @@ function BookingView(props: BookingViewProps) {
                 updateRooms={updateRooms}
                 updateBookings={updateBookings}
                 setBookings={setBookings}
+                preferences={preferences}
+                setPreferences={setPreferences}
             />
 
             {!areRoomsFetched(rooms) ? (
@@ -179,6 +182,8 @@ function BookingView(props: BookingViewProps) {
                     rooms={rooms}
                     bookings={bookings}
                     updateData={updateData}
+                    preferences={preferences}
+                    setPreferences={setPreferences}
                 />
             )}
         </Box>

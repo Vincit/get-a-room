@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { List, Typography, Box, Switch, FormControlLabel } from '@mui/material';
 import { makeBooking } from '../services/bookingService';
 import { Booking, BookingDetails, Room, Preferences } from '../types';
-import { getPreferences } from '../services/preferencesService';
 import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
@@ -12,9 +11,11 @@ function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
 }
 
-export async function isFavorited(room: Room) {
+export async function isFavorited(room: Room, pref?: Preferences) {
     try {
-        const pref = await getPreferences();
+        if (pref === undefined || pref.fav_rooms === undefined) {
+            return false;
+        }
         if (pref.fav_rooms.includes(room.id)) {
             room.favorited = true;
         } else {
@@ -46,12 +47,19 @@ type BookingListProps = {
     rooms: Room[];
     bookings: Booking[];
     updateData: () => void;
+    preferences?: Preferences;
+    setPreferences: (pref: Preferences) => void;
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
-    const [preferences, setPreferences] = useState<Preferences | undefined>();
-
-    const { bookingDuration, rooms, bookings, updateData } = props;
+    const {
+        bookingDuration,
+        rooms,
+        bookings,
+        updateData,
+        preferences,
+        setPreferences
+    } = props;
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -193,10 +201,9 @@ const AvailableRoomList = (props: BookingListProps) => {
             <List>
                 {rooms
                     .sort((a, b) => (a.name < b.name ? -1 : 1))
-                    .sort((value) => (value.favorited ? -1 : 1))
                     .map((room) =>
                         isAvailableFor(bookingDuration, room)
-                            ? (isFavorited(room),
+                            ? (isFavorited(room, preferences),
                               (
                                   <li key={room.id}>
                                       <RoomCard

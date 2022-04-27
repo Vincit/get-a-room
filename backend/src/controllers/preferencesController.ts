@@ -87,7 +87,7 @@ export const updatePreferencesToDatabase = () => {
                     latitude: res.locals.latitude,
                     longitude: res.locals.longitude
                 },
-                fav_rooms: res.locals.favoriterooms
+                fav_rooms: res.locals.fav_rooms
             };
 
             if (!sub) {

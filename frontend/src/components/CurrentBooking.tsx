@@ -24,12 +24,12 @@ type CurrentBookingProps = {
     setBookings: (bookings: Booking[]) => void;
     updateRooms: () => void;
     updateBookings: () => void;
+    preferences?: Preferences;
+    setPreferences: (pref: Preferences) => void;
 };
 
 const CurrentBooking = (props: CurrentBookingProps) => {
-    const [preferences, setPreferences] = useState<Preferences | undefined>();
-
-    const { bookings, updateBookings } = props;
+    const { bookings, updateBookings, preferences, setPreferences } = props;
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();

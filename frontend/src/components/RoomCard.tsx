@@ -3,11 +3,7 @@ import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Room, Booking, Preferences } from '../types';
-import {
-    getPreferences,
-    updatePreferences
-} from '../services/preferencesService';
-import useCreateNotification from '../hooks/useCreateNotification';
+import { updatePreferences } from '../services/preferencesService';
 
 import TimeLeft from './util/TimeLeft';
 
@@ -35,6 +31,17 @@ function getCapacity(room: Room) {
 
 function getNextCalendarEvent(room: Room) {
     return room.nextCalendarEvent;
+}
+
+function isFavorited(room: Room, pref?: Preferences) {
+    if (pref === undefined) {
+        return false;
+    }
+    const favoriteRooms = pref.fav_rooms;
+    if (Array.isArray(favoriteRooms)) {
+        return favoriteRooms.includes(room.id);
+    }
+    return false;
 }
 
 function getFeatures(room: Room) {
@@ -121,7 +128,7 @@ type RoomCardProps = {
     booking?: Booking;
     onClick: (room: Room, booking?: Booking) => void;
     preferences?: Preferences;
-    setPreferences: (preferences?: Preferences) => any;
+    setPreferences: (pref: Preferences) => void;
     bookingLoading: string;
     disableBooking: boolean;
     isReserved?: boolean;
@@ -134,16 +141,14 @@ const RoomCard = (props: RoomCardProps) => {
         room,
         booking,
         onClick,
-        setPreferences,
         bookingLoading,
         disableBooking,
         isReserved,
         isSelected,
-        expandFeatures
+        expandFeatures,
+        preferences,
+        setPreferences
     } = props;
-
-    const { createSuccessNotification, createErrorNotification } =
-        useCreateNotification();
 
     const handleClick = () => {
         if (disableBooking) {
@@ -152,42 +157,43 @@ const RoomCard = (props: RoomCardProps) => {
         onClick(room, booking);
     };
 
-    const handleFavoriteClick = () => {
-        getPreferences().then((pref) => {
-            const fav_rooms_now = pref.fav_rooms;
+    const handleFavoriteClick = (
+        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
+        event.stopPropagation();
+        event.preventDefault();
 
-            if (pref.fav_rooms.includes(room.id)) {
-                var index = pref.fav_rooms.indexOf(room.id, 0);
-                delete fav_rooms_now[room.id];
+        if (preferences === undefined) {
+            console.log('undefined');
+            return;
+        }
+        let fav_rooms_now = preferences.fav_rooms as Array<string>;
+        const newPrefs = preferences;
 
-                updatePreferences({ fav_rooms: fav_rooms_now })
-                    .then((savedPreferences) => {
-                        setPreferences(savedPreferences);
-                        createSuccessNotification(
-                            'Unfavorited room: ' + room.name
-                        );
-                    })
-                    .catch(() => {
-                        createErrorNotification(
-                            'Could not unfavorite room: ' + room.name
-                        );
-                    });
-            } else {
-                fav_rooms_now.push(room.id);
-                updatePreferences({ fav_rooms: fav_rooms_now })
-                    .then((savedPreferences) => {
-                        setPreferences(savedPreferences);
-                        createSuccessNotification(
-                            'Favorited room: ' + room.name
-                        );
-                    })
-                    .catch(() => {
-                        createErrorNotification(
-                            'Could not favorite room: ' + room.name
-                        );
-                    });
-            }
-        });
+        if (isFavorited(room, preferences)) {
+            fav_rooms_now = fav_rooms_now.filter(
+                (roomId) => roomId !== room.id
+            );
+            newPrefs.fav_rooms = fav_rooms_now;
+
+            updatePreferences(newPrefs)
+                .then((savedPreferences) => {
+                    setPreferences(savedPreferences);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        } else {
+            fav_rooms_now.push(room.id);
+            newPrefs.fav_rooms = fav_rooms_now;
+            updatePreferences(newPrefs)
+                .then((savedPreferences) => {
+                    setPreferences(savedPreferences);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
     };
 
     const cardStyle = () => {
@@ -203,7 +209,11 @@ const RoomCard = (props: RoomCardProps) => {
 
     return (
         <CustomCard data-testid="AvailableRoomListCard" style={cardStyle()}>
-            <CardActionArea data-testid="CardActiveArea" onClick={handleClick}>
+            <CardActionArea
+                data-testid="CardActiveArea"
+                onClick={handleClick}
+                component={'div'}
+            >
                 <GridContainer>
                     <Row>
                         <Typography
@@ -254,7 +264,7 @@ const RoomCard = (props: RoomCardProps) => {
                         ) : null}
 
                         <IconButton onClick={handleFavoriteClick}>
-                            {room.favorited ? (
+                            {isFavorited(room, preferences) ? (
                                 <Favorite sx={{ color: '#F04E30' }} />
                             ) : (
                                 <FavoriteBorderIcon />
