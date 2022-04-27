@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, IconButton, Typography, Switch } from '@mui/material';
 import Person from '@mui/icons-material/Person';
 import { Visibility } from '@mui/icons-material';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import { RowCentered, DrawerButtonSecondary, Row } from './BookingDrawer';
 import { logout } from '../services/authService';
 import useCreateNotification from '../hooks/useCreateNotification';
+import RoomCard from './RoomCard';
 
 type userSettingsProps = {
     open: boolean;
@@ -23,11 +24,18 @@ const UserDrawer = (props: userSettingsProps) => {
     const history = useHistory();
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
+    const [expandedFeaturesAll, setExpandedFeaturesAll] = useState(
+        false as boolean
+    );
+
+    const handleAllFeaturesCollapse = () => {
+        setExpandedFeaturesAll(!expandedFeaturesAll);
+    };
 
     const doLogout = () => {
         logout()
             .then(() => {
-                createSuccessNotification('Logout succesful');
+                createSuccessNotification('Logout successful');
                 history.push('/login');
             })
             .catch(() => {
@@ -40,7 +48,6 @@ const UserDrawer = (props: userSettingsProps) => {
         <SwipeableEdgeDrawer
             headerTitle={name}
             iconLeft={'Person'}
-            iconRight={'Close'}
             isOpen={open}
             toggle={toggle}
             disableSwipeToOpen={true}
@@ -49,6 +56,7 @@ const UserDrawer = (props: userSettingsProps) => {
                 <DrawerButtonSecondary
                     aria-label="settings drawer "
                     data-testid="BookNowButton"
+                    onClick={handleAllFeaturesCollapse}
                 >
                     <IconButton aria-label="visibility" size="small">
                         <Visibility />

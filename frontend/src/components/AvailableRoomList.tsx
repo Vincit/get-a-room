@@ -6,6 +6,7 @@ import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
 import BookingDrawer from './BookingDrawer';
+import UserDrawer from './UserDrawer';
 
 function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
@@ -40,19 +41,16 @@ const AvailableRoomList = (props: BookingListProps) => {
         useCreateNotification();
 
     const [bookingLoading, setBookingLoading] = useState('false');
-    const [expandedFeaturesAll, setExpandedFeaturesAll] = useState(
-        false as boolean
-    );
+
     const [expandBookingDrawer, setexpandBookingDrawer] = useState(false);
     const [additionalDuration, setAdditionalDuration] = useState(0);
     const [availableMinutes, setAvailableMinutes] = useState(0);
     const [selectedRoom, setSelectedRoom] = useState<Room | undefined>(
         undefined
     );
-
-    const handleAllFeaturesCollapse = () => {
-        setExpandedFeaturesAll(!expandedFeaturesAll);
-    };
+    const [expandSettingsDrawer, setexpandSettingsDrawer] = useState(
+        false as boolean
+    );
 
     const handleAdditionaDurationChange = (additionalMinutes: number) => {
         setAdditionalDuration(additionalDuration + additionalMinutes);
@@ -115,6 +113,14 @@ const AvailableRoomList = (props: BookingListProps) => {
         setexpandBookingDrawer(newOpen);
     };
 
+    const openSettingsDrawer = () => {
+        setexpandSettingsDrawer(true);
+    };
+
+    const toggleDrawers = (newOpen: boolean) => {
+        setexpandSettingsDrawer(newOpen);
+    };
+
     const book = (room: Room | undefined, duration: number) => {
         if (room === undefined) {
             return;
@@ -157,19 +163,6 @@ const AvailableRoomList = (props: BookingListProps) => {
                 />
             </div>
 
-            <FormControlLabel
-                label={
-                    <Typography
-                        sx={{
-                            fontSize: '18px',
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        Expand room features
-                    </Typography>
-                }
-                control={<Switch onChange={handleAllFeaturesCollapse} />}
-            />
             <Typography variant="subtitle1" textAlign="left">
                 Available rooms
             </Typography>

@@ -17,7 +17,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Visibility } from '@mui/icons-material';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import UserDrawer from './UserDrawer';
-import { DrawerButtonSecondary } from './BookingDrawer';
+import BookingDrawer, { DrawerButtonSecondary } from './BookingDrawer';
 import { logout } from '../services/authService';
 import useCreateNotification from '../hooks/useCreateNotification';
 
@@ -67,7 +67,9 @@ function BookingView(props: BookingViewProps) {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
-    const [expandSettingsDrawer, setexpandSettingsDrawer] = useState(false);
+    const [expandSettingsDrawer, setexpandSettingsDrawer] = useState(
+        false as boolean
+    );
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
 
@@ -98,6 +100,10 @@ function BookingView(props: BookingViewProps) {
 
     const openSettingsDrawer = () => {
         setexpandSettingsDrawer(true);
+    };
+
+    const toggleDrawers = (newOpen: boolean) => {
+        setexpandSettingsDrawer(newOpen);
     };
 
     const updateData = useCallback(() => {
@@ -162,6 +168,14 @@ function BookingView(props: BookingViewProps) {
                 </SwipeableEdgeDrawer>
             </div>
 
+            <UserDrawer
+                open={expandSettingsDrawer}
+                toggle={toggleDrawers}
+                name={name}
+            >
+                children
+            </UserDrawer>
+
             <Typography
                 onClick={moveToChooseOfficePage}
                 textAlign="left"
@@ -193,12 +207,6 @@ function BookingView(props: BookingViewProps) {
                     </IconButton>
                 </Typography>
             </RowCentered>
-
-            <UserDrawer
-                open={expandSettingsDrawer}
-                toggle={toggle}
-                name={name}
-            ></UserDrawer>
 
             {isActiveBooking(bookings) ? (
                 <Box

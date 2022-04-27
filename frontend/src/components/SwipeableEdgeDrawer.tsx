@@ -10,6 +10,7 @@ import { IconButton } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
 import MapIcon from '@mui/icons-material/Map';
+import Person from '@mui/icons-material/Person';
 
 const drawerBleeding = 56;
 
@@ -92,6 +93,9 @@ const SwipeableEdgeDrawer = (props: Props) => {
         title = (
             <DrawerTitle sx={{ color: '#219653' }}>{headerTitle}</DrawerTitle>
         );
+    } else if (iconLeft === 'Person') {
+        left = <Person />;
+        title = <DrawerTitle>{headerTitle}</DrawerTitle>;
     } else {
         left = <AccessTimeIcon />;
         title = <DrawerTitle>{headerTitle}</DrawerTitle>;
