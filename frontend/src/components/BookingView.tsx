@@ -63,15 +63,6 @@ function BookingView(props: BookingViewProps) {
             getRooms(buildingPreference, GET_RESERVED)
                 .then((allRooms) => {
                     setRooms(allRooms);
-                    var allFeaturesSet = new Set<string>();
-                    for (var room of allRooms) {
-                        if (room.features) {
-                            for (var feature of room.features) {
-                                allFeaturesSet.add(feature);
-                            }
-                        }
-                    }
-                    setAllfeatures(Array.from(allFeaturesSet));
                 })
                 .catch((error) => console.log(error));
         }
@@ -81,6 +72,15 @@ function BookingView(props: BookingViewProps) {
         let filteredRooms: Room[] = filterByRoomSize(rooms, roomSize);
         filteredRooms = filterByResources(filteredRooms, resources);
         setDisplayRooms(filteredRooms);
+        var allFeaturesSet = new Set<string>();
+        for (var room of filteredRooms) {
+            if (room.features) {
+                for (var feature of room.features) {
+                    allFeaturesSet.add(feature);
+                }
+            }
+        }
+        setAllfeatures(Array.from(allFeaturesSet));
     }, []);
 
     /**
@@ -149,6 +149,7 @@ function BookingView(props: BookingViewProps) {
         return newRooms;
     };
 
+    // Update displayed rooms when filters or rooms change
     useEffect(() => {
         filterRooms(roomSize, resources, rooms);
     }, [roomSize, resources, rooms, filterRooms]);
