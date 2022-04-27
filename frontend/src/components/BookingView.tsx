@@ -190,7 +190,7 @@ function BookingView(props: BookingViewProps) {
             var data = `${room.features?.toString()},${room.name},${
                 room.building
             },${room.capacity?.toString()}`;
-            var data = data?.toLowerCase();
+            data = data?.toLowerCase();
             var customFilterArray = customFilter.split(' ');
             let addToRooms = false;
             for (var filter of customFilterArray) {
