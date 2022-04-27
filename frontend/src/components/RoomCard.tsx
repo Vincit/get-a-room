@@ -311,7 +311,10 @@ const RoomCard = (props: RoomCardProps) => {
                             <CircularProgress color="primary" />
                         ) : null}
 
-                        <IconButton onClick={handleFavoriteClick}>
+                        <IconButton
+                            aria-label='favorite room'
+                            onClick={handleFavoriteClick}
+                        >
                             {isFavorited(room, preferences) ? (
                                 <Favorite sx={{ color: '#F04E30' }} />
                             ) : (
