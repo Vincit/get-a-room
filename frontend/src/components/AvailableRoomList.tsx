@@ -65,9 +65,9 @@ const AvailableRoomList = (props: BookingListProps) => {
         bookingDuration,
         rooms,
         bookings,
-        expandedFeaturesAll,
         setBookings,
         updateData,
+        expandedFeaturesAll,
         preferences,
         setPreferences
     } = props;

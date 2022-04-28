@@ -11,8 +11,11 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
 import MapIcon from '@mui/icons-material/Map';
 import Person from '@mui/icons-material/Person';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const drawerBleeding = 56;
+const drawerBleeding = 65;
 
 const Root = styled('div')(({ theme }) => ({
     height: '100%',
@@ -70,6 +73,7 @@ interface Props {
     isOpen: boolean;
     toggle: (open: boolean) => void;
     disableSwipeToOpen: boolean;
+    mounted?: boolean;
 }
 
 const SwipeableEdgeDrawer = (props: Props) => {
@@ -79,7 +83,8 @@ const SwipeableEdgeDrawer = (props: Props) => {
         iconLeft,
         isOpen,
         toggle,
-        disableSwipeToOpen
+        disableSwipeToOpen,
+        mounted
     } = props;
 
     const toggleDrawer = (newOpen: boolean) => () => {
@@ -88,6 +93,7 @@ const SwipeableEdgeDrawer = (props: Props) => {
 
     var left;
     var title;
+    var right;
     if (iconLeft === 'Map') {
         left = <MapIcon sx={{ color: '#219653' }} />;
         title = (
@@ -96,10 +102,26 @@ const SwipeableEdgeDrawer = (props: Props) => {
     } else if (iconLeft === 'Person') {
         left = <Person />;
         title = <DrawerTitle>{headerTitle}</DrawerTitle>;
+        right = <CloseIcon />;
+    } else if (iconLeft === 'FilterList') {
+        left = <FilterListIcon />;
+        title = <DrawerTitle>{headerTitle}</DrawerTitle>;
+        if (isOpen) {
+            right = <ExpandMoreIcon />;
+        } else {
+            right = <ExpandLessIcon />;
+        }
     } else {
         left = <AccessTimeIcon />;
         title = <DrawerTitle>{headerTitle}</DrawerTitle>;
+        right = <CloseIcon />;
     }
+
+    const handleHeaderClick = () => {
+        if (headerTitle === 'Filtering' && isOpen === true) {
+            toggle(false);
+        }
+    };
 
     return (
         <Root>
@@ -119,21 +141,15 @@ const SwipeableEdgeDrawer = (props: Props) => {
                 onOpen={toggleDrawer(true)}
                 swipeAreaWidth={drawerBleeding}
                 disableSwipeToOpen={disableSwipeToOpen}
-                ModalProps={{
-                    container: document.getElementById('drawer-container'),
-                    keepMounted: false
-                }}
+                keepMounted={mounted}
             >
-                <DrawerHeader>
+                <DrawerHeader onClick={handleHeaderClick}>
                     {left}
                     <Puller />
                     {title}
                     <Puller />
-                    <IconButton
-                        aria-label="close drawer"
-                        onClick={toggleDrawer(false)}
-                    >
-                        <CloseIcon />
+                    <IconButton onClick={toggleDrawer(false)}>
+                        {right}
                     </IconButton>
                 </DrawerHeader>
 
