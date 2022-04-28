@@ -43,6 +43,8 @@ interface Props {
     setResources: (resource: string[]) => void;
     customFilter: string;
     setCustomFilter: (customFilter: string) => void;
+    onlyFavourites: boolean;
+    setOnlyFavourites: (value: boolean) => void;
     allFeatures: string[];
 }
 
@@ -57,10 +59,10 @@ const FilteringDrawer = (props: Props) => {
         setResources,
         customFilter,
         setCustomFilter,
+        onlyFavourites,
+        setOnlyFavourites,
         allFeatures
     } = props;
-
-    const [onlyFavourites, setOnlyFavourites] = useState(false);
 
     const handleRoomSizeChange = (
         event: React.MouseEvent<HTMLElement>,
@@ -117,7 +119,7 @@ const FilteringDrawer = (props: Props) => {
                     <ToggleButton value="1-2">1-2</ToggleButton>
                     <ToggleButton value="3-5">3-5</ToggleButton>
                     <ToggleButton value="6-7">6-7</ToggleButton>
-                    <ToggleButton value="8-999">8+</ToggleButton>
+                    <ToggleButton value="8-99999">8+</ToggleButton>
                 </ToggleButtonGroup>
                 <Row>
                     <SmallText>Resources</SmallText>
