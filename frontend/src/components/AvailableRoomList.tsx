@@ -32,10 +32,17 @@ type BookingListProps = {
     rooms: Room[];
     bookings: Booking[];
     updateData: () => void;
+    expandedFeaturesAll: boolean;
 };
 
 const AvailableRoomList = (props: BookingListProps) => {
-    const { bookingDuration, rooms, bookings, updateData } = props;
+    const {
+        bookingDuration,
+        rooms,
+        bookings,
+        updateData,
+        expandedFeaturesAll
+    } = props;
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();

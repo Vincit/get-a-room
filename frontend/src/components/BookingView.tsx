@@ -70,6 +70,10 @@ function BookingView(props: BookingViewProps) {
     const [expandSettingsDrawer, setexpandSettingsDrawer] = useState(
         false as boolean
     );
+    const [expandedFeaturesAll, setExpandedFeaturesAll] = useState(
+        false as boolean
+    );
+
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
 
@@ -172,9 +176,9 @@ function BookingView(props: BookingViewProps) {
                 open={expandSettingsDrawer}
                 toggle={toggleDrawers}
                 name={name}
-            >
-                children
-            </UserDrawer>
+                expandedFeaturesAll={expandedFeaturesAll}
+                setExpandedFeaturesAll={setExpandedFeaturesAll}
+            />
 
             <Typography
                 onClick={moveToChooseOfficePage}
@@ -249,6 +253,7 @@ function BookingView(props: BookingViewProps) {
                     rooms={rooms}
                     bookings={bookings}
                     updateData={updateData}
+                    expandedFeaturesAll={expandedFeaturesAll}
                 />
             )}
         </Box>

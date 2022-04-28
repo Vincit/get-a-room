@@ -14,19 +14,17 @@ type userSettingsProps = {
     open: boolean;
     toggle: (open: boolean) => void;
     name: String | undefined;
-    children: React.ReactNode;
+    expandedFeaturesAll: boolean;
+    setExpandedFeaturesAll: (value: boolean) => void;
 };
 
 const UserDrawer = (props: userSettingsProps) => {
-    const { open, toggle, name, children } = props;
-    const [isOpen, setDrawerOpen] = useState(false);
+    const { open, toggle, name, expandedFeaturesAll, setExpandedFeaturesAll } =
+        props;
 
     const history = useHistory();
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
-    const [expandedFeaturesAll, setExpandedFeaturesAll] = useState(
-        false as boolean
-    );
 
     const handleAllFeaturesCollapse = () => {
         setExpandedFeaturesAll(!expandedFeaturesAll);
@@ -58,10 +56,8 @@ const UserDrawer = (props: userSettingsProps) => {
                     data-testid="BookNowButton"
                     onClick={handleAllFeaturesCollapse}
                 >
-                    <IconButton aria-label="visibility" size="small">
-                        <Visibility />
-                    </IconButton>
-                    Show room resources
+                    <Visibility aria-label="visibility" />
+                    &nbsp;Show room resources
                 </DrawerButtonSecondary>
                 <DrawerButtonSecondary
                     aria-label="logout"
