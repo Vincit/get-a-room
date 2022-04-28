@@ -4,7 +4,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Person from '@mui/icons-material/Person';
 
 import { getRooms } from '../services/roomService';
-import { getBookings } from '../services/bookingService';
+import { deleteBooking, getBookings } from '../services/bookingService';
 import { Room, Booking, Preferences } from '../types';
 import CurrentBooking from './CurrentBooking';
 import AvailableRoomList from './AvailableRoomList';
@@ -16,6 +16,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import UserDrawer from './UserDrawer';
 import { logout } from '../services/authService';
+import BusyRoomList from './BusyRoomList';
 import useCreateNotification from '../hooks/useCreateNotification';
 
 const UPDATE_FREQUENCY = 30000;
@@ -38,6 +39,22 @@ export const Row = styled(Box)(({ theme }) => ({
     width: '100%'
 }));
 
+const deleteDeclinedBookings = (
+    notification: (message: string) => void,
+    bookings: Booking[]
+): Booking[] => {
+    const bookingsFiltered = bookings.filter((booking) => {
+        if (booking.resourceStatus === 'declined') {
+            const name = booking.room.name;
+            notification('Calendar declined booking: ' + name);
+            deleteBooking(booking.id);
+            return false;
+        }
+        return true;
+    });
+    return bookingsFiltered;
+};
+
 const RowCentered = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
@@ -53,13 +70,14 @@ export const Spacer = styled('div')(() => ({
 
 type BookingViewProps = {
     preferences?: Preferences;
+    setPreferences: (pref: Preferences) => void;
     open: boolean;
     toggle: (open: boolean) => void;
     name: String | undefined;
 };
 
 function BookingView(props: BookingViewProps) {
-    const { preferences, open, toggle, name } = props;
+    const { preferences, open, toggle, name, setPreferences } = props;
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -89,9 +107,12 @@ function BookingView(props: BookingViewProps) {
 
     const updateBookings = useCallback(() => {
         getBookings()
+            .then((bookings) =>
+                deleteDeclinedBookings(createErrorNotification, bookings)
+            )
             .then(setBookings)
             .catch((error) => console.log(error));
-    }, []);
+    }, [createErrorNotification]);
 
     const history = useHistory();
 
@@ -132,18 +153,6 @@ function BookingView(props: BookingViewProps) {
         };
     }, [updateData]);
 
-    const doLogout = () => {
-        logout()
-            .then(() => {
-                createSuccessNotification('Logout succesful');
-                history.push('/login');
-            })
-            .catch(() => {
-                createErrorNotification('Error in logout, try again later');
-                history.push('/login');
-            });
-    };
-
     return (
         <Box id="current booking" textAlign="center" p={'16px'}>
             <div id="drawer-container">
@@ -182,15 +191,33 @@ function BookingView(props: BookingViewProps) {
                 textAlign="left"
                 variant="subtitle1"
                 color={'#ce3b20'}
-                paddingLeft="20px"
+                paddingLeft="24px"
                 paddingTop="20px"
                 style={{ cursor: 'pointer' }}
+                display="flex"
             >
-                <ArrowBackIcon style={{ fontSize: 'small' }}></ArrowBackIcon>
-                {preferences?.building ? preferences.building.name : 'Back'}
+                <ArrowBackIcon
+                    style={{ width: '20px', height: '20px' }}
+                ></ArrowBackIcon>
+                <Typography
+                    style={{
+                        marginLeft: '8px',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                    }}
+                >
+                    {preferences?.building ? preferences.building.name : 'Back'}
+                </Typography>
             </Typography>
             <RowCentered>
-                <Typography py={2} variant="h2" textAlign="center">
+                <Typography
+                    py={2}
+                    variant="h2"
+                    textAlign="left"
+                    marginLeft="24px"
+                    paddingTop="0px"
+                    paddingBottom="24px"
+                >
                     Available rooms
                     <IconButton
                         aria-label="profile menu"
@@ -240,6 +267,8 @@ function BookingView(props: BookingViewProps) {
                 updateRooms={updateRooms}
                 updateBookings={updateBookings}
                 setBookings={setBookings}
+                preferences={preferences}
+                setPreferences={setPreferences}
             />
 
             {!areRoomsFetched(rooms) ? (
@@ -249,10 +278,22 @@ function BookingView(props: BookingViewProps) {
                     bookingDuration={bookingDuration}
                     rooms={rooms}
                     bookings={bookings}
+                    setBookings={setBookings}
                     updateData={updateData}
                     expandedFeaturesAll={expandedFeaturesAll}
+                    preferences={preferences}
+                    setPreferences={setPreferences}
                 />
             )}
+
+            {areRoomsFetched(rooms) ? (
+                <BusyRoomList
+                    rooms={rooms}
+                    bookings={bookings}
+                    preferences={preferences}
+                    setPreferences={setPreferences}
+                />
+            ) : null}
         </Box>
     );
 }

@@ -2,8 +2,17 @@ import { Booking, BookingDetails, AddTimeDetails } from '../types';
 import { DateTime } from 'luxon';
 import axios from './axiosConfigurer';
 
-export const makeBooking = async (bookingDetails: BookingDetails) => {
-    const response = await axios.post('booking', bookingDetails);
+export const makeBooking = async (
+    bookingDetails: BookingDetails,
+    noConfirmation?: boolean
+) => {
+    const urlParams = new URLSearchParams();
+    if (noConfirmation) {
+        urlParams.append('noConfirmation', noConfirmation.toString());
+    }
+    const response = await axios.post('booking', bookingDetails, {
+        params: urlParams
+    });
     return response.data;
 };
 
@@ -28,11 +37,17 @@ export const getBookings = async (): Promise<Booking[]> => {
 
 export const updateBooking = async (
     addTimeDetails: AddTimeDetails,
-    bookingId: string
+    bookingId: string,
+    noConfirmation?: boolean
 ) => {
+    const urlParams = new URLSearchParams();
+    if (noConfirmation) {
+        urlParams.append('noConfirmation', noConfirmation.toString());
+    }
     const response = await axios.patch(
         'booking/' + bookingId + '/addTime',
-        addTimeDetails
+        addTimeDetails,
+        { params: urlParams }
     );
     return response.data;
 };

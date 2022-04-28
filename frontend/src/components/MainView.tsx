@@ -103,6 +103,7 @@ const MainView = () => {
                     <Route path="/">
                         <BookingView
                             preferences={preferences}
+                            setPreferences={setPreferences}
                             open={expandBookingDrawer}
                             toggle={toggleDrawn}
                             name={name}

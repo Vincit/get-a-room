@@ -81,7 +81,7 @@ const AlterBookingDrawer = (props: Props) => {
         const minutes = Math.floor(
             nextHalfHour().diff(timeNow, 'minute').minutes
         );
-        handleAdditionalTime(minutes - duration - 1);
+        handleAdditionalTime(minutes - duration);
     };
 
     const nextHalfHour = () => {
@@ -113,11 +113,11 @@ const AlterBookingDrawer = (props: Props) => {
         const timeNow = DateTime.now();
         const endTime = DateTime.fromISO(booking.endTime);
         const nextHalf = nextHalfHour();
-        if (nextHalf < endTime) {
+        if (nextHalf <= endTime) {
             return false;
         }
 
-        const minutes = Math.floor(nextHalf.diff(timeNow, 'minute').minutes);
+        const minutes = Math.ceil(nextHalf.diff(timeNow, 'minute').minutes);
         return minutes > availableMinutes;
     };
 
@@ -126,7 +126,7 @@ const AlterBookingDrawer = (props: Props) => {
         const minutes = Math.floor(
             nextFullHour().diff(timeNow, 'minute').minutes
         );
-        handleAdditionalTime(minutes - duration - 1);
+        handleAdditionalTime(minutes - duration);
     };
 
     const disableNextFullHour = () => {
@@ -170,7 +170,6 @@ const AlterBookingDrawer = (props: Props) => {
                 DateTime.fromISO(booking?.endTime),
                 'minutes'
             ).minutes;
-            console.log(minutes);
             handleAdditionalTime(Math.floor(minutes));
         }
     };

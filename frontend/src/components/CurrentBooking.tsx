@@ -1,22 +1,16 @@
 import React, { useState } from 'react';
 import { Box, List, Typography } from '@mui/material';
-import { Booking, AddTimeDetails, Room } from '../types';
+import { Booking, AddTimeDetails, Room, Preferences } from '../types';
 import { updateBooking, endBooking } from '../services/bookingService';
-import { getTimeLeftMinutes } from './util/TimeLeft';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
 import AlterBookingDrawer from './AlterBookingDrawer';
-import { getTimeAvailableMinutes } from './RoomCard';
+import { getTimeAvailableMinutes, getBookingTimeLeft } from './RoomCard';
+
+const NO_CONFIRMATION = true;
 
 function areBookingsFetched(bookings: Booking[]) {
     return Array.isArray(bookings) && bookings.length > 0;
-}
-
-function getBookingTimeLeft(booking: Booking | undefined) {
-    if (booking === undefined) {
-        return 0;
-    }
-    return Math.floor(getTimeLeftMinutes(booking.endTime));
 }
 
 type CurrentBookingProps = {
@@ -24,10 +18,19 @@ type CurrentBookingProps = {
     setBookings: (bookings: Booking[]) => void;
     updateRooms: () => void;
     updateBookings: () => void;
+    preferences?: Preferences;
+    setPreferences: (pref: Preferences) => void;
 };
 
 const CurrentBooking = (props: CurrentBookingProps) => {
-    const { bookings, updateBookings } = props;
+    const {
+        bookings,
+        updateBookings,
+        preferences,
+        setPreferences,
+        setBookings,
+        updateRooms
+    } = props;
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -61,8 +64,9 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         setBookingProcessing(booking.room.id);
         toggleDrawer(false);
 
-        updateBooking(addTimeDetails, booking.id)
+        updateBooking(addTimeDetails, booking.id, NO_CONFIRMATION)
             .then((updatedBooking) => {
+                setBookings([updatedBooking]);
                 setBookingProcessing('false');
                 // replace updated booking
                 updateBookings();
@@ -85,6 +89,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 setBookingProcessing('false');
                 // replace updated booking
                 updateBookings();
+                updateRooms();
                 createSuccessNotification('Booking ended');
                 window.scrollTo(0, 0);
             })
@@ -112,7 +117,11 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 />
             </div>
 
-            <Typography variant="subtitle1" textAlign="left">
+            <Typography
+                variant="subtitle1"
+                textAlign="left"
+                marginLeft={'24px'}
+            >
                 booked to you
             </Typography>
             <List>
@@ -128,6 +137,8 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                             isSelected={booking.room.id === selectedId}
                             isReserved={true}
                             expandFeatures={true}
+                            preferences={preferences}
+                            setPreferences={setPreferences}
                         />
                     </li>
                 ))}
