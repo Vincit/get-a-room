@@ -18,7 +18,6 @@ export const Row = styled(Box)(({ theme }) => ({
 
 export const SmallText = styled(Typography)(() => ({
     textTransform: 'uppercase',
-    //fontFamily: 'Roboto Mono',
     fontSize: '12px',
     lineHeight: '12px',
     fontWeight: 'bold',
@@ -27,7 +26,6 @@ export const SmallText = styled(Typography)(() => ({
 }));
 
 export const FilteringButton = styled(ToggleButton)(() => ({
-    //fontFamily: 'Roboto Mono',
     fontStyle: 'normal',
     fontWeight: 'bold',
     fontSize: '16px',
