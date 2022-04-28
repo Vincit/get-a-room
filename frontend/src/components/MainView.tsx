@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
-
 import BookingView from './BookingView';
 import ChooseOfficeView from './ChooseOfficeView';
-import UserDrawer from './UserDrawer';
 import { Building, Preferences } from '../types';
 import {
     getPreferences,
@@ -14,7 +12,6 @@ import {
     getBuildingsWithPosition
 } from '../services/buildingService';
 import { Box } from '@mui/material';
-import NavBar from './NavBar';
 import { getName } from '../services/nameService';
 import { useHistory } from 'react-router-dom';
 

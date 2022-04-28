@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { List, Typography, Box, Switch, FormControlLabel } from '@mui/material';
+import { List, Typography, Box } from '@mui/material';
 import { makeBooking } from '../services/bookingService';
 import { Booking, BookingDetails, Room } from '../types';
 import { DateTime, Duration } from 'luxon';
 import useCreateNotification from '../hooks/useCreateNotification';
 import RoomCard from './RoomCard';
 import BookingDrawer from './BookingDrawer';
-import UserDrawer from './UserDrawer';
 
 function disableBooking(bookings: Booking[]) {
     return bookings.length === 0 ? false : true;
@@ -54,9 +53,6 @@ const AvailableRoomList = (props: BookingListProps) => {
     const [availableMinutes, setAvailableMinutes] = useState(0);
     const [selectedRoom, setSelectedRoom] = useState<Room | undefined>(
         undefined
-    );
-    const [expandSettingsDrawer, setexpandSettingsDrawer] = useState(
-        false as boolean
     );
 
     const handleAdditionaDurationChange = (additionalMinutes: number) => {
@@ -118,14 +114,6 @@ const AvailableRoomList = (props: BookingListProps) => {
             setAvailableMinutes(0);
         }
         setexpandBookingDrawer(newOpen);
-    };
-
-    const openSettingsDrawer = () => {
-        setexpandSettingsDrawer(true);
-    };
-
-    const toggleDrawers = (newOpen: boolean) => {
-        setexpandSettingsDrawer(newOpen);
     };
 
     const book = (room: Room | undefined, duration: number) => {

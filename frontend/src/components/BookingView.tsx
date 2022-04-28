@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Box, styled, IconButton } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import Person from '@mui/icons-material/Person';
 
 import { getRooms } from '../services/roomService';
@@ -14,10 +13,8 @@ import DurationPicker from './DurationPicker';
 
 import { useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Visibility } from '@mui/icons-material';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import UserDrawer from './UserDrawer';
-import BookingDrawer, { DrawerButtonSecondary } from './BookingDrawer';
 import { logout } from '../services/authService';
 import useCreateNotification from '../hooks/useCreateNotification';
 

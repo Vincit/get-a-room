@@ -1,14 +1,9 @@
-import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { Box, IconButton, Typography, Switch } from '@mui/material';
-import Person from '@mui/icons-material/Person';
 import { Visibility } from '@mui/icons-material';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
-import { RowCentered, DrawerButtonSecondary, Row } from './BookingDrawer';
+import { DrawerButtonSecondary } from './BookingDrawer';
 import { logout } from '../services/authService';
 import useCreateNotification from '../hooks/useCreateNotification';
-import RoomCard from './RoomCard';
 
 type userSettingsProps = {
     open: boolean;
