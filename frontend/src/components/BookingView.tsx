@@ -15,7 +15,6 @@ import { useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import UserDrawer from './UserDrawer';
-import { logout } from '../services/authService';
 import BusyRoomList from './BusyRoomList';
 import useCreateNotification from '../hooks/useCreateNotification';
 
@@ -89,8 +88,7 @@ function BookingView(props: BookingViewProps) {
         false as boolean
     );
 
-    const { createSuccessNotification, createErrorNotification } =
-        useCreateNotification();
+    const { createErrorNotification } = useCreateNotification();
 
     const updateRooms = useCallback(() => {
         if (preferences) {
