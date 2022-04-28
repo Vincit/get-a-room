@@ -5,7 +5,7 @@ const DARK_GRAY = '#443938';
 
 export const theme = createTheme({
     palette: {
-        background: { default: '#f6f5f5' },
+        // background: { default: '#f6f5f5' },
         primary: { main: ORANGE },
         success: { main: '#219653' },
         text: {
