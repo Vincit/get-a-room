@@ -59,8 +59,8 @@ const RowCentered = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'center',
-    padding: '5px',
+    justifyContent: 'left',
+    padding: '0px',
     width: '100%'
 }));
 

@@ -46,6 +46,7 @@ const DurationPicker = (props: DucationPickerProps) => {
                 exclusive
                 onChange={handleChange}
                 aria-label="duration picker"
+                sx={{ paddingBottom: '24px' }}
             >
                 <ToggleButton
                     data-testid="DurationPicker15"

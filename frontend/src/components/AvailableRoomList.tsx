@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { List, Typography, Box, Switch, FormControlLabel } from '@mui/material';
+import { List, Typography, Box } from '@mui/material';
 import { makeBooking } from '../services/bookingService';
 import { Booking, BookingDetails, Room, Preferences } from '../types';
 import { DateTime, Duration } from 'luxon';
@@ -193,19 +193,6 @@ const AvailableRoomList = (props: BookingListProps) => {
                 />
             </div>
 
-            {/*             <FormControlLabel
-                label={
-                    <Typography
-                        sx={{
-                            fontSize: '18px',
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        Expand room features
-                    </Typography>
-                }
-                control={<Switch onChange={handleAllFeaturesCollapse} />}
-            /> */}
             <Typography variant="subtitle1" textAlign="left" marginLeft="24px">
                 Available rooms
             </Typography>

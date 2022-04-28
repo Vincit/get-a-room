@@ -104,7 +104,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
     }
 
     return (
-        <Box id="current booking" marginTop={'24px'}>
+        <Box id="current booking">
             <div id="drawer-container">
                 <AlterBookingDrawer
                     open={isOpenDrawer}
