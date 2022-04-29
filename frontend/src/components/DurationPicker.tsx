@@ -7,23 +7,20 @@ type DucationPickerProps = {
     onChange: (duration: number) => void;
     title: string;
     duration: number;
-    setDuration: React.Dispatch<React.SetStateAction<number>>
+    setDuration: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const DurationPicker = (props: DucationPickerProps) => {
     const { onChange, title, duration, setDuration } = props;
 
-
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
         newDuration: number
     ) => {
-
         if (newDuration !== null) {
-                setDuration(newDuration);
-                onChange(newDuration);
-            }
-        
+            setDuration(newDuration);
+            onChange(newDuration);
+        }
     };
 
     return (
