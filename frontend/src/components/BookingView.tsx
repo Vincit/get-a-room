@@ -357,6 +357,8 @@ function BookingView(props: BookingViewProps) {
         }
     };
 
+    const [duration, setDuration] = React.useState(15);
+
     return (
         <Box id="current booking" textAlign="center" p={'16px'}>
             <div id="drawer-container">
@@ -464,7 +466,13 @@ function BookingView(props: BookingViewProps) {
                 </Box>
             ) : null}
 
-            <DurationPicker onChange={handleDurationChange} title="duration" />
+            <DurationPicker
+                duration={duration}
+                setDuration={setDuration}
+                onChange={handleDurationChange}
+                title="duration"
+            />
+
             <CurrentBooking
                 bookings={bookings}
                 updateRooms={updateRooms}
@@ -511,6 +519,9 @@ function BookingView(props: BookingViewProps) {
                     onlyFavourites={onlyFavourites}
                     setOnlyFavourites={setOnlyFavourites}
                     allFeatures={allFeatures}
+                    duration={duration}
+                    setDuration={setDuration}
+                    onChange={handleDurationChange}
                 />
             </div>
         </Box>
