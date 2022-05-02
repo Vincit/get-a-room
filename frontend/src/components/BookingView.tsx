@@ -466,11 +466,11 @@ function BookingView(props: BookingViewProps) {
                 </Box>
             ) : null}
 
-            <DurationPicker 
+            <DurationPicker
                 duration={duration}
                 setDuration={setDuration}
-                onChange={handleDurationChange} 
-                title="duration" 
+                onChange={handleDurationChange}
+                title="duration"
             />
 
             <CurrentBooking
@@ -521,7 +521,7 @@ function BookingView(props: BookingViewProps) {
                     allFeatures={allFeatures}
                     duration={duration}
                     setDuration={setDuration}
-                    onChange={handleDurationChange}      
+                    onChange={handleDurationChange}
                 />
             </div>
         </Box>
