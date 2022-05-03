@@ -18,20 +18,11 @@ export const Row = styled(Box)(({ theme }) => ({
 
 export const SmallText = styled(Typography)(() => ({
     textTransform: 'uppercase',
-    //fontFamily: 'Roboto Mono',
     fontSize: '12px',
     lineHeight: '12px',
     fontWeight: 'bold',
     fontStyle: 'normal',
     margin: '24px 8px 8px 0'
-}));
-
-export const FilteringButton = styled(ToggleButton)(() => ({
-    //fontFamily: 'Roboto Mono',
-    fontStyle: 'normal',
-    fontWeight: 'bold',
-    fontSize: '16px',
-    marginLeft: '18px'
 }));
 
 interface Props {
@@ -43,6 +34,9 @@ interface Props {
     setResources: (resource: string[]) => void;
     customFilter: string;
     setCustomFilter: (customFilter: string) => void;
+    onlyFavourites: boolean;
+    setOnlyFavourites: (onlyFavourites: boolean) => void;
+    filterCount: number;
     allFeatures: string[];
 }
 
@@ -57,10 +51,11 @@ const FilteringDrawer = (props: Props) => {
         setResources,
         customFilter,
         setCustomFilter,
+        onlyFavourites,
+        setOnlyFavourites,
+        filterCount,
         allFeatures
     } = props;
-
-    const [onlyFavourites, setOnlyFavourites] = useState(false);
 
     const handleRoomSizeChange = (
         event: React.MouseEvent<HTMLElement>,
@@ -82,7 +77,8 @@ const FilteringDrawer = (props: Props) => {
 
     return (
         <SwipeableEdgeDrawer
-            headerTitle={'Filtering'}
+            headerTitle={'Filters'}
+            filterCount={filterCount}
             iconLeft={'FilterList'}
             iconRight={'Expand'}
             isOpen={open}
@@ -138,9 +134,7 @@ const FilteringDrawer = (props: Props) => {
                 <ToggleButton
                     value="favourites"
                     selected={onlyFavourites}
-                    onChange={() => {
-                        setOnlyFavourites(!onlyFavourites);
-                    }}
+                    onChange={() => setOnlyFavourites(!onlyFavourites)}
                 >
                     <FavoriteBorderIcon />
                     &nbsp; Only Favourites

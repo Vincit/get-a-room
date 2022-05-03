@@ -75,6 +75,8 @@ function BookingView(props: BookingViewProps) {
     const [roomSize, setRoomSize] = useState<string[]>([]);
     const [resources, setResources] = useState<string[]>([]);
     const [customFilter, setCustomFilter] = useState('');
+    const [onlyFavourites, setOnlyFavourites] = useState(false);
+    const [filterCount, setFilterCount] = useState(0);
 
     const { createErrorNotification } = useCreateNotification();
 
@@ -212,6 +214,30 @@ function BookingView(props: BookingViewProps) {
     useEffect(() => {
         filterRooms(roomSize, resources, rooms, customFilter);
     }, [roomSize, resources, rooms, customFilter, filterRooms]);
+
+    useEffect(() => {
+        var roomSizeFiltersCount = roomSize.length;
+        var resourcesFiltersCount = resources.length;
+        var customFilterCount;
+        var onlyFavouritesCount;
+        if (customFilter === '') {
+            customFilterCount = 0;
+        } else {
+            customFilterCount = 1;
+        }
+        if (onlyFavourites === false) {
+            onlyFavouritesCount = 0;
+        } else {
+            onlyFavouritesCount = 1;
+        }
+
+        setFilterCount(
+            roomSizeFiltersCount +
+                resourcesFiltersCount +
+                customFilterCount +
+                onlyFavouritesCount
+        );
+    }, [roomSize, resources, customFilter, onlyFavourites]);
 
     const handleDurationChange = (newDuration: number) => {
         setBookingDuration(newDuration);
@@ -392,6 +418,9 @@ function BookingView(props: BookingViewProps) {
                     setResources={setResources}
                     customFilter={customFilter}
                     setCustomFilter={setCustomFilter}
+                    onlyFavourites={onlyFavourites}
+                    setOnlyFavourites={setOnlyFavourites}
+                    filterCount={filterCount}
                     allFeatures={allFeatures}
                 />
             </div>
