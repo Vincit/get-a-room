@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, styled, Typography } from '@mui/material';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import TextField from '@mui/material/TextField';
@@ -35,7 +35,7 @@ interface Props {
     customFilter: string;
     setCustomFilter: (customFilter: string) => void;
     onlyFavourites: boolean;
-    setOnlyFavourites: (onlyFavourites: boolean) => void;
+    setOnlyFavourites: (value: boolean) => void;
     filterCount: number;
     allFeatures: string[];
 }
@@ -113,7 +113,7 @@ const FilteringDrawer = (props: Props) => {
                     <ToggleButton value="1-2">1-2</ToggleButton>
                     <ToggleButton value="3-5">3-5</ToggleButton>
                     <ToggleButton value="6-7">6-7</ToggleButton>
-                    <ToggleButton value="8-999">8+</ToggleButton>
+                    <ToggleButton value="8-99999">8+</ToggleButton>
                 </ToggleButtonGroup>
                 <Row>
                     <SmallText>Resources</SmallText>

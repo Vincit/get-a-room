@@ -69,7 +69,6 @@ function BookingView(props: BookingViewProps) {
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
     const [expandFilteringDrawer, setexpandFilteringDrawer] = useState(false);
-    const [allFeatures, setAllfeatures] = useState<string[]>([]);
 
     // Filtering states
     const [roomSize, setRoomSize] = useState<string[]>([]);
@@ -77,6 +76,7 @@ function BookingView(props: BookingViewProps) {
     const [customFilter, setCustomFilter] = useState('');
     const [onlyFavourites, setOnlyFavourites] = useState(false);
     const [filterCount, setFilterCount] = useState(0);
+    const [allFeatures, setAllfeatures] = useState<string[]>([]);
 
     const { createErrorNotification } = useCreateNotification();
 
@@ -97,13 +97,28 @@ function BookingView(props: BookingViewProps) {
      * so that the buttons for them can be updated.
      */
     const filterRooms = useCallback(
-        (roomSize, resources, rooms, customFilter) => {
-            let filteredRooms: Room[] = filterByRoomSize(rooms, roomSize);
+        (
+            roomSize,
+            resources,
+            rooms,
+            customFilter,
+            onlyFavourites,
+            fav_rooms
+        ) => {
+            // These filtering functions could be combined into one where the rooms array
+            // is iterated through only once. The already small rooms array gets shaved down each pass
+            // so iterating through it multiple times should not matter performance wise.
+            let filteredRooms: Room[] = filterByFavourites(
+                rooms,
+                onlyFavourites,
+                fav_rooms
+            );
             filteredRooms = filterByResources(filteredRooms, resources);
             filteredRooms = filterByCustomString(filteredRooms, customFilter);
+            filteredRooms = filterByRoomSize(filteredRooms, roomSize);
             setDisplayRooms(filteredRooms);
 
-            // Collect all features in the current displayed rooms to a set
+            // Collect all features in the current displayed rooms to a set to force uniqueness.
             var allFeaturesSet = new Set<string>();
             for (var room of filteredRooms) {
                 if (room.features) {
@@ -183,16 +198,23 @@ function BookingView(props: BookingViewProps) {
         return newRooms;
     };
 
+    /**
+     * Does substring matching to filter out rooms that dont match the custom
+     * text filter.
+     */
     const filterByCustomString = (rooms: Room[], customFilter: string) => {
         if (customFilter === '') {
             return rooms;
         }
         let newRooms: Room[] = [];
         for (var room of rooms) {
-            var data = `${room.features?.toString()},${room.name},${
-                room.building
+            var data = `${room.features?.toString()},${
+                room.name
             },${room.capacity?.toString()}`;
             data = data?.toLowerCase();
+            // Custom search string is split by ' ' and each of them is
+            // treated as its own search criteria. All substrings need to be found for the room
+            // to be shown.
             var customFilterArray = customFilter.split(' ');
             let addToRooms = false;
             for (var filter of customFilterArray) {
@@ -210,10 +232,48 @@ function BookingView(props: BookingViewProps) {
         return newRooms;
     };
 
+    /**
+     * Filters to only include rooms that have been favourited by the user
+     * @param rooms
+     * @param onlyFavourites Whether the 'only favourites' button is clicked or not
+     * @returns
+     */
+    const filterByFavourites = (
+        rooms: Room[],
+        onlyFavourites: boolean,
+        fav_rooms: string[]
+    ) => {
+        if (!onlyFavourites) {
+            return rooms;
+        }
+        let newRooms: Room[] = [];
+        for (var room of rooms) {
+            if (fav_rooms.includes(room.id)) {
+                newRooms.push(room);
+            }
+        }
+        return newRooms;
+    };
+
     // Update displayed rooms when filters or rooms change
     useEffect(() => {
-        filterRooms(roomSize, resources, rooms, customFilter);
-    }, [roomSize, resources, rooms, customFilter, filterRooms]);
+        filterRooms(
+            roomSize,
+            resources,
+            rooms,
+            customFilter,
+            onlyFavourites,
+            preferences?.fav_rooms
+        );
+    }, [
+        roomSize,
+        resources,
+        rooms,
+        customFilter,
+        onlyFavourites,
+        preferences?.fav_rooms,
+        filterRooms
+    ]);
 
     useEffect(() => {
         var roomSizeFiltersCount = roomSize.length;
