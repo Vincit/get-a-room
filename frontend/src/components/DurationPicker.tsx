@@ -3,29 +3,23 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { Typography } from '@mui/material';
 
-const CUSTOM_DURATION = -1;
-
 type DucationPickerProps = {
     onChange: (duration: number) => void;
     title: string;
+    duration: number;
+    setDuration: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const DurationPicker = (props: DucationPickerProps) => {
-    const { onChange, title } = props;
-
-    const [duration, setDuration] = React.useState(15);
+    const { onChange, title, duration, setDuration } = props;
 
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
         newDuration: number
     ) => {
-        if (newDuration === CUSTOM_DURATION) {
-            // TODO custom duration selection
-        } else {
-            if (newDuration !== null) {
-                setDuration(newDuration);
-                onChange(newDuration);
-            }
+        if (newDuration !== null) {
+            setDuration(newDuration);
+            onChange(newDuration);
         }
     };
 
@@ -46,6 +40,7 @@ const DurationPicker = (props: DucationPickerProps) => {
                 exclusive
                 onChange={handleChange}
                 aria-label="duration picker"
+                sx={{ paddingBottom: '24px' }}
             >
                 <ToggleButton
                     data-testid="DurationPicker15"
@@ -74,9 +69,6 @@ const DurationPicker = (props: DucationPickerProps) => {
                     aria-label="2 hour"
                 >
                     2 h
-                </ToggleButton>
-                <ToggleButton value={CUSTOM_DURATION} disabled>
-                    Custom
                 </ToggleButton>
             </ToggleButtonGroup>
         </div>

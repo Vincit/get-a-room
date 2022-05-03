@@ -28,13 +28,13 @@ const ProfileMenu = (props: ProfileMenuProps) => {
         <Menu
             anchorEl={anchorElement}
             anchorOrigin={{
-                vertical: 'bottom',
+                vertical: 'top',
                 horizontal: 'right'
             }}
             id="profile-menu"
             keepMounted
             transformOrigin={{
-                vertical: 'bottom',
+                vertical: 'top',
                 horizontal: 'right'
             }}
             open={isOpen}

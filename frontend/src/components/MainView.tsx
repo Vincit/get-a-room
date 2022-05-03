@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
-
 import BookingView from './BookingView';
 import ChooseOfficeView from './ChooseOfficeView';
 import { Building, Preferences } from '../types';
@@ -107,6 +106,7 @@ const MainView = () => {
                             setPreferences={setPreferences}
                             open={expandBookingDrawer}
                             toggle={toggleDrawn}
+                            name={name}
                         />
                     </Route>
                 </Switch>

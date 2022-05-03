@@ -38,6 +38,9 @@ interface Props {
     setOnlyFavourites: (value: boolean) => void;
     filterCount: number;
     allFeatures: string[];
+    onChange: (duration: number) => void;
+    duration: number;
+    setDuration: React.Dispatch<React.SetStateAction<number>>;
 }
 
 // Note: Actual filtering of the rooms is done one level up in booking view
@@ -54,7 +57,10 @@ const FilteringDrawer = (props: Props) => {
         onlyFavourites,
         setOnlyFavourites,
         filterCount,
-        allFeatures
+        allFeatures,
+        onChange,
+        duration,
+        setDuration
     } = props;
 
     const handleRoomSizeChange = (
@@ -73,6 +79,19 @@ const FilteringDrawer = (props: Props) => {
 
     const handleCustomFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCustomFilter(event.target.value);
+    };
+
+    const handleCustomDuration = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const value = event.target.value;
+
+        if (!isNaN(parseInt(value)) && typeof value === 'string') {
+            setDuration(parseInt(value));
+            onChange(parseInt(value));
+        } else {
+            setDuration(NaN);
+        }
     };
 
     return (
@@ -103,6 +122,20 @@ const FilteringDrawer = (props: Props) => {
                         )
                     }}
                 />
+
+                <Row>
+                    <SmallText>Custom Duration (Minutes)</SmallText>
+                </Row>
+
+                <TextField
+                    size="small"
+                    type="number"
+                    placeholder="Give duration in minutes"
+                    inputProps={{ min: 0, max: 1439 }}
+                    value={duration}
+                    onChange={handleCustomDuration}
+                />
+
                 <Row>
                     <SmallText>Room Size (People)</SmallText>
                 </Row>

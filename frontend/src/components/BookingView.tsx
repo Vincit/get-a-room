@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, styled } from '@mui/material';
+import { Typography, Box, styled, IconButton } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import Person from '@mui/icons-material/Person';
 
 import { getRooms } from '../services/roomService';
 import { deleteBooking, getBookings } from '../services/bookingService';
@@ -11,9 +12,10 @@ import CenteredProgress from './util/CenteredProgress';
 import DurationPicker from './DurationPicker';
 import FilteringDrawer from './FilteringDrawer';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
+import UserDrawer from './UserDrawer';
 import BusyRoomList from './BusyRoomList';
 import useCreateNotification from '../hooks/useCreateNotification';
 
@@ -28,6 +30,14 @@ function areRoomsFetched(rooms: Room[]) {
 function isActiveBooking(bookings: Booking[]) {
     return bookings.length > 0;
 }
+
+export const Row = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'iconLeft',
+    padding: '0px',
+    width: '100%'
+}));
 
 const deleteDeclinedBookings = (
     notification: (message: string) => void,
@@ -49,9 +59,13 @@ const RowCentered = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'center',
-    padding: '5px',
+    justifyContent: 'left',
+    padding: '0px',
     width: '100%'
+}));
+
+export const Spacer = styled('div')(() => ({
+    padding: '8px'
 }));
 
 type BookingViewProps = {
@@ -59,15 +73,22 @@ type BookingViewProps = {
     setPreferences: (pref: Preferences) => void;
     open: boolean;
     toggle: (open: boolean) => void;
+    name: String | undefined;
 };
 
 function BookingView(props: BookingViewProps) {
-    const { preferences, open, toggle, setPreferences } = props;
+    const { preferences, open, toggle, name, setPreferences } = props;
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms);
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
+    const [expandSettingsDrawer, setexpandSettingsDrawer] = useState(
+        false as boolean
+    );
+    const [expandedFeaturesAll, setExpandedFeaturesAll] = useState(
+        false as boolean
+    );
     const [expandFilteringDrawer, setexpandFilteringDrawer] = useState(false);
 
     // Filtering states
@@ -318,6 +339,14 @@ function BookingView(props: BookingViewProps) {
         history.push('/preferences');
     };
 
+    const openSettingsDrawer = () => {
+        setexpandSettingsDrawer(true);
+    };
+
+    const toggleDrawers = (newOpen: boolean) => {
+        setexpandSettingsDrawer(newOpen);
+    };
+
     const updateData = useCallback(() => {
         updateRooms();
         updateBookings();
@@ -353,6 +382,8 @@ function BookingView(props: BookingViewProps) {
         }
     };
 
+    const [duration, setDuration] = React.useState(15);
+
     return (
         <Box id="current booking" textAlign="center" p={'16px'}>
             <div id="drawer-container">
@@ -377,6 +408,15 @@ function BookingView(props: BookingViewProps) {
                     </DrawerContent>
                 </SwipeableEdgeDrawer>
             </div>
+
+            <UserDrawer
+                open={expandSettingsDrawer}
+                toggle={toggleDrawers}
+                name={name}
+                expandedFeaturesAll={expandedFeaturesAll}
+                setExpandedFeaturesAll={setExpandedFeaturesAll}
+            />
+
             <Typography
                 onClick={moveToChooseOfficePage}
                 textAlign="left"
@@ -400,16 +440,32 @@ function BookingView(props: BookingViewProps) {
                     {preferences?.building ? preferences.building.name : 'Back'}
                 </Typography>
             </Typography>
-            <Typography
-                py={2}
-                variant="h2"
-                textAlign="left"
-                marginLeft="24px"
-                paddingTop="0px"
-                paddingBottom="24px"
-            >
-                Available rooms
-            </Typography>
+            <RowCentered>
+                <Typography
+                    py={2}
+                    variant="h2"
+                    textAlign="left"
+                    marginLeft="24px"
+                    paddingTop="0px"
+                    paddingBottom="24px"
+                >
+                    Available rooms
+                    <IconButton
+                        aria-label="profile menu"
+                        size="small"
+                        sx={{
+                            bgcolor: 'primary.main',
+                            color: '#fff',
+                            position: 'absolute',
+                            right: 50
+                        }}
+                        onClick={openSettingsDrawer}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <Person />
+                    </IconButton>
+                </Typography>
+            </RowCentered>
 
             {isActiveBooking(bookings) ? (
                 <Box
@@ -435,7 +491,13 @@ function BookingView(props: BookingViewProps) {
                 </Box>
             ) : null}
 
-            <DurationPicker onChange={handleDurationChange} title="duration" />
+            <DurationPicker
+                duration={duration}
+                setDuration={setDuration}
+                onChange={handleDurationChange}
+                title="duration"
+            />
+
             <CurrentBooking
                 bookings={bookings}
                 updateRooms={updateRooms}
@@ -454,6 +516,7 @@ function BookingView(props: BookingViewProps) {
                     bookings={bookings}
                     setBookings={setBookings}
                     updateData={updateData}
+                    expandedFeaturesAll={expandedFeaturesAll}
                     preferences={preferences}
                     setPreferences={setPreferences}
                 />
@@ -482,6 +545,9 @@ function BookingView(props: BookingViewProps) {
                     setOnlyFavourites={setOnlyFavourites}
                     filterCount={filterCount}
                     allFeatures={allFeatures}
+                    duration={duration}
+                    setDuration={setDuration}
+                    onChange={handleDurationChange}
                 />
             </div>
         </Box>

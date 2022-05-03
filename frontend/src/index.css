@@ -11,3 +11,10 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
         monospace;
 }
+.app {
+    background: url('./components/login/duck.svg'),
+        url('./components/login/duck.svg');
+    background-position-x: -53.73%, 96.93%;
+    background-position-y: 43.54%, -204.64%;
+    background-repeat: no-repeat;
+}

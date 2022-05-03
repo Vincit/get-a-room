@@ -10,6 +10,7 @@ import { IconButton } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
 import MapIcon from '@mui/icons-material/Map';
+import Person from '@mui/icons-material/Person';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -84,8 +85,8 @@ interface Props {
     children: React.ReactChild;
     iconLeft?: React.ReactNode;
     iconRight?: React.ReactNode;
-    headerTitle: string;
     filterCount?: number;
+    headerTitle: String | undefined;
     isOpen: boolean;
     toggle: (open: boolean) => void;
     disableSwipeToOpen: boolean;
@@ -117,6 +118,9 @@ const SwipeableEdgeDrawer = (props: Props) => {
         title = (
             <DrawerTitle sx={{ color: '#219653' }}>{headerTitle}</DrawerTitle>
         );
+    } else if (iconLeft === 'Person') {
+        left = <Person />;
+        title = <DrawerTitle>{headerTitle}</DrawerTitle>;
         right = <CloseIcon />;
     } else if (iconLeft === 'FilterList') {
         left = <FilterListIcon />;
