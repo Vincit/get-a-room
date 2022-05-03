@@ -14,19 +14,22 @@ type NoRoomsCardProps = {};
 
 const NoRoomsCard = (props: NoRoomsCardProps) => {
     return (
-        <CustomCard>
-            <GridContainer>
-                <Row>
-                    <CardTitleText>No rooms available :/</CardTitleText>
-                </Row>
+        <li>
+            <CustomCard>
+                <GridContainer>
+                    <Row>
+                        <CardTitleText>No rooms available :/</CardTitleText>
+                    </Row>
 
-                <Row>
-                    <Typography>
-                        Please, check out rooms available in the next 30 min:
-                    </Typography>
-                </Row>
-            </GridContainer>
-        </CustomCard>
+                    <Row>
+                        <Typography>
+                            Please, check out rooms available in the next 30
+                            min:
+                        </Typography>
+                    </Row>
+                </GridContainer>
+            </CustomCard>
+        </li>
     );
 };
 

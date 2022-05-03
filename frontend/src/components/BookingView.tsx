@@ -386,7 +386,7 @@ function BookingView(props: BookingViewProps) {
 
     return (
         <Box id="current booking" textAlign="center" p={'16px'}>
-            <div id="drawer-container">
+            <div id="gps-container">
                 <SwipeableEdgeDrawer
                     headerTitle={'GPS has your back!'}
                     iconLeft={'Map'}
@@ -531,7 +531,7 @@ function BookingView(props: BookingViewProps) {
                 />
             ) : null}
 
-            <div id="drawer-container" onClick={openFiltering}>
+            <div id="filtering-container" onClick={openFiltering}>
                 <FilteringDrawer
                     open={expandFilteringDrawer}
                     toggle={toggleDrawn}
