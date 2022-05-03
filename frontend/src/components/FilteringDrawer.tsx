@@ -154,6 +154,7 @@ const FilteringDrawer = (props: Props) => {
                 <ToggleButtonGroup
                     value={resources}
                     onChange={handleResourcesChange}
+                    sx={{ minHeight: '56px' }}
                 >
                     {allFeatures.map((feature) => (
                         <ToggleButton key={feature} value={feature}>
