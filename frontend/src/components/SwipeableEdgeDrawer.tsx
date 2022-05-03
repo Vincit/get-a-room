@@ -113,11 +113,13 @@ const SwipeableEdgeDrawer = (props: Props) => {
     var title;
     var right;
     var filters;
+
     if (iconLeft === 'Map') {
         left = <MapIcon sx={{ color: '#219653' }} />;
         title = (
             <DrawerTitle sx={{ color: '#219653' }}>{headerTitle}</DrawerTitle>
         );
+        right = <CloseIcon />;
     } else if (iconLeft === 'Person') {
         left = <Person />;
         title = <DrawerTitle>{headerTitle}</DrawerTitle>;
@@ -138,6 +140,17 @@ const SwipeableEdgeDrawer = (props: Props) => {
         left = <AccessTimeIcon />;
         title = <DrawerTitle>{headerTitle}</DrawerTitle>;
         right = <CloseIcon />;
+    }
+
+    var label;
+    if (iconLeft === 'FilterList') {
+        if (isOpen) {
+            label = 'reduce';
+        } else {
+            label = 'expand';
+        }
+    } else {
+        label = 'close';
     }
 
     const handleHeaderClick = () => {
@@ -172,7 +185,10 @@ const SwipeableEdgeDrawer = (props: Props) => {
                     {title}
                     {filters}
                     <Puller />
-                    <IconButton onClick={toggleDrawer(false)}>
+                    <IconButton
+                        onClick={toggleDrawer(false)}
+                        aria-label={label}
+                    >
                         {right}
                     </IconButton>
                 </DrawerHeader>
