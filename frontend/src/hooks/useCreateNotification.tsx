@@ -11,7 +11,10 @@ const useCreateNotification = () => {
     const closeAction = useCallback(
         (key: number) => {
             return (
-                <IconButton onClick={() => closeSnackbar(key)}>
+                <IconButton
+                    onClick={() => closeSnackbar(key)}
+                    aria-label="close"
+                >
                     <CloseIcon />
                 </IconButton>
             );

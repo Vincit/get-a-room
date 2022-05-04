@@ -48,6 +48,22 @@ const DrawerHeader = styled(Box)(({ theme }) => ({
     backgroundColor: '#fff'
 }));
 
+const FilterCounter = styled(Box)(({ theme }) => ({
+    borderRadius: 50,
+    display: 'flex',
+    width: '20px',
+    height: '20px',
+    fontstyle: 'normal',
+    fontWeight: 700,
+    fontSize: '14px',
+    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: '0 4px',
+    color: '#F6F5F5',
+    backgroundColor: '#CE3B20'
+}));
+
 const DrawerTitle = styled(Typography)(({ theme }) => ({
     fontStyle: 'normal',
     fontWeight: 'bold',
@@ -69,6 +85,7 @@ interface Props {
     children: React.ReactChild;
     iconLeft?: React.ReactNode;
     iconRight?: React.ReactNode;
+    filterCount?: number;
     headerTitle: String | undefined;
     isOpen: boolean;
     toggle: (open: boolean) => void;
@@ -80,6 +97,7 @@ const SwipeableEdgeDrawer = (props: Props) => {
     const {
         children,
         headerTitle,
+        filterCount,
         iconLeft,
         isOpen,
         toggle,
@@ -94,17 +112,24 @@ const SwipeableEdgeDrawer = (props: Props) => {
     var left;
     var title;
     var right;
+    var filters;
+
     if (iconLeft === 'Map') {
         left = <MapIcon sx={{ color: '#219653' }} />;
         title = (
             <DrawerTitle sx={{ color: '#219653' }}>{headerTitle}</DrawerTitle>
         );
+        right = <CloseIcon />;
     } else if (iconLeft === 'Person') {
         left = <Person />;
         title = <DrawerTitle>{headerTitle}</DrawerTitle>;
         right = <CloseIcon />;
     } else if (iconLeft === 'FilterList') {
         left = <FilterListIcon />;
+        if (filterCount !== 0) {
+            filters = <FilterCounter>{filterCount}</FilterCounter>;
+        }
+
         title = <DrawerTitle>{headerTitle}</DrawerTitle>;
         if (isOpen) {
             right = <ExpandMoreIcon />;
@@ -117,8 +142,19 @@ const SwipeableEdgeDrawer = (props: Props) => {
         right = <CloseIcon />;
     }
 
+    var label;
+    if (iconLeft === 'FilterList') {
+        if (isOpen) {
+            label = 'reduce';
+        } else {
+            label = 'expand';
+        }
+    } else {
+        label = 'close';
+    }
+
     const handleHeaderClick = () => {
-        if (headerTitle === 'Filtering' && isOpen === true) {
+        if (headerTitle === 'Filters' && isOpen === true) {
             toggle(false);
         }
     };
@@ -147,8 +183,12 @@ const SwipeableEdgeDrawer = (props: Props) => {
                     {left}
                     <Puller />
                     {title}
+                    {filters}
                     <Puller />
-                    <IconButton onClick={toggleDrawer(false)}>
+                    <IconButton
+                        onClick={toggleDrawer(false)}
+                        aria-label={label}
+                    >
                         {right}
                     </IconButton>
                 </DrawerHeader>

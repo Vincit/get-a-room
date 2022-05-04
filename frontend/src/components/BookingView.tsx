@@ -96,6 +96,7 @@ function BookingView(props: BookingViewProps) {
     const [resources, setResources] = useState<string[]>([]);
     const [customFilter, setCustomFilter] = useState('');
     const [onlyFavourites, setOnlyFavourites] = useState(false);
+    const [filterCount, setFilterCount] = useState(0);
     const [allFeatures, setAllfeatures] = useState<string[]>([]);
 
     const { createErrorNotification } = useCreateNotification();
@@ -295,6 +296,30 @@ function BookingView(props: BookingViewProps) {
         filterRooms
     ]);
 
+    useEffect(() => {
+        var roomSizeFiltersCount = roomSize.length;
+        var resourcesFiltersCount = resources.length;
+        var customFilterCount;
+        var onlyFavouritesCount;
+        if (customFilter === '') {
+            customFilterCount = 0;
+        } else {
+            customFilterCount = 1;
+        }
+        if (onlyFavourites === false) {
+            onlyFavouritesCount = 0;
+        } else {
+            onlyFavouritesCount = 1;
+        }
+
+        setFilterCount(
+            roomSizeFiltersCount +
+                resourcesFiltersCount +
+                customFilterCount +
+                onlyFavouritesCount
+        );
+    }, [roomSize, resources, customFilter, onlyFavourites]);
+
     const handleDurationChange = (newDuration: number) => {
         setBookingDuration(newDuration);
     };
@@ -361,7 +386,7 @@ function BookingView(props: BookingViewProps) {
 
     return (
         <Box id="current booking" textAlign="center" p={'16px'}>
-            <div id="drawer-container">
+            <div id="gps-container">
                 <SwipeableEdgeDrawer
                     headerTitle={'GPS has your back!'}
                     iconLeft={'Map'}
@@ -506,7 +531,7 @@ function BookingView(props: BookingViewProps) {
                 />
             ) : null}
 
-            <div id="drawer-container" onClick={openFiltering}>
+            <div id="filtering-container" onClick={openFiltering}>
                 <FilteringDrawer
                     open={expandFilteringDrawer}
                     toggle={toggleDrawn}
@@ -518,6 +543,7 @@ function BookingView(props: BookingViewProps) {
                     setCustomFilter={setCustomFilter}
                     onlyFavourites={onlyFavourites}
                     setOnlyFavourites={setOnlyFavourites}
+                    filterCount={filterCount}
                     allFeatures={allFeatures}
                     duration={duration}
                     setDuration={setDuration}

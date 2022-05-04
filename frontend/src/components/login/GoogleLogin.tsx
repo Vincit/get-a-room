@@ -10,6 +10,7 @@ const GoogleLogin = () => {
         <ButtonBase
             onClick={login}
             disableRipple={true}
+            aria-label="Sign in with Google"
             sx={{
                 '&:hover': {
                     filter: 'brightness(90%)'

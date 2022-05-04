@@ -66,7 +66,7 @@ const DurationPicker = (props: DucationPickerProps) => {
                 <ToggleButton
                     data-testid="DurationPicker120"
                     value={120}
-                    aria-label="2 hour"
+                    aria-label="2 hours"
                 >
                     2 h
                 </ToggleButton>

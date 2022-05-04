@@ -25,13 +25,6 @@ export const SmallText = styled(Typography)(() => ({
     margin: '24px 8px 8px 0'
 }));
 
-export const FilteringButton = styled(ToggleButton)(() => ({
-    fontStyle: 'normal',
-    fontWeight: 'bold',
-    fontSize: '16px',
-    marginLeft: '18px'
-}));
-
 interface Props {
     open: boolean;
     toggle: (open: boolean) => void;
@@ -43,6 +36,7 @@ interface Props {
     setCustomFilter: (customFilter: string) => void;
     onlyFavourites: boolean;
     setOnlyFavourites: (value: boolean) => void;
+    filterCount: number;
     allFeatures: string[];
     onChange: (duration: number) => void;
     duration: number;
@@ -62,6 +56,7 @@ const FilteringDrawer = (props: Props) => {
         setCustomFilter,
         onlyFavourites,
         setOnlyFavourites,
+        filterCount,
         allFeatures,
         onChange,
         duration,
@@ -101,7 +96,8 @@ const FilteringDrawer = (props: Props) => {
 
     return (
         <SwipeableEdgeDrawer
-            headerTitle={'Filtering'}
+            headerTitle={'Filters'}
+            filterCount={filterCount}
             iconLeft={'FilterList'}
             iconRight={'Expand'}
             isOpen={open}
@@ -158,6 +154,7 @@ const FilteringDrawer = (props: Props) => {
                 <ToggleButtonGroup
                     value={resources}
                     onChange={handleResourcesChange}
+                    sx={{ minHeight: '56px' }}
                 >
                     {allFeatures.map((feature) => (
                         <ToggleButton key={feature} value={feature}>
@@ -171,9 +168,7 @@ const FilteringDrawer = (props: Props) => {
                 <ToggleButton
                     value="favourites"
                     selected={onlyFavourites}
-                    onChange={() => {
-                        setOnlyFavourites(!onlyFavourites);
-                    }}
+                    onChange={() => setOnlyFavourites(!onlyFavourites)}
                 >
                     <FavoriteBorderIcon />
                     &nbsp; Only Favourites
