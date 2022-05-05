@@ -70,7 +70,7 @@ const FilteringDrawer = (props: Props) => {
 
     const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
         '& .MuiToggleButtonGroup-grouped': {
-            margin: '16px',
+            marginRight: '16px',
             '&:not(:first-of-type)': {
                 border: 'solid',
                 borderWidth: 'thin',
