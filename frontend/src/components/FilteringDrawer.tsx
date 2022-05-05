@@ -68,6 +68,21 @@ const FilteringDrawer = (props: Props) => {
         setDuration
     } = props;
 
+    const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+        '& .MuiToggleButtonGroup-grouped': {
+            margin: '16px',
+            '&:not(:first-of-type)': {
+                border: 'solid',
+                borderWidth: 'thin',
+                borderRadius: '50px'
+            },
+            '&:first-of-type': {
+                marginLeft: '0px',
+                borderRadius: '50px'
+            }
+        }
+    }));
+
     const handleRoomSizeChange = (
         event: React.MouseEvent<HTMLElement>,
         newRoomSize: string[]
@@ -143,7 +158,7 @@ const FilteringDrawer = (props: Props) => {
                 <Row>
                     <SmallText>Room Size (People)</SmallText>
                 </Row>
-                <ToggleButtonGroup
+                <StyledToggleButtonGroup
                     value={roomSize}
                     onChange={handleRoomSizeChange}
                 >
@@ -151,11 +166,11 @@ const FilteringDrawer = (props: Props) => {
                     <ToggleButton value="3-5">3-5</ToggleButton>
                     <ToggleButton value="6-7">6-7</ToggleButton>
                     <ToggleButton value="8-99999">8+</ToggleButton>
-                </ToggleButtonGroup>
+                </StyledToggleButtonGroup>
                 <Row>
                     <SmallText>Resources</SmallText>
                 </Row>
-                <ToggleButtonGroup
+                <StyledToggleButtonGroup
                     value={resources}
                     onChange={handleResourcesChange}
                 >
@@ -164,7 +179,7 @@ const FilteringDrawer = (props: Props) => {
                             {feature}
                         </ToggleButton>
                     ))}
-                </ToggleButtonGroup>
+                </StyledToggleButtonGroup>
                 <Row>
                     <SmallText>Favourites</SmallText>
                 </Row>
