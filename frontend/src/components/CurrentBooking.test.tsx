@@ -84,7 +84,8 @@ describe('CurrentBooking', () => {
         await waitFor(() =>
             expect(updateBooking as jest.Mock).toHaveBeenCalledWith(
                 { timeToAdd: 15 },
-                fakeBooking[0].id
+                fakeBooking[0].id,
+                true
             )
         );
     });

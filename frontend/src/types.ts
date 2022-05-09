@@ -7,6 +7,7 @@ export interface Booking {
     startTime: string;
     endTime: string;
     room: Room;
+    resourceStatus: string;
 }
 
 export interface BookingDetails {
@@ -25,7 +26,10 @@ export interface Building {
 
 export interface Preferences {
     building?: Building;
+    fav_rooms?: Array<string>;
 }
+
+type TimePeriod = { start?: string | null; end?: string | null };
 
 export interface Room {
     id: string;
@@ -34,6 +38,8 @@ export interface Room {
     capacity?: number;
     features?: Array<string>;
     nextCalendarEvent: string;
+    favorited: boolean;
+    busy?: TimePeriod[] | undefined | null;
 }
 
 export interface Name {

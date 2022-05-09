@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
-
 import BookingView from './BookingView';
 import ChooseOfficeView from './ChooseOfficeView';
 import { Building, Preferences } from '../types';
@@ -13,7 +12,6 @@ import {
     getBuildingsWithPosition
 } from '../services/buildingService';
 import { Box } from '@mui/material';
-import NavBar from './NavBar';
 import { getName } from '../services/nameService';
 import { useHistory } from 'react-router-dom';
 
@@ -105,13 +103,14 @@ const MainView = () => {
                     <Route path="/">
                         <BookingView
                             preferences={preferences}
+                            setPreferences={setPreferences}
                             open={expandBookingDrawer}
                             toggle={toggleDrawn}
+                            name={name}
                         />
                     </Route>
                 </Switch>
             </Box>
-            <NavBar />
         </Box>
     );
 };
