@@ -373,7 +373,7 @@ function BookingView(props: BookingViewProps) {
     const [duration, setDuration] = React.useState(15);
 
     return (
-        <Box id="current booking" textAlign="center" px={'16px'} pb={'100px'}>
+        <Box id="current booking" textAlign="center" px={'16px'} pb={'120px'}>
             <div id="gps-container">
                 <SwipeableEdgeDrawer
                     headerTitle={'GPS has your back!'}
