@@ -1,7 +1,11 @@
 import * as React from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { Typography } from '@mui/material';
+import { styled, Typography } from '@mui/material';
+
+const DurationButton = styled(ToggleButton)(() => ({
+    padding: '8px 16px'
+}));
 
 type DucationPickerProps = {
     onChange: (duration: number) => void;
@@ -40,36 +44,37 @@ const DurationPicker = (props: DucationPickerProps) => {
                 exclusive
                 onChange={handleChange}
                 aria-label="duration picker"
-                sx={{ paddingBottom: '24px' }}
+                sx={{ marginBottom: '24px' }}
+                fullWidth
             >
-                <ToggleButton
+                <DurationButton
                     data-testid="DurationPicker15"
                     value={15}
                     aria-label="15 minutes"
                 >
                     15 min
-                </ToggleButton>
-                <ToggleButton
+                </DurationButton>
+                <DurationButton
                     data-testid="DurationPicker30"
                     value={30}
                     aria-label="30 minutes"
                 >
                     30 min
-                </ToggleButton>
-                <ToggleButton
+                </DurationButton>
+                <DurationButton
                     data-testid="DurationPicker60"
                     value={60}
                     aria-label="1 hour"
                 >
                     1 h
-                </ToggleButton>
-                <ToggleButton
+                </DurationButton>
+                <DurationButton
                     data-testid="DurationPicker120"
                     value={120}
                     aria-label="2 hours"
                 >
                     2 h
-                </ToggleButton>
+                </DurationButton>
             </ToggleButtonGroup>
         </div>
     );
