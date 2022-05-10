@@ -31,14 +31,6 @@ function isActiveBooking(bookings: Booking[]) {
     return bookings.length > 0;
 }
 
-export const Row = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'iconLeft',
-    padding: '0px',
-    width: '100%'
-}));
-
 const deleteDeclinedBookings = (
     notification: (message: string) => void,
     bookings: Booking[]
@@ -62,10 +54,6 @@ const RowCentered = styled(Box)(({ theme }) => ({
     justifyContent: 'left',
     padding: '0px',
     width: '100%'
-}));
-
-export const Spacer = styled('div')(() => ({
-    padding: '8px'
 }));
 
 type BookingViewProps = {
@@ -385,7 +373,7 @@ function BookingView(props: BookingViewProps) {
     const [duration, setDuration] = React.useState(15);
 
     return (
-        <Box id="current booking" textAlign="center" p={'16px'}>
+        <Box id="current booking" textAlign="center" px={'16px'} pb={'100px'}>
             <div id="gps-container">
                 <SwipeableEdgeDrawer
                     headerTitle={'GPS has your back!'}

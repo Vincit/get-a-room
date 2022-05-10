@@ -15,7 +15,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const drawerBleeding = 65;
+export const drawerBleeding = 88;
 
 const Root = styled('div')(({ theme }) => ({
     height: '100%',
@@ -73,12 +73,10 @@ const DrawerTitle = styled(Typography)(({ theme }) => ({
 }));
 
 export const DrawerContent = styled(Box)(({ theme }) => ({
-    px: '24px',
-    pb: '24px',
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    margin: '24px'
+    margin: '0 24px 24px 24px'
 }));
 
 interface Props {

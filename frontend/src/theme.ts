@@ -86,11 +86,10 @@ export const theme = createTheme({
         MuiToggleButtonGroup: {
             styleOverrides: {
                 root: {
-                    overflowX: 'scroll',
+                    overflowX: 'auto',
                     display: 'flex',
                     flexDirection: 'row',
-                    alignItems: 'flex-start',
-                    padding: '0 24px 0 0'
+                    alignItems: 'flex-start'
                 }
             }
         },
