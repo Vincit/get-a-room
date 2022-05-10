@@ -42,42 +42,44 @@ const BusyRoomList = (props: BusyRoomListProps) => {
         <Box id="available-in-30-min-room-list">
             {rooms.filter((room) => filterBusyRoom(room, bookings)).length >
             0 ? (
-                <Typography
-                    variant="subtitle1"
-                    textAlign="left"
-                    marginLeft="24px"
-                >
-                    rooms available in the next 30 min
-                </Typography>
-            ) : null}
+                <>
+                    <Typography
+                        variant="subtitle1"
+                        textAlign="left"
+                        marginLeft="24px"
+                    >
+                        rooms available in the next 30 min
+                    </Typography>
 
-            <List>
-                {rooms
-                    .sort((a, b) => (a.name < b.name ? -1 : 1))
-                    .filter((room) => filterBusyRoom(room, bookings))
-                    .map((room) => (
-                        <li key={room.id}>
-                            <RoomCard
-                                room={room}
-                                onClick={function (
-                                    room: Room,
-                                    booking?: Booking
-                                ): void {
-                                    throw new Error(
-                                        'Function not implemented.'
-                                    );
-                                }}
-                                bookingLoading={''}
-                                disableBooking={true}
-                                isSelected={false}
-                                isBusy={true}
-                                expandFeatures={false}
-                                setPreferences={setPreferences}
-                                preferences={preferences}
-                            />
-                        </li>
-                    ))}
-            </List>
+                    <List>
+                        {rooms
+                            .sort((a, b) => (a.name < b.name ? -1 : 1))
+                            .filter((room) => filterBusyRoom(room, bookings))
+                            .map((room) => (
+                                <li key={room.id}>
+                                    <RoomCard
+                                        room={room}
+                                        onClick={function (
+                                            room: Room,
+                                            booking?: Booking
+                                        ): void {
+                                            throw new Error(
+                                                'Function not implemented.'
+                                            );
+                                        }}
+                                        bookingLoading={''}
+                                        disableBooking={true}
+                                        isSelected={false}
+                                        isBusy={true}
+                                        expandFeatures={false}
+                                        setPreferences={setPreferences}
+                                        preferences={preferences}
+                                    />
+                                </li>
+                            ))}
+                    </List>
+                </>
+            ) : null}
         </Box>
     );
 };
