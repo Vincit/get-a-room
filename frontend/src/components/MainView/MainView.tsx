@@ -39,6 +39,7 @@ const MainView = () => {
         getPreferencesWithGPS()
             .then((preference) => {
                 setPreferences(preference);
+                //toggleDrawn(true);
                 buildingFromLocalStorage(preference);
             })
             .catch((e) => {
