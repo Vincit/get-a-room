@@ -39,13 +39,32 @@ const MainView = () => {
         getPreferencesWithGPS()
             .then((preference) => {
                 setPreferences(preference);
-                toggleDrawn(true);
+                //toggleDrawn(true);
+                console.log(preference);
+                buildingFromLocalStorage(preference);
             })
             .catch((e) => {
                 // Redirected to login
                 console.log(e);
             });
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const buildingFromLocalStorage = (preference: {
+        building: { name: string };
+    }) => {
+        if (
+            localStorage.getItem('preferedBuildingName') ===
+            preference.building.name
+        ) {
+            toggleDrawn(false);
+        } else {
+            localStorage.setItem(
+                'preferedBuildingName',
+                preference.building.name
+            );
+            toggleDrawn(true);
+        }
+    };
 
     useEffect(() => {
         getBuildings()
