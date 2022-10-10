@@ -4,6 +4,7 @@ import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
 import { DrawerButtonSecondary } from './BookingDrawer';
 import { logout } from '../services/authService';
 import useCreateNotification from '../hooks/useCreateNotification';
+import { Box } from '@mui/material';
 
 type userSettingsProps = {
     open: boolean;
@@ -45,23 +46,32 @@ const UserDrawer = (props: userSettingsProps) => {
             toggle={toggle}
             disableSwipeToOpen={true}
         >
-            <DrawerContent>
-                <DrawerButtonSecondary
-                    aria-label="settings drawer "
-                    data-testid="BookNowButton"
-                    onClick={handleAllFeaturesCollapse}
-                >
-                    <Visibility aria-label="visibility" />
-                    &nbsp;Show room resources
-                </DrawerButtonSecondary>
-                <DrawerButtonSecondary
-                    aria-label="logout"
-                    data-testid="BookNowButton"
-                    onClick={doLogout}
-                >
-                    logout
-                </DrawerButtonSecondary>
-            </DrawerContent>
+            <Box
+                style={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                }}
+            >
+                <DrawerContent>
+                    <DrawerButtonSecondary
+                        aria-label="settings drawer "
+                        data-testid="BookNowButton"
+                        onClick={handleAllFeaturesCollapse}
+                    >
+                        <Visibility aria-label="visibility" />
+                        &nbsp;Show room resources
+                    </DrawerButtonSecondary>
+                    <DrawerButtonSecondary
+                        aria-label="logout"
+                        data-testid="BookNowButton"
+                        onClick={doLogout}
+                    >
+                        logout
+                    </DrawerButtonSecondary>
+                </DrawerContent>
+            </Box>
         </SwipeableEdgeDrawer>
     );
 };

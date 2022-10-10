@@ -192,80 +192,97 @@ const AlterBookingDrawer = (props: Props) => {
             toggle={toggle}
             disableSwipeToOpen={true}
         >
-            <DrawerContent>
-                <RowCentered>
-                    <TimeTextBoldGreen>
-                        {duration} min remaning
-                    </TimeTextBoldGreen>
-                </RowCentered>
-                <RowCentered>
-                    <AvailableTextGreen>
-                        Room booked for you untill {getSimpleEndTime(booking)}
-                    </AvailableTextGreen>
-                </RowCentered>
-                <RowCentered>
-                    <AvailableText>
-                        {minutesToSimpleString(availableMinutes)} more available
-                    </AvailableText>
-                </RowCentered>
+            <Box
+                style={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                }}
+            >
+                <DrawerContent>
+                    <RowCentered>
+                        <TimeTextBoldGreen>
+                            {duration} min remaning
+                        </TimeTextBoldGreen>
+                    </RowCentered>
+                    <RowCentered>
+                        <AvailableTextGreen>
+                            Room booked for you untill{' '}
+                            {getSimpleEndTime(booking)}
+                        </AvailableTextGreen>
+                    </RowCentered>
+                    <RowCentered>
+                        <AvailableText>
+                            {minutesToSimpleString(availableMinutes)} more
+                            available
+                        </AvailableText>
+                    </RowCentered>
 
-                <Row>
-                    <SmallText>alter booking (rounded to next 5 min)</SmallText>
-                </Row>
-                <Row>
-                    <DrawerButtonPrimary
-                        aria-label="subtract 15 minutes"
-                        data-testid="subtract15"
-                        onClick={(e) => handleAdditionalTime(-15)}
-                        disabled={disableSubtractTime()}
-                    >
-                        <RemoveIcon /> 15 min
-                    </DrawerButtonPrimary>
-                    <Spacer />
-                    <DrawerButtonPrimary
-                        aria-label="add 15 minutes"
-                        data-testid="add15"
-                        onClick={(e) => handleAdditionalTime(15)}
-                        disabled={disableAddTime()}
-                    >
-                        <AddIcon /> 15 min
-                    </DrawerButtonPrimary>
-                </Row>
-                <Row>
-                    <DrawerButtonSecondary
-                        aria-label="next half hour"
-                        onClick={handleNextHalfHour}
-                        disabled={disableNextHalfHour()}
-                    >
-                        {nextHalfHour().toLocaleString(DateTime.TIME_24_SIMPLE)}
-                    </DrawerButtonSecondary>
-                    <Spacer />
-                    <DrawerButtonSecondary
-                        aria-label="next full hour"
-                        onClick={handleNextFullHour}
-                        disabled={disableNextFullHour()}
-                    >
-                        {nextFullHour().toLocaleString(DateTime.TIME_24_SIMPLE)}
-                    </DrawerButtonSecondary>
-                </Row>
-                <Row>
-                    <DrawerButtonSecondary
-                        aria-label="untill next meeting"
-                        onClick={handleUntillNextMeeting}
-                    >
-                        Untill next meeting
-                    </DrawerButtonSecondary>
-                </Row>
-                <Row>
-                    <DrawerButtonPrimary
-                        aria-label="End booking"
-                        data-testid="EndBookingButton"
-                        onClick={handleEndBooking}
-                    >
-                        End Booking
-                    </DrawerButtonPrimary>
-                </Row>
-            </DrawerContent>
+                    <Row>
+                        <SmallText>
+                            alter booking (rounded to next 5 min)
+                        </SmallText>
+                    </Row>
+                    <Row>
+                        <DrawerButtonPrimary
+                            aria-label="subtract 15 minutes"
+                            data-testid="subtract15"
+                            onClick={(e) => handleAdditionalTime(-15)}
+                            disabled={disableSubtractTime()}
+                        >
+                            <RemoveIcon /> 15 min
+                        </DrawerButtonPrimary>
+                        <Spacer />
+                        <DrawerButtonPrimary
+                            aria-label="add 15 minutes"
+                            data-testid="add15"
+                            onClick={(e) => handleAdditionalTime(15)}
+                            disabled={disableAddTime()}
+                        >
+                            <AddIcon /> 15 min
+                        </DrawerButtonPrimary>
+                    </Row>
+                    <Row>
+                        <DrawerButtonSecondary
+                            aria-label="next half hour"
+                            onClick={handleNextHalfHour}
+                            disabled={disableNextHalfHour()}
+                        >
+                            {nextHalfHour().toLocaleString(
+                                DateTime.TIME_24_SIMPLE
+                            )}
+                        </DrawerButtonSecondary>
+                        <Spacer />
+                        <DrawerButtonSecondary
+                            aria-label="next full hour"
+                            onClick={handleNextFullHour}
+                            disabled={disableNextFullHour()}
+                        >
+                            {nextFullHour().toLocaleString(
+                                DateTime.TIME_24_SIMPLE
+                            )}
+                        </DrawerButtonSecondary>
+                    </Row>
+                    <Row>
+                        <DrawerButtonSecondary
+                            aria-label="untill next meeting"
+                            onClick={handleUntillNextMeeting}
+                        >
+                            Untill next meeting
+                        </DrawerButtonSecondary>
+                    </Row>
+                    <Row>
+                        <DrawerButtonPrimary
+                            aria-label="End booking"
+                            data-testid="EndBookingButton"
+                            onClick={handleEndBooking}
+                        >
+                            End Booking
+                        </DrawerButtonPrimary>
+                    </Row>
+                </DrawerContent>
+            </Box>
         </SwipeableEdgeDrawer>
     );
 };
