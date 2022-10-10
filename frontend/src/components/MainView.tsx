@@ -39,8 +39,6 @@ const MainView = () => {
         getPreferencesWithGPS()
             .then((preference) => {
                 setPreferences(preference);
-                //toggleDrawn(true);
-                console.log(preference);
                 buildingFromLocalStorage(preference);
             })
             .catch((e) => {
@@ -49,6 +47,7 @@ const MainView = () => {
             });
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+    //check the name of the building stored in the localStorage
     const buildingFromLocalStorage = (preference: {
         building: { name: string };
     }) => {
