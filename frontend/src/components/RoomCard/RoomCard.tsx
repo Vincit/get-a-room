@@ -299,7 +299,7 @@ const RoomCard = (props: RoomCardProps) => {
         if (duration === 15) {
             showBookingEndNotification();
         }
-    }, [duration]);
+    }, [duration]); //eslint-disable-line
 
     return (
         <CustomCard data-testid="AvailableRoomListCard" style={cardStyle()}>
