@@ -4,6 +4,7 @@ import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 import { DateTime } from 'luxon';
 import { render, screen } from '@testing-library/react';
 import BusyRoomList from './BusyRoomList';
+import { SnackbarProvider } from 'notistack';
 
 const fakeRooms = [
     {
@@ -64,7 +65,11 @@ describe('BusyRoomList', () => {
     });
 
     it('renders rooms available in 30 minutes', async () => {
-        render(<BusyRoomList rooms={fakeRooms} bookings={[]} />, container);
+        render(
+            <SnackbarProvider>
+                <BusyRoomList rooms={fakeRooms} bookings={[]} />, container
+            </SnackbarProvider>
+        );
 
         const items = screen.queryAllByTestId('AvailableRoomListCard');
         expect(items).toBeTruthy();
@@ -72,7 +77,11 @@ describe('BusyRoomList', () => {
     });
 
     it('renders correct room title', async () => {
-        render(<BusyRoomList rooms={fakeRooms} bookings={[]} />, container);
+        render(
+            <SnackbarProvider>
+                <BusyRoomList rooms={fakeRooms} bookings={[]} />, container
+            </SnackbarProvider>
+        );
 
         const titles = screen.queryAllByTestId('BookingRoomTitle');
         expect(titles).toHaveLength(1);

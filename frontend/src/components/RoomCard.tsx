@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Room, Booking, Preferences } from '../types';
@@ -23,6 +24,7 @@ import { getTimeLeftMinutes } from './util/TimeLeft';
 import { minutesToSimpleString } from './BookingDrawer';
 import { DateTime } from 'luxon';
 import { roomFreeIn } from './BusyRoomList';
+import useCreateNotification from '../hooks/useCreateNotification';
 
 function getName(room: Room) {
     return room.name;
@@ -226,6 +228,23 @@ const RoomCard = (props: RoomCardProps) => {
         return defaultVars;
     };
 
+    //a variable to store how much time is left on the booking.
+    const duration = React.useMemo(() => {
+        return getBookingTimeLeft(booking);
+    }, [Date.now()]);
+
+    const { createNotificationWithType } = useCreateNotification();
+
+    //send notification when there is 5 minutes left on the booking.
+    useEffect(() => {
+        if (duration === 5) {
+            createNotificationWithType(
+                `Booking for ${getName(room)} ends in ${duration} minutes.`,
+                'warning'
+            );
+        }
+    }, [duration]);
+
     return (
         <CustomCard data-testid="AvailableRoomListCard" style={cardStyle()}>
             <CardActionArea
@@ -265,8 +284,7 @@ const RoomCard = (props: RoomCardProps) => {
                                     color="success.main"
                                     margin={'0 0 0 5px'}
                                 >
-                                    Booked to you for{' '}
-                                    {getBookingTimeLeft(booking)} minutes.
+                                    Booked to you for {duration} minutes.
                                 </Typography>
                             </StartBox>
                         ) : (
