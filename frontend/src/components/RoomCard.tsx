@@ -231,7 +231,7 @@ const RoomCard = (props: RoomCardProps) => {
     //a variable to store how much time is left on the booking.
     const duration = React.useMemo(() => {
         return getBookingTimeLeft(booking);
-    }, [getBookingTimeLeft, booking]);
+    }, [Date.now(), booking]); //eslint-disable-line
 
     const { createNotificationWithType } = useCreateNotification();
 
