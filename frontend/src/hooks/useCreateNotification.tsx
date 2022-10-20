@@ -26,7 +26,8 @@ const useCreateNotification = () => {
         (message: string, type: NotificationType) => {
             enqueueSnackbar(message, {
                 variant: type,
-                action: closeAction
+                action: closeAction,
+                autoHideDuration: 15000
             });
         },
         [enqueueSnackbar, closeAction]
