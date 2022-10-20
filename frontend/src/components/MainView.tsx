@@ -84,11 +84,12 @@ const MainView = () => {
             id="main-view"
             display="flex"
             flexDirection="column"
-            height="100vh"
+            minHeight="100vh"
+            alignItems="center"
         >
             <Box
                 id="main-view-content"
-                sx={{ flexGrow: 1, overflowY: 'scroll' }}
+                sx={{ flexGrow: 1, maxWidth: '1000px', width: '100%' }}
             >
                 <Switch>
                     <Route path="/(preferences|auth/success)/">

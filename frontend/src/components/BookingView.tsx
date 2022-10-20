@@ -383,17 +383,29 @@ function BookingView(props: BookingViewProps) {
                     toggle={toggle}
                     disableSwipeToOpen={true}
                 >
-                    <DrawerContent>
-                        <RowCentered>
-                            <Typography
-                                variant="body1"
-                                sx={{ color: '#000000', font: 'Roboto Mono' }}
-                            >
-                                {preferences?.building?.name} was selected as
-                                your office based on your GPS location
-                            </Typography>
-                        </RowCentered>
-                    </DrawerContent>
+                    <Box
+                        style={{
+                            width: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center'
+                        }}
+                    >
+                        <DrawerContent>
+                            <RowCentered>
+                                <Typography
+                                    variant="body1"
+                                    sx={{
+                                        color: '#000000',
+                                        font: 'Roboto Mono'
+                                    }}
+                                >
+                                    {preferences?.building?.name} was selected
+                                    as your office based on your GPS location
+                                </Typography>
+                            </RowCentered>
+                        </DrawerContent>
+                    </Box>
                 </SwipeableEdgeDrawer>
             </div>
 
