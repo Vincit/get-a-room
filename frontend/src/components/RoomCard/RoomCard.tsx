@@ -284,17 +284,21 @@ const RoomCard = (props: RoomCardProps) => {
     //a variable to store how much time is left on the booking.
     const duration = React.useMemo(() => {
         return getBookingTimeLeft(booking);
-    }, [Date.now()]);
+    }, [Date.now(), booking]);
 
     const { createNotificationWithType } = useCreateNotification();
+
+    const showBookingEndNotification = () => {
+        createNotificationWithType(
+            `Booking for ${getName(room)} ends in ${duration} minutes.`,
+            'warning'
+        );
+    };
 
     //send notification when there is 5 minutes left on the booking.
     useEffect(() => {
         if (duration === 5) {
-            createNotificationWithType(
-                `Booking for ${getName(room)} ends in ${duration} minutes.`,
-                'warning'
-            );
+            showBookingEndNotification();
         }
     }, [duration]);
 
