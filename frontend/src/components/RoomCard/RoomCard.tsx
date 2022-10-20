@@ -288,16 +288,15 @@ const RoomCard = (props: RoomCardProps) => {
 
     const { createNotificationWithType } = useCreateNotification();
 
-    const showBookingEndNotification = () => {
-        createNotificationWithType(
-            `Booking for ${getName(room)} ends in ${duration} minutes.`,
-            'warning'
-        );
-    };
-
     //send notification when there is 5 minutes left on the booking.
     useEffect(() => {
-        if (duration === 5) {
+        const showBookingEndNotification = () => {
+            createNotificationWithType(
+                `Booking for ${getName(room)} ends in ${duration} minutes.`,
+                'warning'
+            );
+        };
+        if (duration === 15) {
             showBookingEndNotification();
         }
     }, [duration]);
