@@ -10,10 +10,6 @@ import BookingDrawer from './BookingDrawer';
 
 const SKIP_CONFIRMATION = true;
 
-function disableBooking(bookings: Booking[]) {
-    return bookings.length === 0 ? false : true;
-}
-
 export async function isFavorited(room: Room, pref?: Preferences) {
     try {
         if (pref === undefined || pref.fav_rooms === undefined) {
@@ -159,7 +155,7 @@ const AvailableRoomList = (props: BookingListProps) => {
 
         makeBooking(bookingDetails, SKIP_CONFIRMATION)
             .then((madeBooking) => {
-                setBookings([madeBooking]);
+                setBookings([...bookings, madeBooking]);
                 updateData();
                 // update data after 2.5s, waits Google Calendar to
                 // accept the booking.
@@ -211,9 +207,7 @@ const AvailableRoomList = (props: BookingListProps) => {
                                               room={room}
                                               onClick={handleCardClick}
                                               bookingLoading={bookingLoading}
-                                              disableBooking={disableBooking(
-                                                  bookings
-                                              )}
+                                              disableBooking={false}
                                               isSelected={selectedRoom === room}
                                               expandFeatures={
                                                   expandedFeaturesAll
