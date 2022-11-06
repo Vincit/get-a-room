@@ -1,12 +1,16 @@
-import { IconButton } from '@mui/material';
+import { bottomNavigationActionClasses, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSnackbar } from 'notistack';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import copy from 'copy-to-clipboard';
+import Share from './useShareInMobile';
+import { color } from '@mui/system';
 
 type NotificationType = 'default' | 'error' | 'success' | 'warning' | 'info';
 
 const useCreateNotification = () => {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [active, setActive] = useState(false);
 
     const closeAction = useCallback(
         (key: number) => {
@@ -34,10 +38,25 @@ const useCreateNotification = () => {
 
     const createSuccessNotification = useCallback(
         (message: string) => {
-            enqueueSnackbar(message, {
-                variant: 'success',
-                action: closeAction
-            });
+            enqueueSnackbar(
+                <div>
+                    Booking was succesful!
+                    <Share
+                        label="Share"
+                        title="My Web Share Adventures"
+                        text="Hello World! I shared this content via Web Share"
+                        url={message.split(' ').reverse()[0]}
+                    />
+                </div>,
+
+                {
+                    variant: 'success',
+                    action: closeAction,
+                    persist: true,
+                    style: { whiteSpace: 'pre-line' },
+                    preventDuplicate: true
+                }
+            );
         },
         [enqueueSnackbar, closeAction]
     );
