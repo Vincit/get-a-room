@@ -38,11 +38,14 @@ export const simplifyEventData = () => {
                 .toUTC()
                 .toISO();
 
+            const htmlLink: string = event.htmlLink as string;
+
             const simpleEvent = {
                 id: event.id,
                 startTime: start,
                 endTime: end,
-                room: roomData
+                room: roomData,
+                link: htmlLink
             };
 
             // Check if any of the properties are undefined
@@ -50,7 +53,8 @@ export const simplifyEventData = () => {
                 !simpleEvent.id ||
                 !simpleEvent.startTime ||
                 !simpleEvent.endTime ||
-                !simpleEvent.room
+                !simpleEvent.room ||
+                !simpleEvent.link
             ) {
                 return responses.internalServerError(req, res);
             }
