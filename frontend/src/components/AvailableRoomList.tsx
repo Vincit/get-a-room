@@ -166,7 +166,9 @@ const AvailableRoomList = (props: BookingListProps) => {
                 setTimeout(() => {
                     updateData();
                 }, 2500);
-                createSuccessNotification('Booking was succesful');
+                createSuccessNotification(`Booking was succesful!
+                
+                The meeting link is: ${madeBooking.link}`);
                 setBookingLoading('false');
                 document.getElementById('main-view-content')?.scrollTo(0, 0);
             })
