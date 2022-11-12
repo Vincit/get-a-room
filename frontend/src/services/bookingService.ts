@@ -2,6 +2,13 @@ import { Booking, BookingDetails, AddTimeDetails } from '../types';
 import { DateTime } from 'luxon';
 import axios from './axiosConfigurer';
 
+export const sendNotificationSubscription = async (subscription: Object) => {
+    //const urlParams = new URLSearchParams();
+    const stringifySubscripton = JSON.stringify(subscription);
+    const response = await axios.post('notification', stringifySubscripton);
+    return response.data;
+};
+
 export const makeBooking = async (
     bookingDetails: BookingDetails,
     noConfirmation?: boolean

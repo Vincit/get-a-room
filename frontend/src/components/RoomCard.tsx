@@ -25,6 +25,7 @@ import { minutesToSimpleString } from './BookingDrawer';
 import { DateTime } from 'luxon';
 import { roomFreeIn } from './BusyRoomList';
 import useCreateNotification from '../hooks/useCreateNotification';
+import { sendNotification } from '../services/NotificationManager';
 
 function getName(room: Room) {
     return room.name;
@@ -237,14 +238,8 @@ const RoomCard = (props: RoomCardProps) => {
 
     //send notification when there is 5 minutes left on the booking.
     useEffect(() => {
-        const showBookingEndNotification = () => {
-            createNotificationWithType(
-                `Booking for ${getName(room)} ends in ${duration} minutes.`,
-                'warning'
-            );
-        };
-        if (duration === 5) {
-            showBookingEndNotification();
+        if (duration === 15 || duration === 14) {
+            sendNotification(room, duration);
         }
     }, [duration]); //eslint-disable-line
 
