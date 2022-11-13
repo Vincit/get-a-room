@@ -7,7 +7,7 @@ import {
     waitFor
 } from '@testing-library/react';
 
-import { updatePreferences } from '../services/preferencesService';
+import { updatePreferences } from '../../services/preferencesService';
 
 import ChooseOfficeView from './ChooseOfficeView';
 

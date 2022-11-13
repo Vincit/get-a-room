@@ -1,4 +1,4 @@
-import { logout } from '../services/authService';
+import { logout } from '../../services/authService';
 import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 

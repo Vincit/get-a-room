@@ -2,12 +2,12 @@ import { Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { Building, Preferences } from '../types';
-import { updatePreferences } from '../services/preferencesService';
-import BuildingSelect from './BuildingSelect';
-import CenteredProgress from './util/CenteredProgress';
-import FormButtons from './util/FormButtons';
-import useCreateNotification from '../hooks/useCreateNotification';
+import { Building, Preferences } from '../../types';
+import { updatePreferences } from '../../services/preferencesService';
+import BuildingSelect from '../BuildingSelect/BuildingSelect';
+import CenteredProgress from '../util/CenteredProgress';
+import FormButtons from '../util/FormButtons';
+import useCreateNotification from '../../hooks/useCreateNotification';
 
 type PreferencesLoaderProps = {
     preferences?: Preferences;

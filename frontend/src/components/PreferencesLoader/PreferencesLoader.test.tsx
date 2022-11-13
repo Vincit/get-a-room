@@ -6,7 +6,7 @@ import {
     act,
     waitFor
 } from '@testing-library/react';
-import { updatePreferences } from '../services/preferencesService';
+import { updatePreferences } from '../../services/preferencesService';
 
 import PreferencesLoader from './PreferencesLoader';
 

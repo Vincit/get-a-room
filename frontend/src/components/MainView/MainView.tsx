@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import BookingView from './BookingView';
-import ChooseOfficeView from './ChooseOfficeView';
-import { Building, Preferences } from '../types';
+import BookingView from '../BookingView/BookingView';
+import ChooseOfficeView from '../ChooseOfficeView/ChooseOfficeView';
+import { Building, Preferences } from '../../types';
 import {
     getPreferences,
     getPreferencesWithGPS
-} from '../services/preferencesService';
+} from '../../services/preferencesService';
 import {
     getBuildings,
     getBuildingsWithPosition
-} from '../services/buildingService';
+} from '../../services/buildingService';
 import { Box } from '@mui/material';
-import { getName } from '../services/nameService';
+import { getName } from '../../services/nameService';
 import { useHistory } from 'react-router-dom';
 
 const MainView = () => {

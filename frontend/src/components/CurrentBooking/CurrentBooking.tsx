@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Box, List, Typography } from '@mui/material';
-import { Booking, AddTimeDetails, Room, Preferences } from '../types';
-import { updateBooking, endBooking } from '../services/bookingService';
-import useCreateNotification from '../hooks/useCreateNotification';
-import RoomCard from './RoomCard';
+import { Booking, AddTimeDetails, Room, Preferences } from '../../types';
+import { updateBooking, endBooking } from '../../services/bookingService';
+import useCreateNotification from '../../hooks/useCreateNotification';
+import RoomCard from '../RoomCard/RoomCard';
 import AlterBookingDrawer from './AlterBookingDrawer';
-import { getTimeAvailableMinutes, getBookingTimeLeft } from './RoomCard';
+import { getTimeAvailableMinutes, getBookingTimeLeft } from '../RoomCard/RoomCard';
 
 const NO_CONFIRMATION = true;
 
