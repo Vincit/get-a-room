@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Box, styled, IconButton } from '@mui/material';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Person from '@mui/icons-material/Person';
 
 import { getRooms } from '../services/roomService';
@@ -25,10 +24,6 @@ const GET_RESERVED = true;
 // Check if rooms are fetched
 function areRoomsFetched(rooms: Room[]) {
     return Array.isArray(rooms) && rooms.length > 0;
-}
-
-function isActiveBooking(bookings: Booking[]) {
-    return bookings.length > 0;
 }
 
 const deleteDeclinedBookings = (
@@ -466,30 +461,6 @@ function BookingView(props: BookingViewProps) {
                     </IconButton>
                 </Typography>
             </RowCentered>
-
-            {isActiveBooking(bookings) ? (
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        py: 2,
-                        px: 3
-                    }}
-                >
-                    <ErrorOutlineIcon />
-                    <Typography
-                        sx={{
-                            fontSize: '18px',
-                            textAlign: 'center',
-                            px: 1
-                        }}
-                    >
-                        You cannot book a new room unless you remove your
-                        current booking
-                    </Typography>
-                </Box>
-            ) : null}
 
             <DurationPicker
                 duration={duration}
