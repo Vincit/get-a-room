@@ -27,3 +27,9 @@ yarn-error.log*
 
 # Env file
 .env
+
+# Personal setting files
+backend/src/app.ts
+backend/package-lock.json
+backend/package.json
+backend/src/routes/routes.js
