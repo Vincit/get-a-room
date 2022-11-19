@@ -6,6 +6,7 @@ import { simplifyEventData } from '../controllers/booking/bookingUtils';
 import * as currentBookingsController from '../controllers/booking/currentBookingsController';
 import * as makeBookingController from '../controllers/booking/makeBookingController';
 import * as updateBookingController from '../controllers/booking/updateBookingController';
+import * as notifyBookingController from '../controllers/booking/notifyBookingController';
 import * as responses from '../utils/responses';
 
 export const router = express.Router();
@@ -84,3 +85,6 @@ router.patch(
         res.status(200).json(res.locals.event);
     }
 );
+
+// Get the user subscription
+router.post('/notification', notifyBookingController.saveSubscription());
