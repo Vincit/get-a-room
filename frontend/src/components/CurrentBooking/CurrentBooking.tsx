@@ -5,7 +5,10 @@ import { updateBooking, endBooking } from '../../services/bookingService';
 import useCreateNotification from '../../hooks/useCreateNotification';
 import RoomCard from '../RoomCard/RoomCard';
 import AlterBookingDrawer from './AlterBookingDrawer';
-import { getTimeAvailableMinutes, getBookingTimeLeft } from '../RoomCard/RoomCard';
+import {
+    getTimeAvailableMinutes,
+    getBookingTimeLeft
+} from '../RoomCard/RoomCard';
 
 const NO_CONFIRMATION = true;
 

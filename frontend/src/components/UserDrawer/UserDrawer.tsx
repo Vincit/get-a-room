@@ -1,6 +1,8 @@
 import { useHistory } from 'react-router-dom';
 import { Visibility } from '@mui/icons-material';
-import SwipeableEdgeDrawer, { DrawerContent } from '../BookingView/SwipeableEdgeDrawer';
+import SwipeableEdgeDrawer, {
+    DrawerContent
+} from '../BookingView/SwipeableEdgeDrawer';
 import { DrawerButtonSecondary } from '../BookingDrawer/BookingDrawer';
 import { logout } from '../../services/authService';
 import useCreateNotification from '../../hooks/useCreateNotification';

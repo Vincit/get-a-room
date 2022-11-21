@@ -4,7 +4,9 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { DateTime } from 'luxon';
 
-import SwipeableEdgeDrawer, { DrawerContent } from '../BookingView/SwipeableEdgeDrawer';
+import SwipeableEdgeDrawer, {
+    DrawerContent
+} from '../BookingView/SwipeableEdgeDrawer';
 import { Booking, Room } from '../../types';
 import {
     AvailableText,
