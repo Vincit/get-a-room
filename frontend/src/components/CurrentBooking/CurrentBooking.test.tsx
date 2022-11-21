@@ -6,14 +6,14 @@ import userEvent from '@testing-library/user-event';
 import { unmountComponentAtNode } from 'react-dom';
 import { updateBooking, endBooking } from '../../services/bookingService';
 
-jest.mock('../hooks/useCreateNotification', () => () => {
+jest.mock('../../hooks/useCreateNotification', () => () => {
     return {
         createSuccessNotification: jest.fn(),
         createErrorNotification: jest.fn()
     };
 });
 
-jest.mock('../services/bookingService');
+jest.mock('../../services/bookingService');
 
 const fakeBooking = [
     {
