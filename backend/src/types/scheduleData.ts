@@ -1,6 +1,6 @@
 type scheduleData = {
-    endTime: string | null | undefined;
-    notification: object | undefined;
+    endTime?: string | null | undefined;
+    roomId?: string | undefined;
 };
 
 export default scheduleData;
