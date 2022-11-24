@@ -4,7 +4,15 @@ import * as calendar from '../googleAPI/calendarAPI';
 import * as responses from '../../utils/responses';
 import { OAuth2Client } from 'google-auth-library';
 import scheduleLib from 'node-schedule';
+import Subscription from '../../types/subscription';
+import ScheduleData from '../../types/scheduleData';
+import {
+    updateSubscription,
+    updateScheduleData,
+    getUserWithSubject
+} from '../userController';
 import _ from 'lodash';
+import scheduleDataArray from '../../types/scheduleDataArray';
 
 // PublicKey adn privateKey
 
@@ -17,20 +25,100 @@ const privateKey: string = '2sy8ts8Z7yXDnB2E5EZhwfx3Y7nXcJRnhgT12SgDVOA';
  * @returns
  */
 
-export const saveSubscription = () => {
+export const getSubscription = () => {
     const middleware = async (
         req: Request,
         res: Response,
         next: NextFunction
     ) => {
         try {
-            const userSubcription: object = req.body.subscription;
+            const userSubcription: Subscription = req.body.subscription;
 
             if (!userSubcription) {
                 return responses.badRequest(req, res);
             }
 
             res.locals.subscription = userSubcription;
+            res.locals.endpoint = userSubcription.endpoint;
+            res.locals.expirationTime = userSubcription.expirationTime;
+            res.locals.keys = userSubcription.keys;
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    };
+
+    return middleware;
+};
+
+/**
+ * Create the user subscription to the database
+ * @returns
+ */
+export const updateSubscriptionToDatabse = () => {
+    const middleware = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const sub = res.locals.sub;
+            const subscription: Subscription = {
+                endpoint: res.locals.endpoint,
+                expirationTime: res.locals.expirationTime,
+                keys: res.locals.keys
+            };
+
+            if (!sub) {
+                return responses.badRequest(req, res);
+            }
+
+            const user = await updateSubscription(sub, subscription);
+
+            if (!user) {
+                return responses.internalServerError(req, res);
+            } else {
+                res.locals.subscription = subscription;
+            }
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    };
+
+    return middleware;
+};
+
+/**
+ * Create the user subscription to the database
+ * @returns
+ */
+export const updateScheduleDataToDatabse = () => {
+    const middleware = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const sub = res.locals.sub;
+            const scheduleData: ScheduleData = {
+                endTime: res.locals.endTime,
+                roomId: res.locals.roomId
+            };
+
+            if (!sub) {
+                return responses.badRequest(req, res);
+            }
+
+            const user = await updateScheduleData(sub, scheduleData);
+
+            if (!user) {
+                return responses.internalServerError(req, res);
+            } else {
+                res.locals.scheduleData = scheduleData;
+            }
 
             next();
         } catch (err) {
@@ -45,7 +133,7 @@ export const saveSubscription = () => {
  * Schedule to push notification
  * @returns
  */
-export const pushNotification = () => {
+export const scheduleNotification = () => {
     const middleware = async (
         req: Request,
         res: Response,
