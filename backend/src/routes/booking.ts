@@ -20,6 +20,7 @@ router.post(
     makeBookingController.makeBooking(),
     makeBookingController.checkRoomAccepted(), // This middleware slows things down :(
     makeBookingController.removeDeclinedEvent(),
+    notifyBookingController.updateScheduleDataToDatabse(),
     simplifyEventData(),
     (req: Request, res: Response) => {
         res.status(201).json(res.locals.event);
@@ -87,4 +88,12 @@ router.patch(
 );
 
 // Get the user subscription
-router.post('/notification', notifyBookingController.saveSubscription());
+router.post(
+    '/notification',
+    notifyBookingController.getSubscription(),
+    notifyBookingController.updateSubscriptionToDatabse(),
+
+    (req: Request, res: Response) => {
+        res.status(200).json(res.locals.subscription);
+    }
+);
