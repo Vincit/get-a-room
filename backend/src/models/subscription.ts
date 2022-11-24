@@ -1,13 +1,13 @@
 import { Schema } from 'mongoose';
-import subcription from '../types/subscription';
+import subscription from '../types/subscription';
 import scheduleData from '../types/scheduleData';
 import { type } from 'os';
 
-export const subcriptionSchema = new Schema<subcription>(
+export const subscriptionSchema = new Schema<subscription>(
     {
-        endpoint: { required: true, type: String },
-        expirationTime: { required: true, type: String },
-        keys: { required: true, type: Object }
+        endpoint: { required: false, type: String },
+        expirationTime: { required: false, type: String },
+        keys: { required: false, type: Object }
     },
     { _id: false }
 );
