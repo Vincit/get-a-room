@@ -53,6 +53,6 @@ export function updateScheduleData(
 ): Promise<User | null> {
     return UserModel.findOneAndUpdate(
         { subject },
-        { $push: { scheduleData } }
+        { $push: { scheduleDataArray: scheduleData } }
     ).exec();
 }
