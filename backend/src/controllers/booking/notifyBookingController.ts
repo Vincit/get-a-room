@@ -3,9 +3,10 @@ import { DateTime } from 'luxon';
 import * as calendar from '../googleAPI/calendarAPI';
 import * as responses from '../../utils/responses';
 import { OAuth2Client } from 'google-auth-library';
-import scheduleLib from 'node-schedule';
+import schedule from 'node-schedule';
 import Subscription from '../../types/subscription';
 import ScheduleData from '../../types/scheduleData';
+import webpush from 'web-push';
 import {
     updateSubscription,
     updateScheduleData,
@@ -139,7 +140,19 @@ export const scheduleNotification = () => {
         res: Response,
         next: NextFunction
     ) => {
+        const minute: String = '00';
+        const hour: String = '15';
+        const scheduleTime = '*' + minute + hour + '***';
         try {
+            const job = schedule.scheduleJob(scheduleTime, () => {
+                const subscription = res.locals.subscription;
+                const payload = JSON.stringify({
+                    title: 'Meeting End Notification',
+                    body: 'Your current meeting is going to an end in 5 minutes!'
+                });
+                webpush.sendNotification(subscription, payload);
+            });
+
             next();
         } catch (err) {
             next(err);
