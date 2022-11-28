@@ -6,7 +6,7 @@ import {
     act,
     waitFor
 } from '@testing-library/react';
-import { updatePreferences } from '../services/preferencesService';
+import { updatePreferences } from '../../services/preferencesService';
 
 import PreferencesLoader from './PreferencesLoader';
 
@@ -18,14 +18,14 @@ jest.mock('react-router-dom', () => ({
     })
 }));
 
-jest.mock('../hooks/useCreateNotification', () => () => {
+jest.mock('../../hooks/useCreateNotification', () => () => {
     return {
         createSuccessNotification: jest.fn(),
         createErrorNotification: jest.fn()
     };
 });
 
-jest.mock('../services/preferencesService');
+jest.mock('../../services/preferencesService');
 
 const TEST_BUILDINGS = [
     { id: 'b1Id', name: 'b1Name', latitude: 61.4957056, longitude: 23.7993984 },

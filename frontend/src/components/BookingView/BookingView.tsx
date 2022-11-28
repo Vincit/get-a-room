@@ -2,21 +2,21 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Box, styled, IconButton } from '@mui/material';
 import Person from '@mui/icons-material/Person';
 
-import { getRooms } from '../services/roomService';
-import { deleteBooking, getBookings } from '../services/bookingService';
-import { Room, Booking, Preferences } from '../types';
-import CurrentBooking from './CurrentBooking';
-import AvailableRoomList from './AvailableRoomList';
-import CenteredProgress from './util/CenteredProgress';
+import { getRooms } from '../../services/roomService';
+import { deleteBooking, getBookings } from '../../services/bookingService';
+import { Room, Booking, Preferences } from '../../types';
+import CurrentBooking from '../CurrentBooking/CurrentBooking';
+import AvailableRoomList from '../AvailableRoomList/AvailableRoomList';
+import CenteredProgress from '../util/CenteredProgress';
 import DurationPicker from './DurationPicker';
 import FilteringDrawer from './FilteringDrawer';
 
 import { useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
-import UserDrawer from './UserDrawer';
-import BusyRoomList from './BusyRoomList';
-import useCreateNotification from '../hooks/useCreateNotification';
+import UserDrawer from '../UserDrawer/UserDrawer';
+import BusyRoomList from '../BusyRoomList/BusyRoomList';
+import useCreateNotification from '../../hooks/useCreateNotification';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;

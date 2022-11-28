@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { List, Typography, Box } from '@mui/material';
-import { makeBooking } from '../services/bookingService';
-import { Booking, BookingDetails, Room, Preferences } from '../types';
+import { makeBooking } from '../../services/bookingService';
+import { Booking, BookingDetails, Room, Preferences } from '../../types';
 import { DateTime, Duration } from 'luxon';
-import useCreateNotification from '../hooks/useCreateNotification';
-import RoomCard from './RoomCard';
-import NoRoomsCard from './NoRoomsCard';
-import BookingDrawer from './BookingDrawer';
+import useCreateNotification from '../../hooks/useCreateNotification';
+import RoomCard from '../RoomCard/RoomCard';
+import NoRoomsCard from '../RoomCard/NoRoomsCard';
+import BookingDrawer from '../BookingDrawer/BookingDrawer';
 
 const SKIP_CONFIRMATION = true;
 

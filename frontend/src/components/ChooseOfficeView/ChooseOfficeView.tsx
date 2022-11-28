@@ -1,11 +1,11 @@
-import BuildingList from './BuildingList';
+import BuildingList from '../BuildingList/BuildingList';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import useCreateNotification from '../hooks/useCreateNotification';
-import { updatePreferences } from '../services/preferencesService';
-import { Building, Preferences } from '../types';
-import CenteredProgress from './util/CenteredProgress';
-import { getBuildingsWithPosition } from '../services/buildingService';
+import useCreateNotification from '../../hooks/useCreateNotification';
+import { updatePreferences } from '../../services/preferencesService';
+import { Building, Preferences } from '../../types';
+import CenteredProgress from '../util/CenteredProgress';
+import { getBuildingsWithPosition } from '../../services/buildingService';
 
 type ChooseOfficeViewProps = {
     buildings: Building[];

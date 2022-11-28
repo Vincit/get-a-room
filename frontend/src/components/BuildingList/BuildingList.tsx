@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Building } from '../types';
+import { Building } from '../../types';
 import {
     Card,
     CardActionArea,

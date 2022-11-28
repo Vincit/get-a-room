@@ -4,9 +4,9 @@ import { AppBar, Box, IconButton, Toolbar } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 
-import { logout } from '../services/authService';
+import { logout } from '../../services/authService';
 import ProfileMenu from './ProfileMenu';
-import useCreateNotification from '../hooks/useCreateNotification';
+import useCreateNotification from '../../hooks/useCreateNotification';
 
 const NavBar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);

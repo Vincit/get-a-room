@@ -4,7 +4,7 @@ import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 import { DateTime } from 'luxon';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AvailableRoomList from './AvailableRoomList';
-import { makeBooking } from '../services/bookingService';
+import { makeBooking } from '../../services/bookingService';
 
 const fakeRooms = [
     {
@@ -57,14 +57,14 @@ const fakeRooms = [
     }
 ];
 
-jest.mock('../hooks/useCreateNotification', () => () => {
+jest.mock('../../hooks/useCreateNotification', () => () => {
     return {
         createSuccessNotification: jest.fn(),
         createErrorNotification: jest.fn()
     };
 });
 
-jest.mock('../services/bookingService');
+jest.mock('../../services/bookingService');
 
 const fakeBookings = [];
 

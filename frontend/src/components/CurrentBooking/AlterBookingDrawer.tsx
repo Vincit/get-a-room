@@ -4,8 +4,10 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { DateTime } from 'luxon';
 
-import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
-import { Booking, Room } from '../types';
+import SwipeableEdgeDrawer, {
+    DrawerContent
+} from '../BookingView/SwipeableEdgeDrawer';
+import { Booking, Room } from '../../types';
 import {
     AvailableText,
     DrawerButtonPrimary,
@@ -15,7 +17,7 @@ import {
     SmallText,
     Spacer,
     TimeTextBold
-} from './BookingDrawer';
+} from '../BookingDrawer/BookingDrawer';
 
 const MIN_DURATION = 15;
 const LAST_HOUR = 17;
