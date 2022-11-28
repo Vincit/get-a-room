@@ -4,6 +4,7 @@ import * as schema from '../../utils/googleSchema';
 import * as responses from '../../utils/responses';
 import { simplifySingleRoomData } from '../roomController';
 import { DateTime } from 'luxon';
+import { scheduleJob } from 'node-schedule';
 
 /**
  * Simplify the event data to defined type
@@ -42,7 +43,8 @@ export const simplifyEventData = () => {
                 id: event.id,
                 startTime: start,
                 endTime: end,
-                room: roomData
+                room: roomData,
+                scheduleJob: res.locals.scheduleData
             };
 
             // Check if any of the properties are undefined
@@ -50,7 +52,8 @@ export const simplifyEventData = () => {
                 !simpleEvent.id ||
                 !simpleEvent.startTime ||
                 !simpleEvent.endTime ||
-                !simpleEvent.room
+                !simpleEvent.room ||
+                !simpleEvent.scheduleJob
             ) {
                 return responses.internalServerError(req, res);
             }
