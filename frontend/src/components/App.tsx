@@ -3,12 +3,12 @@ import { Route, Router, Switch } from 'react-router-dom';
 import { history } from '../services/axiosConfigurer';
 import { theme } from '../theme';
 import { SnackbarProvider } from 'notistack';
-import MainView from './MainView';
+import MainView from './MainView/MainView';
 import LoginView from './login/LoginView';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { ReactComponent as MobileBackground } from './Background image.svg';
-import { ReactComponent as DesktopBackground } from './Background image desktop.svg';
+import { ReactComponent as MobileBackground } from './images/Background image.svg';
+import { ReactComponent as DesktopBackground } from './images/Background image desktop.svg';
 
 const App = () => {
     // Basic solution for differiating between desktop and mobile. Switch from desktop to mobile resolution requires a page refresh

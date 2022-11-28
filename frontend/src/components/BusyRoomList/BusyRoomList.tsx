@@ -1,8 +1,8 @@
 import React from 'react';
 import { List, Typography, Box } from '@mui/material';
 import { DateTime } from 'luxon';
-import RoomCard from './RoomCard';
-import { Booking, Preferences, Room } from '../types';
+import RoomCard from '../RoomCard/RoomCard';
+import { Booking, Preferences, Room } from '../../types';
 
 export function roomFreeIn(room: Room) {
     let end;
