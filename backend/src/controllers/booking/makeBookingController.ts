@@ -144,6 +144,7 @@ export const makeBooking = () => {
                 return responses.internalServerError(req, res);
             }
             res.locals.endTime = endTime;
+            res.locals.startTime = startTime;
             res.locals.event = response;
             res.locals.eventId = response.id;
 
