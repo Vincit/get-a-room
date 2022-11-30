@@ -6,7 +6,8 @@ import ScheduleData from '../types/scheduleData';
 
 type scheduleDataArray = [
     {
-        scheduleData: ScheduleData | undefined;
+        endTime?: string | null | undefined;
+        roomId?: string | undefined;
     }
 ];
 
