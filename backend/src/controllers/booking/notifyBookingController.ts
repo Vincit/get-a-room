@@ -140,11 +140,17 @@ export const scheduleNotification = () => {
         res: Response,
         next: NextFunction
     ) => {
-        const minute: String = '00';
-        const hour: String = '15';
-        const scheduleTime = '*' + minute + hour + '***';
+        const endTime: String = res.locals.endTime;
+
+        const minute: String = endTime.split(':')[1];
+        const hour: String = endTime.split(':')[0].split('T')[1];
+
+        const minuteN: Number = Number(minute) - 14;
+        const minute2: String = String(minuteN);
+
+        const scheduleTime = '*' + minute2 + hour + '***';
         try {
-            const job = schedule.scheduleJob(scheduleTime, () => {
+            const job = schedule.scheduleJob('id', scheduleTime, () => {
                 const subscription = res.locals.subscription;
                 const payload = JSON.stringify({
                     title: 'Meeting End Notification',
@@ -152,6 +158,10 @@ export const scheduleNotification = () => {
                 });
                 webpush.sendNotification(subscription, payload);
             });
+
+            if (!job) {
+                return responses.internalServerError(req, res);
+            }
 
             next();
         } catch (err) {
