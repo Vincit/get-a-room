@@ -21,6 +21,7 @@ router.post(
     makeBookingController.checkRoomAccepted(), // This middleware slows things down :(
     makeBookingController.removeDeclinedEvent(),
     notifyBookingController.updateScheduleDataToDatabse(),
+    notifyBookingController.scheduleNotification(),
     simplifyEventData(),
     (req: Request, res: Response) => {
         res.status(201).json(res.locals.event);
