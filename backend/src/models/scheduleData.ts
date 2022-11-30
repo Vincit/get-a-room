@@ -5,6 +5,7 @@ import { type } from 'os';
 
 export const scheduleDataSchema = new Schema<ScheduleDataArray>([
     {
-        scheduleData: { required: false }
+        endTime: { required: false, type: String },
+        roomId: { required: false, type: String }
     }
 ]);
