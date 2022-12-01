@@ -77,29 +77,23 @@ export const checkRoomIsFree = () => {
             const roomId: string = res.locals.roomId;
 
             const time: string = res.locals.startTime;
-            const hour: string = time.slice(0, 2);
-            const minute: string = time.slice(2, 4);
+            const hour: string = time.split(':')[0];
+            const minute: string = time.split(':')[1];
 
             const startTime = DateTime.fromObject({
                 hour: Number(hour),
                 minute: Number(minute),
                 second: 0
-            })
-                .toUTC()
-                .toISO();
-            const endTime = DateTime.fromObject({
-                hour: Number(hour),
-                minute: Number(minute)
-            })
+            }).toUTC();
+            const endTime = startTime
                 .plus({ minutes: res.locals.duration })
                 .toUTC();
-            console.log('The time now is:', startTime);
             const freeBusyResult = (
                 await calendar.freeBusyQuery(
                     client,
                     [{ id: roomId }],
-                    startTime,
-                    DateTime.now().endOf('day').toUTC().toISO()
+                    startTime.toISO(),
+                    endTime.toISO()
                 )
             )[roomId];
 
@@ -138,34 +132,24 @@ export const makeBooking = () => {
     ) => {
         try {
             const time: string = res.locals.startTime;
-            const hour: string = time.slice(0, 2);
-            const minute: string = time.slice(2, 4);
-            console.log('hour is:', hour);
-            console.log('minute is:', minute);
+            const hour: string = time.split(':')[0];
+            const minute: string = time.split(':')[1];
             const startTime = DateTime.fromObject({
                 hour: Number(hour),
                 minute: Number(minute),
                 second: 0
-            })
-                .toUTC()
-                .toISO();
-            console.log('stratTime is:', startTime);
-            const endTime = DateTime.fromObject({
-                hour: Number(hour),
-                minute: Number(minute)
-            })
+            }).toUTC();
+            const endTime = startTime
                 .plus({ minutes: res.locals.duration })
-                .toUTC()
-                .toISO();
-            console.log('endTime is:', endTime);
+                .toUTC();
             const client: OAuth2Client = res.locals.oAuthClient;
             const response = await calendar.createEvent(
                 client,
                 res.locals.roomId,
                 res.locals.email,
                 res.locals.title,
-                startTime,
-                endTime
+                startTime.toISO(),
+                endTime.toISO()
             );
 
             if (!response.id) {
