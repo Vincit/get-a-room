@@ -10,6 +10,10 @@ export const makeBooking = async (
     if (noConfirmation) {
         urlParams.append('noConfirmation', noConfirmation.toString());
     }
+    if (!bookingDetails.startTime) {
+        const startTime = DateTime.now();
+        bookingDetails.startTime = `${startTime.hour}:${startTime.minute}`;
+    }
     const response = await axios.post('booking', bookingDetails, {
         params: urlParams
     });
