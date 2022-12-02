@@ -1,3 +1,5 @@
+//import pushSubscriptionData from '../src/services/NotificationManager'
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker
@@ -44,7 +46,7 @@ function subscribingToPush() {
             return reg.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: urlBase64ToUint8Array(
-                    'BNPLRAuoDSM68hSIqKMxS6LAPyQSANXgnCf2dRvXvJU66ShNSWJd8CMe_X2AAVYiWt9wDIIjAG0jOlhIw_bLrHY'
+                    'BEvPpDPDB543o1VH8QsnHJC2BW2znZqip3KJ4kxtFR98zetTY4TSozQIWllDfV8bnyZoQP_XCfuYC1G0C5WUNgU'
                 )
             });
         })
@@ -54,30 +56,31 @@ function subscribingToPush() {
                 JSON.stringify(pushSubscription)
             );
             sendSubscriptionToBackEnd(pushSubscription);
+            //pushSubscriptionData(pushSubscription);
             return pushSubscription;
         });
 }
 
 function sendSubscriptionToBackEnd(subscriptionData) {
-    return fetch('/api/notifcation/', {
+    const subscription = {
+        subscription: subscriptionData
+    };
+
+    return fetch('/api/booking/notification/', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Cookie: 'TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDg2MDc0NTA3NDgwOTM2NTkyMTMiLCJuYW1lIjoic3VwZXIgYWRtaW4iLCJlbWFpbCI6InN1cGVyLmFkbWluQG9pc3BhaHVvbmUuY29tIiwiYWNjZXNzVG9rZW4iOiJ5YTI5LmEwQWE0eHJYUDJTbV92NG02eF9MaDhGUUU4cF9VQ0lqd1FfZ3NqV2N4VTNGZzcyVWNqU0lqdjdDbHBmSGVTWERYR1R6MHFWZGthZnFQbGJLVkNVV0NjTlVPMVdoTVpoY2ZucWQzYmVGcGp0RGpZSks4RVNYQUNZLWxCbVgwdEVZcXZuZnNhb09qcHBsVUYxaF9oaU1sRnJmcF9CSWttYUNnWUtBVEFTQVJBU0ZRRWpEdkw5aUxEY3BOZEFjRlNGa0RPZkl6SEwzZzAxNjMiLCJyZWZyZXNoVG9rZW4iOiIxLy8wY0JPb0lGVWtOUnBLQ2dZSUFSQUFHQXdTTndGLUw5SXJXOU8xQWJrNWdlR0tLWmw2cWJmM2NxN2dXUDJkN05IZDdIWFEtYzd6aXJiLW5BSXZPbGxHQ0V6aGE2ZlRvZlRqSmlvIiwiaWF0IjoxNjY1NTk5MDA4LCJleHAiOjE2OTcxMzUwMDgsImlzcyI6Im9pc3BhaHVvbmUuY29tIn0.XZsSUew82mt1XMJ-hDjeeTWqIUP-EM_L1dX5U1cZ5Gw'
         },
-        body: JSON.stringify(subscriptionData)
-    })
-        .then(function (response) {
-            if (!response.ok) {
-                throw new Error('Bad status code from server.');
-            }
+        body: JSON.stringify(subscription)
+    }).then(function (response) {
+        console.log(response);
+        if (!response) {
+            throw new Error('Bad status code from server.');
+        }
 
-            return response.json();
-        })
-        .then(function (responseData) {
-            if (!(responseData.data && responseData.data.success)) {
-                throw new Error('Bad response from server.');
-            }
-        });
+        return response.json();
+    });
 }
 
 function urlBase64ToUint8Array(base64String) {
