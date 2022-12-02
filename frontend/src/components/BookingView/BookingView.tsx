@@ -13,7 +13,9 @@ import FilteringDrawer from './FilteringDrawer';
 
 import { useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
+import SwipeableEdgeDrawer, {
+    DrawerContent
+} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import UserDrawer from '../UserDrawer/UserDrawer';
 import BusyRoomList from '../BusyRoomList/BusyRoomList';
 import useCreateNotification from '../../hooks/useCreateNotification';
