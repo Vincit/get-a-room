@@ -6,7 +6,8 @@
     "scripts": {
         "prepare": "husky install",
         "lint": "lint-staged",
-        "check-style": "prettier --check ."
+        "check-style": "prettier --check .",
+        "format": "prettier --write ."
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx,json,css,scss,md,html,yml}": [
