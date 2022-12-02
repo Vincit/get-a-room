@@ -158,6 +158,7 @@ export const simplifyBookings = (
             endTime: booking.end?.dateTime,
             organizerEmail: booking?.organizer?.email,
             resourceStatus: '',
+            meetingLink: booking?.htmlLink,
             room: {
                 id: '',
                 name: null,
