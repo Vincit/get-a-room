@@ -198,6 +198,8 @@ const BookingDrawer = (props: Props) => {
     const [nextHalfHour, setNextHalfHour] = useState('00:30');
     const [nextFullHour, setNextFullHour] = useState('01:00');
 
+    const currentTime = DateTime.now();
+
     const handleAdditionalTime = (minutes: number) => {
         onAddTime(minutes);
     };
