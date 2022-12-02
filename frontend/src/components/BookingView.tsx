@@ -60,12 +60,13 @@ type BookingViewProps = {
     preferences?: Preferences;
     setPreferences: (pref: Preferences) => void;
     open: boolean;
+    onClose: () => void;
     toggle: (open: boolean) => void;
     name: String | undefined;
 };
 
 function BookingView(props: BookingViewProps) {
-    const { preferences, open, toggle, name, setPreferences } = props;
+    const { preferences, onClose, open, toggle, name, setPreferences } = props;
 
     const [rooms, setRooms] = useState<Room[]>([]);
     const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms);
@@ -380,6 +381,7 @@ function BookingView(props: BookingViewProps) {
                     iconLeft={'Map'}
                     iconRight={'Close'}
                     isOpen={open}
+                    onClose={onClose}
                     toggle={toggle}
                     disableSwipeToOpen={true}
                 >
@@ -401,6 +403,7 @@ function BookingView(props: BookingViewProps) {
                 open={expandSettingsDrawer}
                 toggle={toggleDrawers}
                 name={name}
+                onClose={onClose}
                 expandedFeaturesAll={expandedFeaturesAll}
                 setExpandedFeaturesAll={setExpandedFeaturesAll}
             />
@@ -500,6 +503,7 @@ function BookingView(props: BookingViewProps) {
             ) : (
                 <AvailableRoomList
                     bookingDuration={bookingDuration}
+                    onClose={onClose}
                     rooms={displayRooms}
                     bookings={bookings}
                     setBookings={setBookings}
@@ -522,6 +526,7 @@ function BookingView(props: BookingViewProps) {
             <div id="filtering-container" onClick={openFiltering}>
                 <FilteringDrawer
                     open={expandFilteringDrawer}
+                    onClose={onClose}
                     toggle={toggleDrawn}
                     roomSize={roomSize}
                     setRoomSize={setRoomSize}

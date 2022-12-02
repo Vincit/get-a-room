@@ -79,6 +79,10 @@ const MainView = () => {
         setexpandBookingDrawer(newOpen);
     };
 
+    const onClose = () => {
+       
+    };
+
     return (
         <Box
             id="main-view"
@@ -105,6 +109,7 @@ const MainView = () => {
                             preferences={preferences}
                             setPreferences={setPreferences}
                             open={expandBookingDrawer}
+                            onClose={onClose}
                             toggle={toggleDrawn}
                             name={name}
                         />

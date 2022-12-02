@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { DateTime, Duration } from 'luxon';
+import { getTime} from '../../services/timeService';
 
 export const getTimeLeftMinutes = (endTime: string) => {
     let nextReservationTime = DateTime.fromISO(endTime).toUTC();
@@ -12,9 +13,12 @@ export const getTimeLeftMinutes = (endTime: string) => {
 
 export const getTimeLeft = (endTime: string) => {
     let nextReservationTime = DateTime.fromISO(endTime).toUTC();
+    console.log(nextReservationTime);
     let duration = Duration.fromObject(
-        nextReservationTime.diffNow(['hours', 'minutes']).toObject()
+        nextReservationTime.diff(DateTime.fromISO(getTime()).toUTC(),['hours', 'minutes']).toObject()
     );
+    console.log(DateTime.fromISO(getTime()).toUTC());
+    console.log(nextReservationTime.diff(DateTime.fromISO(getTime()).toUTC(), ['hours', 'minutes']).toObject());
     if (duration.hours === 0 && duration.minutes < 1) {
         return '< 1 min';
     }

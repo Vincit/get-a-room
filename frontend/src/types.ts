@@ -11,6 +11,7 @@ export interface Booking {
 }
 
 export interface BookingDetails {
+    startTime: string;
     duration: number;
     title: string;
     roomId: string;

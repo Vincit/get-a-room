@@ -7,6 +7,7 @@ import useCreateNotification from '../hooks/useCreateNotification';
 
 type userSettingsProps = {
     open: boolean;
+    onClose: () => void;
     toggle: (open: boolean) => void;
     name: String | undefined;
     expandedFeaturesAll: boolean;
@@ -14,7 +15,7 @@ type userSettingsProps = {
 };
 
 const UserDrawer = (props: userSettingsProps) => {
-    const { open, toggle, name, expandedFeaturesAll, setExpandedFeaturesAll } =
+    const { open, onClose, toggle, name, expandedFeaturesAll, setExpandedFeaturesAll } =
         props;
 
     const history = useHistory();
@@ -42,6 +43,7 @@ const UserDrawer = (props: userSettingsProps) => {
             headerTitle={name}
             iconLeft={'Person'}
             isOpen={open}
+            onClose={onClose}
             toggle={toggle}
             disableSwipeToOpen={true}
         >

@@ -51,6 +51,7 @@ const AvailableTextGreen = styled(AvailableText)(({ theme }) => ({
 interface Props {
     open: boolean;
     toggle: (open: boolean) => void;
+    onClose: () => void;
     endBooking: (booking: Booking) => void;
     duration: number;
     onAlterTime: (booking: Booking, minutes: number) => void;
@@ -61,6 +62,7 @@ interface Props {
 const AlterBookingDrawer = (props: Props) => {
     const {
         open,
+        onClose,
         toggle,
         endBooking,
         booking,
@@ -189,6 +191,7 @@ const AlterBookingDrawer = (props: Props) => {
             iconLeft={'AccessTime'}
             iconRight={'Close'}
             isOpen={open}
+            onClose={onClose}
             toggle={toggle}
             disableSwipeToOpen={true}
         >

@@ -86,6 +86,7 @@ interface Props {
     filterCount?: number;
     headerTitle: String | undefined;
     isOpen: boolean;
+    onClose: (close: boolean) => void;
     toggle: (open: boolean) => void;
     disableSwipeToOpen: boolean;
     mounted?: boolean;
@@ -98,6 +99,7 @@ const SwipeableEdgeDrawer = (props: Props) => {
         filterCount,
         iconLeft,
         isOpen,
+        onClose,
         toggle,
         disableSwipeToOpen,
         mounted

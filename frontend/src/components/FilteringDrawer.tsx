@@ -27,6 +27,7 @@ export const SmallText = styled(Typography)(() => ({
 
 interface Props {
     open: boolean;
+    onClose: () => void;
     toggle: (open: boolean) => void;
     roomSize: string[];
     setRoomSize: (size: string[]) => void;
@@ -47,6 +48,7 @@ interface Props {
 const FilteringDrawer = (props: Props) => {
     const {
         open,
+        onClose,
         toggle,
         roomSize,
         setRoomSize,
@@ -116,6 +118,7 @@ const FilteringDrawer = (props: Props) => {
             iconLeft={'FilterList'}
             iconRight={'Expand'}
             isOpen={open}
+            onClose={onClose}
             toggle={toggle}
             disableSwipeToOpen={false}
             mounted={true}

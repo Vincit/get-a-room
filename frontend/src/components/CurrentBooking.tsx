@@ -49,6 +49,10 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         setIsOpenDrawer(open);
     };
 
+    const onClose = () => {
+
+    };
+
     const handleCardClick = (room: Room, booking?: Booking) => {
         setSelectedBooking(booking);
         setSelectedId(room.id);
@@ -108,6 +112,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
             <div id="drawer-container">
                 <AlterBookingDrawer
                     open={isOpenDrawer}
+                    onClose={onClose}
                     toggle={toggleDrawer}
                     duration={getBookingTimeLeft(selectedBooking)}
                     onAlterTime={handleAddExtraTime}
