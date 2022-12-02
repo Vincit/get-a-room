@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
 
 import SwipeableEdgeDrawer, {
     DrawerContent
-} from '../BookingView/SwipeableEdgeDrawer';
+} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import { Room } from '../../types';
 import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
 
@@ -53,11 +53,25 @@ export function minutesToSimpleString(minutes: number) {
 /**
  *
  * @param minutes
+ * @param startingTime
  * @returns Example "(15.15 - 15.30)"
  */
-function getBookingRangeText(minutes: number) {
-    let startTime = DateTime.local();
-    let endTime = startTime.plus({ minutes: minutes });
+function getBookingRangeText(minutes: number, startingTime: string) {
+    if (startingTime !== 'Now') {
+        const h = Number(startingTime.split(':')[0]);
+        const m = Number(startingTime.split(':')[1]);
+        const dt = DateTime.local().set({ hour: h, minute: m });
+        const endTime = dt.plus({ minutes: minutes });
+        return (
+            '(' +
+            dt.toLocaleString(DateTime.TIME_24_SIMPLE) +
+            ' - ' +
+            endTime.toLocaleString(DateTime.TIME_24_SIMPLE) +
+            ')'
+        );
+    }
+    const startTime = DateTime.local();
+    const endTime = startTime.plus({ minutes: minutes });
     return (
         '(' +
         startTime.toLocaleString(DateTime.TIME_24_SIMPLE) +
@@ -156,6 +170,7 @@ interface Props {
     onAddTimeUntilNext: (minutes: number) => void;
     availableMinutes: number;
     room?: Room;
+    startingTime: string;
 }
 
 const BookingDrawer = (props: Props) => {
@@ -170,7 +185,8 @@ const BookingDrawer = (props: Props) => {
         onAddTimeUntilHalf,
         onAddTimeUntilFull,
         onAddTimeUntilNext,
-        availableMinutes
+        availableMinutes,
+        startingTime
     } = props;
 
     useEffect(() => {
@@ -181,6 +197,8 @@ const BookingDrawer = (props: Props) => {
     // Placeholder values
     const [nextHalfHour, setNextHalfHour] = useState('00:30');
     const [nextFullHour, setNextFullHour] = useState('01:00');
+
+    const currentTime = DateTime.now();
 
     const handleAdditionalTime = (minutes: number) => {
         onAddTime(minutes);
@@ -266,7 +284,10 @@ const BookingDrawer = (props: Props) => {
                             )}
                         </TimeTextBold>
                         <TimeText>
-                            {getBookingRangeText(duration + additionalDuration)}
+                            {getBookingRangeText(
+                                duration + additionalDuration,
+                                startingTime
+                            )}
                         </TimeText>
                     </RowCentered>
                     <RowCentered>
