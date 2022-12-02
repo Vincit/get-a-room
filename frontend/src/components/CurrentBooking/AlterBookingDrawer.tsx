@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
 
 import SwipeableEdgeDrawer, {
     DrawerContent
-} from '../BookingView/SwipeableEdgeDrawer';
+} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import { Booking, Room } from '../../types';
 import {
     AvailableText,
