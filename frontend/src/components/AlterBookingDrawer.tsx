@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Box, styled } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import ShareIcon from '@mui/icons-material/Share';
 import { DateTime } from 'luxon';
 
 import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
@@ -68,7 +69,7 @@ const AlterBookingDrawer = (props: Props) => {
         onAlterTime,
         availableMinutes
     } = props;
-
+  
     const handleAdditionalTime = (minutes: number) => {
         if (booking === undefined) {
             return;
@@ -181,6 +182,28 @@ const AlterBookingDrawer = (props: Props) => {
         endBooking(booking);
     };
 
+    //For share button
+    const title: string = "My Web Share Adventures";
+    const text: string = "Hello World! I shared this content via Web Share";
+    const url: string | undefined = booking?.meetingLink;
+
+    const handleOnClick = (shareDetails: any) => {
+        console.log(shareDetails);
+        if (navigator.share) {
+            navigator
+                .share(shareDetails)
+                .then(() => {
+                    console.log('Successfully shared');
+                })
+                .catch((error) => {
+                    console.error(
+                        'Something went wrong sharing the link',
+                        error
+                    );
+                });
+        }
+    };
+
     return (
         <SwipeableEdgeDrawer
             headerTitle={getName(
@@ -218,6 +241,19 @@ const AlterBookingDrawer = (props: Props) => {
                             available
                         </AvailableText>
                     </RowCentered>
+                    <Row>
+                        <DrawerButtonSecondary
+                            onClick={() => handleOnClick(
+                                {
+                                    url, 
+                                    title, 
+                                    text
+                                }
+                            )}
+                        >
+                            <ShareIcon /> <Spacer /> Share meeting
+                        </DrawerButtonSecondary>
+                    </Row>
 
                     <Row>
                         <SmallText>

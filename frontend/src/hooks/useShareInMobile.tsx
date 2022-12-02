@@ -1,5 +1,22 @@
 import React, { useEffect, useState } from 'react';
 
+export const handleOnClick = (shareDetails: any) => {
+    console.log(shareDetails);
+    if (navigator.share) {
+        navigator
+            .share(shareDetails)
+            .then(() => {
+                console.log('Successfully shared');
+            })
+            .catch((error) => {
+                console.error(
+                    'Something went wrong sharing the link',
+                    error
+                );
+            });
+    }
+};
+
 const useShareInMobile = ({
     label,
     text,
@@ -9,30 +26,14 @@ const useShareInMobile = ({
     label: string;
     text: string;
     title: string;
-    url: string;
+    url: string | undefined;
 }) => {
     const shareDetails = { url, title, text };
-
-    const handleOnClick = () => {
-        if (navigator.share) {
-            navigator
-                .share(shareDetails)
-                .then(() => {
-                    console.log('Successfully shared');
-                })
-                .catch((error) => {
-                    console.error(
-                        'Something went wrong sharing the link',
-                        error
-                    );
-                });
-        }
-    };
 
     return (
         <button
             className="share-icon"
-            onClick={handleOnClick}
+            onClick={() => handleOnClick(shareDetails)}
             style={{
                 backgroundColor: '#90EE90',
                 border: 'none',
