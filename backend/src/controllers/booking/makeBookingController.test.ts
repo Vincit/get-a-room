@@ -199,7 +199,7 @@ describe('makeBookingController', () => {
 
     describe('checkRoomIsFree', () => {
         beforeEach(() => {
-            startingTime = DateTime.now().toUTC();
+            startingTime = DateTime.now();
             mockRequest = {};
             mockResponse = {
                 locals: {
