@@ -57,7 +57,7 @@ export function minutesToSimpleString(minutes: number) {
  * @returns Example "(15.15 - 15.30)"
  */
 function getBookingRangeText(minutes: number, startingTime: string) {
-    if (startingTime !== 'Now') {
+    if (startingTime !== 'Now' && startingTime !== undefined) {
         const h = Number(startingTime.split(':')[0]);
         const m = Number(startingTime.split(':')[1]);
         const dt = DateTime.local().set({ hour: h, minute: m });
