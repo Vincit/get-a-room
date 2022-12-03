@@ -91,7 +91,6 @@ const AvailableRoomList = (props: BookingListProps) => {
         preferences,
         setPreferences
     } = props;
-    // console.log(rooms)
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
 
@@ -227,7 +226,9 @@ const AvailableRoomList = (props: BookingListProps) => {
                 />
                 <TimePickerDrawer
                     open={expandTimePickerDrawer}
-                    toggle={(newOpen) => setExpandTimePickerDrawer(newOpen)}
+                    toggle={(newOpen: any) =>
+                        setExpandTimePickerDrawer(newOpen)
+                    }
                     startingTime={startingTime}
                     setStartingTime={setStartingTime}
                     setExpandTimePickerDrawer={setExpandTimePickerDrawer}
