@@ -229,7 +229,7 @@ describe('makeBookingController', () => {
 
         test('Should return Conflict when there is event overlap', async () => {
             mockedFreeBusyQuery.mockResolvedValueOnce({
-                room: startingTime.toUTC().toISO()
+                room: startingTime.toISO()
             });
 
             await checkRoomIsFree()(
@@ -245,7 +245,7 @@ describe('makeBookingController', () => {
 
         test('Should call next when successful and room is free', async () => {
             mockedFreeBusyQuery.mockResolvedValueOnce({
-                room: startingTime.toUTC().plus({ minutes: 120 }).toISO()
+                room: startingTime.plus({ minutes: 60 }).toISO()
             });
 
             await checkRoomIsFree()(
