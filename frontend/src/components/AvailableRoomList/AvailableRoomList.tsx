@@ -47,19 +47,19 @@ function availableForMinutes(room: Room | undefined, startingTime: String) {
         return 0;
     }
 
-    let availableUntill = DateTime.fromISO(room.nextCalendarEvent).toUTC();
+    let availableUntil = DateTime.fromISO(room.nextCalendarEvent).toUTC();
     let duration;
 
     if (startingTime === 'Now') {
         duration = Duration.fromObject(
-            availableUntill.diffNow('minutes').toObject()
+            availableUntil.diffNow('minutes').toObject()
         );
     } else {
         const h = Number(startingTime.split(':')[0]);
         const m = Number(startingTime.split(':')[1]);
         const dt = DateTime.now().set({ hour: h, minute: m });
         duration = Duration.fromObject(
-            availableUntill.diff(dt, 'minutes').toObject()
+            availableUntil.diff(dt, 'minutes').toObject()
         );
     }
     return Math.ceil(duration.minutes);
@@ -111,7 +111,16 @@ const AvailableRoomList = (props: BookingListProps) => {
     };
 
     const handleUntilHalf = () => {
-        let halfTime = DateTime.now().toObject();
+        let halfTime =
+            startingTime === 'Now'
+                ? DateTime.now().toObject()
+                : DateTime.fromObject({
+                      hour: Number(startingTime.split(':')[0]),
+                      minute: Number(startingTime.split(':')[1]),
+                      second: 0
+                  })
+                      .plus({ minutes: bookingDuration })
+                      .toObject();
         if (halfTime.minute >= 30) {
             halfTime.hour = halfTime.hour + 1;
         }
@@ -119,24 +128,57 @@ const AvailableRoomList = (props: BookingListProps) => {
         halfTime.second = 0;
         halfTime.millisecond = 0;
         let bookUntil = DateTime.fromObject(halfTime);
-        let durationToBookUntil = Duration.fromObject(
-            bookUntil.diffNow(['minutes']).toObject()
-        );
+        let durationToBookUntil =
+            startingTime === 'Now'
+                ? Duration.fromObject(bookUntil.diffNow(['minutes']).toObject())
+                : Duration.fromObject(
+                      bookUntil
+                          .diff(
+                              DateTime.fromObject({
+                                  hour: Number(startingTime.split(':')[0]),
+                                  minute: Number(startingTime.split(':')[1]),
+                                  second: 0
+                              }),
+                              ['minutes']
+                          )
+                          .toObject()
+                  );
         setAdditionalDuration(
             Math.ceil(durationToBookUntil.minutes) - bookingDuration
         );
     };
 
     const handleUntilFull = () => {
-        let fullTime = DateTime.now().toObject();
+        let fullTime =
+            startingTime === 'Now'
+                ? DateTime.now().toObject()
+                : DateTime.fromObject({
+                      hour: Number(startingTime.split(':')[0]),
+                      minute: Number(startingTime.split(':')[1]),
+                      second: 0
+                  })
+                      .plus({ minutes: bookingDuration })
+                      .toObject();
         fullTime.hour = fullTime.hour + 1;
         fullTime.minute = 0;
         fullTime.second = 0;
         fullTime.millisecond = 0;
         let bookUntil = DateTime.fromObject(fullTime);
-        let durationToBookUntil = Duration.fromObject(
-            bookUntil.diffNow(['minutes']).toObject()
-        );
+        let durationToBookUntil =
+            startingTime === 'Now'
+                ? Duration.fromObject(bookUntil.diffNow(['minutes']).toObject())
+                : Duration.fromObject(
+                      bookUntil
+                          .diff(
+                              DateTime.fromObject({
+                                  hour: Number(startingTime.split(':')[0]),
+                                  minute: Number(startingTime.split(':')[1]),
+                                  second: 0
+                              }),
+                              ['minutes']
+                          )
+                          .toObject()
+                  );
         setAdditionalDuration(
             Math.ceil(durationToBookUntil.minutes) - bookingDuration
         );

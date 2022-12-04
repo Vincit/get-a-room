@@ -99,7 +99,7 @@ describe('currentBookingsController', () => {
             );
 
             const currentBookings = mockResponse?.locals?.currentBookings;
-            expect(currentBookings.length).toBe(1);
+            expect(currentBookings.length).toBe(2);
             expect(currentBookings[0].id).toBe('3pt0pdqmgp0c4qa8a7o4ie0an4');
             expect(currentBookings[0].room.id).toBe(
                 'c_188dlqruaau34j82gd69abdo87gs6@resource.calendar.google.com'
