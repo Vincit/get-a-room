@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, List, Typography } from '@mui/material';
+import { Box, duration, List, Typography } from '@mui/material';
+import { DateTime, Duration } from 'luxon';
 import { Booking, AddTimeDetails, Room, Preferences } from '../../types';
 import { updateBooking, endBooking } from '../../services/bookingService';
 import useCreateNotification from '../../hooks/useCreateNotification';
@@ -14,6 +15,35 @@ const NO_CONFIRMATION = true;
 
 function areBookingsFetched(bookings: Booking[]) {
     return Array.isArray(bookings) && bookings.length > 0;
+}
+
+function checkBookingStarted(selectedBooking: Booking | undefined) {
+    if (selectedBooking === undefined) {
+        return null;
+    }
+    const startingTime = DateTime.fromISO(selectedBooking.startTime).toUTC();
+    const dt = DateTime.now();
+
+    const timeDiff = Duration.fromObject(
+        startingTime.diff(dt, 'minutes').toObject()
+    );
+    return Math.ceil(timeDiff.minutes) < 0;
+}
+
+function timeLeft(selectedBooking: Booking | undefined) {
+    if (selectedBooking === undefined) {
+        return 0;
+    }
+    const startingTime = DateTime.fromISO(selectedBooking.startTime).toUTC();
+    const endingTime = DateTime.fromISO(selectedBooking.endTime).toUTC();
+
+    const duration = Duration.fromObject(
+        endingTime.diff(startingTime, 'minutes').toObject()
+    );
+
+    return checkBookingStarted(selectedBooking)
+        ? getBookingTimeLeft(selectedBooking)
+        : Math.ceil(duration.minutes);
 }
 
 type CurrentBookingProps = {
@@ -57,7 +87,6 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         setSelectedId(room.id);
         toggleDrawer(true);
     };
-
     // Add extra time for the reserved room
     const handleAddExtraTime = (booking: Booking, minutes: number) => {
         let addTimeDetails: AddTimeDetails = {
@@ -112,11 +141,12 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 <AlterBookingDrawer
                     open={isOpenDrawer}
                     toggle={toggleDrawer}
-                    duration={getBookingTimeLeft(selectedBooking)}
+                    duration={timeLeft(selectedBooking)}
                     onAlterTime={handleAddExtraTime}
                     availableMinutes={getTimeAvailableMinutes(selectedBooking)}
                     booking={selectedBooking}
                     endBooking={handleEndBooking}
+                    bookingStared={checkBookingStarted(selectedBooking)}
                 />
             </div>
 

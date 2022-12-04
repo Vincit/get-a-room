@@ -46,6 +46,11 @@ const TimeTextBoldGreen = styled(TimeTextBold)(({ theme }) => ({
     color: theme.palette.success.main
 }));
 
+const PreBookBoldRed = styled(TimeTextBold)(({ theme }) => ({
+    color: theme.palette.error.main,
+    fontSize: '16px'
+}));
+
 const AvailableTextGreen = styled(AvailableText)(({ theme }) => ({
     color: theme.palette.success.main
 }));
@@ -58,6 +63,7 @@ interface Props {
     onAlterTime: (booking: Booking, minutes: number) => void;
     availableMinutes: number;
     booking?: Booking;
+    bookingStared?: boolean | null;
 }
 
 const AlterBookingDrawer = (props: Props) => {
@@ -68,7 +74,8 @@ const AlterBookingDrawer = (props: Props) => {
         booking,
         duration,
         onAlterTime,
-        availableMinutes
+        availableMinutes,
+        bookingStared
     } = props;
 
     const handleAdditionalTime = (minutes: number) => {
@@ -203,6 +210,13 @@ const AlterBookingDrawer = (props: Props) => {
                 }}
             >
                 <DrawerContent>
+                    {!bookingStared && (
+                        <RowCentered>
+                            <PreBookBoldRed>
+                                You have pre-booked the room
+                            </PreBookBoldRed>
+                        </RowCentered>
+                    )}
                     <RowCentered>
                         <TimeTextBoldGreen>
                             {duration} min remaning
