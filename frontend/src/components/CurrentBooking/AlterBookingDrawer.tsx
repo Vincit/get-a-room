@@ -87,8 +87,20 @@ const AlterBookingDrawer = (props: Props) => {
         onAlterTime(booking, minutes);
     };
 
+    const checkStartingTime = () => {
+        if (booking) {
+            const start = DateTime.fromISO(booking.startTime);
+            if (start > DateTime.now()) {
+                return start;
+            } else {
+                return DateTime.now();
+            }
+        }
+        return DateTime.now();
+    };
+
     const handleNextHalfHour = () => {
-        const timeNow = DateTime.now();
+        const timeNow = checkStartingTime();
         const minutes = Math.floor(
             nextHalfHour().diff(timeNow, 'minute').minutes
         );
@@ -96,7 +108,7 @@ const AlterBookingDrawer = (props: Props) => {
     };
 
     const nextHalfHour = () => {
-        const newEndTime = DateTime.now().toObject();
+        const newEndTime = checkStartingTime().toObject();
         if (newEndTime.minute >= 30) {
             newEndTime.hour = newEndTime.hour + 1;
         }
@@ -108,7 +120,7 @@ const AlterBookingDrawer = (props: Props) => {
     };
 
     const nextFullHour = () => {
-        const newEndTime = DateTime.now().toObject();
+        const newEndTime = checkStartingTime().toObject();
         newEndTime.hour = newEndTime.hour + 1;
         newEndTime.minute = 0;
         newEndTime.second = 0;
@@ -121,7 +133,7 @@ const AlterBookingDrawer = (props: Props) => {
         if (booking === undefined) {
             return true;
         }
-        const timeNow = DateTime.now();
+        const timeNow = checkStartingTime();
         const endTime = DateTime.fromISO(booking.endTime);
         const nextHalf = nextHalfHour();
         if (nextHalf <= endTime) {
@@ -133,7 +145,7 @@ const AlterBookingDrawer = (props: Props) => {
     };
 
     const handleNextFullHour = () => {
-        const timeNow = DateTime.now();
+        const timeNow = checkStartingTime();
         const minutes = Math.floor(
             nextFullHour().diff(timeNow, 'minute').minutes
         );
@@ -144,7 +156,7 @@ const AlterBookingDrawer = (props: Props) => {
         if (booking === undefined) {
             return true;
         }
-        const timeNow = DateTime.now();
+        const timeNow = checkStartingTime();
         const endTime = DateTime.fromISO(booking.room.nextCalendarEvent);
         const nextFull = nextFullHour();
         if (nextFull <= endTime) {
@@ -164,8 +176,8 @@ const AlterBookingDrawer = (props: Props) => {
         return availableMinutes < 15;
     };
 
-    const handleUntillNextMeeting = () => {
-        const timeNow = DateTime.now();
+    const handleUntilNextMeeting = () => {
+        const timeNow = checkStartingTime();
         if (booking === undefined) {
             return;
         }
@@ -173,7 +185,9 @@ const AlterBookingDrawer = (props: Props) => {
             handleAdditionalTime(availableMinutes - 1);
         } else {
             const time1700 = DateTime.fromObject({ hour: LAST_HOUR });
-            const endTime = DateTime.now().plus({ minutes: availableMinutes });
+            const endTime = checkStartingTime().plus({
+                minutes: availableMinutes
+            });
             if (endTime < time1700) {
                 return handleAdditionalTime(availableMinutes);
             }
@@ -196,7 +210,6 @@ const AlterBookingDrawer = (props: Props) => {
         if (booking === undefined) {
             return;
         }
-        console.log('cancelled');
         cancelBooking(booking);
     };
 
@@ -234,7 +247,7 @@ const AlterBookingDrawer = (props: Props) => {
                     </RowCentered>
                     <RowCentered>
                         <AvailableTextGreen>
-                            Room booked for you untill{' '}
+                            Room booked for you until{' '}
                             {getSimpleEndTime(booking)}
                         </AvailableTextGreen>
                     </RowCentered>
@@ -292,10 +305,10 @@ const AlterBookingDrawer = (props: Props) => {
                     </Row>
                     <Row>
                         <DrawerButtonSecondary
-                            aria-label="untill next meeting"
-                            onClick={handleUntillNextMeeting}
+                            aria-label="until next meeting"
+                            onClick={handleUntilNextMeeting}
                         >
-                            Untill next meeting
+                            Until next meeting
                         </DrawerButtonSecondary>
                     </Row>
                     {booking &&

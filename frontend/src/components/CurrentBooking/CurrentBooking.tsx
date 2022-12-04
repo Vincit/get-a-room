@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, duration, List, Typography } from '@mui/material';
+import { Box, List, Typography } from '@mui/material';
 import { DateTime, Duration } from 'luxon';
 import { Booking, AddTimeDetails, Room, Preferences } from '../../types';
 import {
