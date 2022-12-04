@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { Box, duration, List, Typography } from '@mui/material';
 import { DateTime, Duration } from 'luxon';
 import { Booking, AddTimeDetails, Room, Preferences } from '../../types';
-import { updateBooking, endBooking } from '../../services/bookingService';
+import {
+    updateBooking,
+    endBooking,
+    deleteBooking
+} from '../../services/bookingService';
 import useCreateNotification from '../../hooks/useCreateNotification';
 import RoomCard from '../RoomCard/RoomCard';
 import AlterBookingDrawer from './AlterBookingDrawer';
@@ -131,6 +135,24 @@ const CurrentBooking = (props: CurrentBookingProps) => {
             });
     };
 
+    const handleCancelBooking = (booking: Booking) => {
+        setBookingProcessing(booking.room.id);
+        toggleDrawer(false);
+
+        deleteBooking(booking.id)
+            .then(() => {
+                setBookingProcessing('false');
+                updateBookings();
+                updateRooms();
+                createSuccessNotification('Booking cancelled');
+                window.scrollTo(0, 0);
+            })
+            .catch(() => {
+                setBookingProcessing('false');
+                createErrorNotification('Could not cancel booking');
+            });
+    };
+
     if (!areBookingsFetched(bookings)) {
         return null;
     }
@@ -146,6 +168,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                     availableMinutes={getTimeAvailableMinutes(selectedBooking)}
                     booking={selectedBooking}
                     endBooking={handleEndBooking}
+                    cancelBooking={handleCancelBooking}
                     bookingStared={checkBookingStarted(selectedBooking)}
                 />
             </div>
