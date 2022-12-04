@@ -237,7 +237,16 @@ const BookingDrawer = (props: Props) => {
     };
 
     const updateHalfHour = () => {
-        let halfHour = DateTime.now().toObject();
+        const halfHour =
+            startingTime === 'Now'
+                ? DateTime.now().toObject()
+                : DateTime.fromObject({
+                      hour: Number(startingTime.split(':')[0]),
+                      minute: Number(startingTime.split(':')[1]),
+                      second: 0
+                  })
+                      .plus({ minutes: duration })
+                      .toObject();
         if (halfHour.minute >= 30) {
             halfHour.hour = halfHour.hour + 1;
         }
@@ -249,7 +258,16 @@ const BookingDrawer = (props: Props) => {
     };
 
     const updateFullHour = () => {
-        let fullHour = DateTime.now().toObject();
+        let fullHour =
+            startingTime === 'Now'
+                ? DateTime.now().toObject()
+                : DateTime.fromObject({
+                      hour: Number(startingTime.split(':')[0]),
+                      minute: Number(startingTime.split(':')[1]),
+                      second: 0
+                  })
+                      .plus({ minutes: duration })
+                      .toObject();
         fullHour.minute = 0;
         fullHour.hour = fullHour.hour + 1;
         let fullHourString =
