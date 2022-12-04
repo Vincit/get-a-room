@@ -65,11 +65,10 @@ const StartTimePicker = (props: StartTimePickerProps) => {
                 <RowCentered>
                     <DrawerButtonPrimary
                     onClick={() => {
-                        if (DateTime.now().minute < 10 && DateTime.now().hour > 10) setTime(DateTime.now().hour + ":0" + DateTime.now().minute);
-                        if (DateTime.now().minute > 10 && DateTime.now().hour < 10) setTime("0" + DateTime.now().hour + ":" + DateTime.now().minute);
-                        if (DateTime.now().minute < 10 && DateTime.now().hour < 10) setTime("0" + DateTime.now().hour + ":0" + DateTime.now().minute);
+                        if (DateTime.now().minute < 10 && DateTime.now().hour >= 10) setTime(DateTime.now().hour + ":0" + DateTime.now().minute);
+                        else if (DateTime.now().minute >= 10 && DateTime.now().hour < 10) setTime("0" + DateTime.now().hour + ":" + DateTime.now().minute);
+                        else if (DateTime.now().minute < 10 && DateTime.now().hour < 10) setTime("0" + DateTime.now().hour + ":0" + DateTime.now().minute);
                         else setTime(DateTime.now().hour + ":" + DateTime.now().minute);
-                        setTime(DateTime.now().hour + ":" + DateTime.now().minute);
                         toggle(false);
                         onClose(false);
                     }}>Set to Now</DrawerButtonPrimary>
