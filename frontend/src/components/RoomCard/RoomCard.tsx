@@ -19,7 +19,7 @@ import {
     styled,
     IconButton
 } from '@mui/material';
-import { getTimeLeftMinutes } from '../util/TimeLeft';
+import { getTimeLeftMinutes, getTimeDiff, getTimeLeft } from '../util/TimeLeft';
 import { minutesToSimpleString } from '../BookingDrawer/BookingDrawer';
 import { DateTime } from 'luxon';
 import { roomFreeIn } from '../BusyRoomList/BusyRoomList';
@@ -226,6 +226,60 @@ const RoomCard = (props: RoomCardProps) => {
         return defaultVars;
     };
 
+    const bookingTime = () => {
+        if (isReserved) {
+            if (booking?.resourceStatus === 'accepted') {
+                if (DateTime.fromISO(booking.startTime) <= DateTime.now()) {
+                    return (
+                        <StartBox>
+                            <CheckCircleIcon color="success" fontSize="small" />
+                            <Typography
+                                variant="subtitle1"
+                                color="success.main"
+                                margin={'0 0 0 5px'}
+                            >
+                                Booked to you for {getBookingTimeLeft(booking)}{' '}
+                                minutes.
+                            </Typography>
+                        </StartBox>
+                    );
+                } else {
+                    return (
+                        <StartBox>
+                            <CheckCircleIcon color="success" fontSize="small" />
+                            <Typography
+                                variant="subtitle1"
+                                color="success.main"
+                                margin={'0 0 0 5px'}
+                            >
+                                Booked to you for{' '}
+                                {getTimeDiff(
+                                    booking.startTime,
+                                    booking.endTime
+                                )}{' '}
+                                minutes.
+                            </Typography>
+                        </StartBox>
+                    );
+                }
+            } else {
+                return (
+                    <StartBox>
+                        <PendingIcon color="warning" fontSize="small" />
+                        <Typography
+                            variant="subtitle1"
+                            color="warning.main"
+                            margin={'0 0 0 5px'}
+                        >
+                            Waiting Google calendar confirmation.
+                        </Typography>
+                    </StartBox>
+                );
+            }
+        }
+        return null;
+    };
+
     return (
         <CustomCard data-testid="AvailableRoomListCard" style={cardStyle()}>
             <CardActionArea
@@ -253,43 +307,20 @@ const RoomCard = (props: RoomCardProps) => {
                         </EndBox>
                     </Row>
 
-                    {isReserved ? (
-                        booking?.resourceStatus === 'accepted' ? (
-                            <StartBox>
-                                <CheckCircleIcon
-                                    color="success"
-                                    fontSize="small"
-                                />
-                                <Typography
-                                    variant="subtitle1"
-                                    color="success.main"
-                                    margin={'0 0 0 5px'}
-                                >
-                                    Booked to you for{' '}
-                                    {getBookingTimeLeft(booking)} minutes.
-                                </Typography>
-                            </StartBox>
-                        ) : (
-                            <StartBox>
-                                <PendingIcon color="warning" fontSize="small" />
-                                <Typography
-                                    variant="subtitle1"
-                                    color="warning.main"
-                                    margin={'0 0 0 5px'}
-                                >
-                                    Waiting Google calendar confirmation.
-                                </Typography>
-                            </StartBox>
-                        )
-                    ) : null}
+                    {bookingTime()}
 
                     <Row>
                         {isReserved ? (
                             <Typography>
-                                Available for another{' '}
-                                {minutesToSimpleString(
-                                    getTimeAvailableMinutes(booking)
-                                )}
+                                {booking?.resourceStatus === 'accepted' &&
+                                DateTime.fromISO(booking.startTime) >
+                                    DateTime.now()
+                                    ? `Your booking starts in ${getTimeLeft(
+                                          booking.startTime
+                                      )}`
+                                    : `Available for another ${minutesToSimpleString(
+                                          getTimeAvailableMinutes(booking)
+                                      )}`}
                             </Typography>
                         ) : isBusy ? (
                             <Typography
