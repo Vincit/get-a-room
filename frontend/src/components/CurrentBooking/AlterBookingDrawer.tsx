@@ -59,6 +59,7 @@ interface Props {
     open: boolean;
     toggle: (open: boolean) => void;
     endBooking: (booking: Booking) => void;
+    cancelBooking: (booking: Booking) => void;
     duration: number;
     onAlterTime: (booking: Booking, minutes: number) => void;
     availableMinutes: number;
@@ -71,6 +72,7 @@ const AlterBookingDrawer = (props: Props) => {
         open,
         toggle,
         endBooking,
+        cancelBooking,
         booking,
         duration,
         onAlterTime,
@@ -190,6 +192,14 @@ const AlterBookingDrawer = (props: Props) => {
         endBooking(booking);
     };
 
+    const handleCancelBooking = () => {
+        if (booking === undefined) {
+            return;
+        }
+        console.log('cancelled');
+        cancelBooking(booking);
+    };
+
     return (
         <SwipeableEdgeDrawer
             headerTitle={getName(
@@ -288,15 +298,28 @@ const AlterBookingDrawer = (props: Props) => {
                             Untill next meeting
                         </DrawerButtonSecondary>
                     </Row>
-                    <Row>
-                        <DrawerButtonPrimary
-                            aria-label="End booking"
-                            data-testid="EndBookingButton"
-                            onClick={handleEndBooking}
-                        >
-                            End Booking
-                        </DrawerButtonPrimary>
-                    </Row>
+                    {booking &&
+                    DateTime.fromISO(booking.startTime) <= DateTime.now() ? (
+                        <Row>
+                            <DrawerButtonPrimary
+                                aria-label="End booking"
+                                data-testid="EndBookingButton"
+                                onClick={handleEndBooking}
+                            >
+                                End Booking
+                            </DrawerButtonPrimary>
+                        </Row>
+                    ) : (
+                        <Row>
+                            <DrawerButtonPrimary
+                                aria-label="Cancel booking"
+                                data-testid="CancelBookingButton"
+                                onClick={handleCancelBooking}
+                            >
+                                Cancel Booking
+                            </DrawerButtonPrimary>
+                        </Row>
+                    )}
                 </DrawerContent>
             </Box>
         </SwipeableEdgeDrawer>
