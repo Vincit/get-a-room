@@ -71,6 +71,8 @@ router.patch(
     updateBookingController.addTimeToBooking(),
     makeBookingController.checkRoomAccepted(),
     updateBookingController.rollBackDeclinedUpdate(),
+    //Cancle old schedule job
+    //Arrange a new one
     simplifyEventData(),
     (req: Request, res: Response) => {
         res.status(200).json(res.locals.event);
@@ -82,7 +84,7 @@ router.patch(
     '/:bookingId/endNow',
     getBooking(),
     updateBookingController.endBookingNow(),
-
+    //Cancle a schedule job
     (req: Request, res: Response) => {
         res.status(200).json(res.locals.event);
     }

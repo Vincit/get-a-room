@@ -10,8 +10,7 @@ import webpush from 'web-push';
 import {
     updateSubscription,
     updateScheduleData,
-    getUserWithSubject,
-    getScheduleDataArrayId
+    getUserWithSubject
 } from '../userController';
 import _ from 'lodash';
 import scheduleDataArray from '../../types/scheduleDataArray';
@@ -147,6 +146,8 @@ export const scheduleNotification = () => {
         try {
             const endTime: String = res.locals.endTime;
 
+            // Time setting problem
+            // Check the hours
             const minute: String = endTime.split(':')[1];
             const hour: String = endTime.split(':')[0].split('T')[1];
 
@@ -156,8 +157,12 @@ export const scheduleNotification = () => {
             const scheduleTime = '*' + minute2 + hour + '***';
 
             const sub = res.locals.sub;
-            const scheduleData: ScheduleData = res.locals.scheduleData;
+            const user = await getUserWithSubject(sub);
+            if (!user) {
+                return responses.internalServerError(req, res);
+            }
 
+            const scheduleData: ScheduleData = res.locals.scheduleData;
             const options = {
                 vapidDetails: {
                     subject: 'mailto:test@test.com',
@@ -167,24 +172,46 @@ export const scheduleNotification = () => {
                 TTL: 60
             };
 
+            const requestedRoomId = scheduleData.roomId;
+            const requestedEndTime = scheduleData.endTime;
+
             if (!sub) {
                 return responses.badRequest(req, res);
             }
-            const user = await getScheduleDataArrayId(sub, scheduleData);
-            //const uniqueId:string = user?.scheduleDataArray?;
 
-            const job = schedule.scheduleJob('uniqueId', scheduleTime, () => {
-                const subscription = res.locals.subscription;
-                const payload = JSON.stringify({
-                    title: 'Meeting End Notification',
-                    body: 'Your current meeting is going to an end in 5 minutes!'
-                });
-                webpush.sendNotification(subscription, payload, options);
-            });
+            const uniqueId = user.scheduleDataArray?.find(
+                (data) =>
+                    data.roomId === requestedRoomId &&
+                    data.endTime === requestedEndTime
+            )?._id;
 
-            if (!job) {
+            if (!uniqueId) {
                 return responses.internalServerError(req, res);
             }
+
+            const subscription: any = user?.subscription;
+            if (!subscription) {
+                return responses.internalServerError(req, res);
+            }
+
+            const subscriptionToPush = {
+                endpoint: subscription.endpoint,
+                expirationTime: subscription.expirationTime,
+                keys: subscription.keys
+            };
+
+            const payload = JSON.stringify({
+                title: 'Meeting End Notification',
+                body: 'Your current meeting is going to an end in 5 minutes!'
+            });
+
+            const job = schedule.scheduleJob(uniqueId, scheduleTime, () => {
+                webpush.sendNotification(subscriptionToPush, payload, options);
+            });
+
+            /* if (!job) {
+                return responses.internalServerError(req, res);
+            } */
 
             next();
         } catch (err) {
@@ -213,9 +240,22 @@ export const cancelSceduleJob = () => {
                 return responses.badRequest(req, res);
             }
 
-            const user = await getScheduleDataArrayId(sub, scheduleData);
-            //const uniqueId:string = user?.scheduleDataArray;
+            const user = await getUserWithSubject(sub);
+            if (!user) {
+                return responses.internalServerError(req, res);
+            }
 
+            const requestedRoomId = scheduleData.roomId;
+            const requestedEndTime = scheduleData.endTime;
+
+            const uniqueId = user.scheduleDataArray?.find(
+                (data) =>
+                    data.roomId === requestedRoomId &&
+                    data.endTime === requestedEndTime
+            )?._id;
+            if (!uniqueId) {
+                return responses.internalServerError(req, res);
+            }
             const scheduleJob = schedule.scheduledJobs['_id'];
             scheduleJob.cancel();
 
