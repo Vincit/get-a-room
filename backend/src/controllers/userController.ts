@@ -56,13 +56,3 @@ export function updateScheduleData(
         { $push: { scheduleDataArray: scheduleData } }
     ).exec();
 }
-
-export function getScheduleDataArrayId(
-    subject: string,
-    scheduleData: ScheduleData
-): Promise<User | null> {
-    return UserModel.findOne([
-        { subject },
-        { scheduleDataArray: scheduleData }
-    ]).exec();
-}
