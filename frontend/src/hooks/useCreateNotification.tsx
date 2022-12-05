@@ -39,22 +39,14 @@ const useCreateNotification = () => {
     const createSuccessNotification = useCallback(
         (message: string) => {
             enqueueSnackbar(
-                <div>
-                    Booking was succesful!
-                    <Share
-                        label="Share"
-                        title="My Web Share Adventures"
-                        text="Hello World! I shared this content via Web Share"
-                        url={message.split(' ').reverse()[0]}
-                    />
-                </div>,
+                <div>Booking was succesful!</div>,
 
                 {
                     variant: 'success',
                     action: closeAction,
                     persist: true,
                     style: { whiteSpace: 'pre-line' },
-                    preventDuplicate: true
+                    preventDuplicate: false
                 }
             );
         },

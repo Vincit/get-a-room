@@ -9,10 +9,7 @@ export const handleOnClick = (shareDetails: any) => {
                 console.log('Successfully shared');
             })
             .catch((error) => {
-                console.error(
-                    'Something went wrong sharing the link',
-                    error
-                );
+                console.error('Something went wrong sharing the link', error);
             });
     }
 };

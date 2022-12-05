@@ -281,13 +281,13 @@ const AlterBookingDrawer = (props: Props) => {
                     </RowCentered>
                     <Row>
                         <DrawerButtonSecondary
-                            onClick={() => handleOnClick(
-                                {
-                                    url, 
-                                    title, 
+                            onClick={() =>
+                                handleOnClick({
+                                    url,
+                                    title,
                                     text
-                                }
-                            )}
+                                })
+                            }
                         >
                             <ShareIcon /> <Spacer /> Share meeting
                         </DrawerButtonSecondary>
