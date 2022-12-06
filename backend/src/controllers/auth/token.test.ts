@@ -22,11 +22,7 @@ describe('token', () => {
         email: 'test@email.com'
     };
     const testToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0U3ViIiwi' +
-        'bmFtZSI6InRlc3ROYW1lIiwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsImFjY' +
-        '2Vzc1Rva2VuIjoidG9rZW4iLCJyZWZyZXNoVG9rZW4iOiJydG9rZW4iLCJpYX' +
-        'QiOjE2Mzg0NjUyODAsImV4cCI6MTY3MDAwMTI4MCwiaXNzIjoidGVzdERvbWF' +
-        'pbi5jb20ifQ.7VfY3M_PmKOBge8NFOtwrRgNsmu91Bx4ewvw5fThfco';
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0U3ViIiwibmFtZSI6InRlc3ROYW1lIiwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsImFjY2Vzc1Rva2VuIjoidG9rZW4iLCJyZWZyZXNoVG9rZW4iOiJydG9rZW4iLCJpYXQiOjE2Mzg0NjUyODAsImV4cCI6MTcwMTQzNzEzMywiaXNzIjoidGVzdERvbWFpbi5jb20ifQ.kgQjW9mcWP6C1jODwuaOojQVE8f4DfOz3wMB2mbK24Y';
 
     beforeEach(() => {
         mockRequest = {};
