@@ -237,11 +237,11 @@ const RoomCard = (props: RoomCardProps) => {
     const { createNotificationWithType } = useCreateNotification();
 
     //send notification when there is 5 minutes left on the booking.
-    useEffect(() => {
-        if (duration === 15 || duration === 14) {
-            sendNotification(room, duration);
-        }
-    }, [duration]); //eslint-disable-line
+    // useEffect(() => {
+    //     if (duration === 15 || duration === 14) {
+    //         sendNotification(room, duration);
+    //     }
+    // }, [duration]); //eslint-disable-line
 
     return (
         <CustomCard data-testid="AvailableRoomListCard" style={cardStyle()}>
