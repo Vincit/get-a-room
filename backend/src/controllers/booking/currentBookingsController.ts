@@ -153,10 +153,10 @@ export const simplifyBookings = (
         const attendees = booking.attendees;
         // TODO: Remove me
 
-        const htmlLink: any = booking?.htmlLink as String;
+        const htmlLink: string | undefined = booking?.htmlLink as string;
 
-        const eventEidWithTImeZone: String = htmlLink?.split('=')[1];
-        const eventEid: String = eventEidWithTImeZone?.split('&')[0];
+        const eventEidWithTImeZone: string = htmlLink?.split('=')[1];
+        const eventEid: string = eventEidWithTImeZone?.split('&')[0];
         const link: string =
             'https://calendar.google.com/calendar/u/1/r/eventedit/' + eventEid;
         const simpleEvent: CurrentBookingData = {
