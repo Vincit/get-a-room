@@ -38,7 +38,7 @@ export const simplifyEventData = () => {
                 .toUTC()
                 .toISO();
 
-            const htmlLink: string = event.htmlLink as string;
+            //const htmlLink: string = event.htmlLink as string;
             const simpleEvent = {
                 id: event.id,
                 startTime: start,
