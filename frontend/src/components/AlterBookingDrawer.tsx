@@ -69,7 +69,7 @@ const AlterBookingDrawer = (props: Props) => {
         onAlterTime,
         availableMinutes
     } = props;
-  
+
     const handleAdditionalTime = (minutes: number) => {
         if (booking === undefined) {
             return;
@@ -183,8 +183,8 @@ const AlterBookingDrawer = (props: Props) => {
     };
 
     //For share button
-    const title: string = "My Web Share Adventures";
-    const text: string = "Hello World! I shared this content via Web Share";
+    const title: string = 'My Web Share Adventures';
+    const text: string = 'Hello World! I shared this content via Web Share';
     const url: string | undefined = booking?.meetingLink;
 
     const handleOnClick = (shareDetails: any) => {
@@ -243,13 +243,13 @@ const AlterBookingDrawer = (props: Props) => {
                     </RowCentered>
                     <Row>
                         <DrawerButtonSecondary
-                            onClick={() => handleOnClick(
-                                {
-                                    url, 
-                                    title, 
+                            onClick={() =>
+                                handleOnClick({
+                                    url,
+                                    title,
                                     text
-                                }
-                            )}
+                                })
+                            }
                         >
                             <ShareIcon /> <Spacer /> Share meeting
                         </DrawerButtonSecondary>
