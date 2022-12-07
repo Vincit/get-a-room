@@ -1,7 +1,7 @@
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSnackbar } from 'notistack';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 type NotificationType = 'default' | 'error' | 'success' | 'warning' | 'info';
 
