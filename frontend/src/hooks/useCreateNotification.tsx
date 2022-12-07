@@ -1,16 +1,12 @@
-import { bottomNavigationActionClasses, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
-import copy from 'copy-to-clipboard';
-import Share from './useShareInMobile';
-import { color } from '@mui/system';
 
 type NotificationType = 'default' | 'error' | 'success' | 'warning' | 'info';
 
 const useCreateNotification = () => {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    const [active, setActive] = useState(false);
 
     const closeAction = useCallback(
         (key: number) => {
