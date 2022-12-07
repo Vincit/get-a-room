@@ -145,16 +145,19 @@ export const scheduleNotification = () => {
     ) => {
         try {
             const endTime: String = res.locals.endTime;
+            //Current Date
+            const currentDate = new Date();
 
             // Time setting problem
             // Check the hours
             const minute: String = endTime.split(':')[1];
-            const hour: String = endTime.split(':')[0].split('T')[1];
+            //const hour: String = endTime.split(':')[0].split('T')[1];
 
+            //const hourN: Number = Number(hour) + 2;
             const minuteN: Number = Number(minute) - 5;
             const minute2: String = String(minuteN);
 
-            const scheduleTime = '*' + minute2 + hour + '***';
+            const scheduleTime = minute2 + ' ' + currentDate.getHours() + ' * * *';
 
             const sub = res.locals.sub;
             const user = await getUserWithSubject(sub);
@@ -183,7 +186,7 @@ export const scheduleNotification = () => {
                 (data) =>
                     data.roomId === requestedRoomId &&
                     data.endTime === requestedEndTime
-            )?._id;
+            );
 
             if (!uniqueId) {
                 return responses.internalServerError(req, res);
@@ -205,7 +208,8 @@ export const scheduleNotification = () => {
                 body: 'Your current meeting is going to an end in 5 minutes!'
             });
 
-            const job = schedule.scheduleJob(uniqueId, scheduleTime, () => {
+            const job = schedule.scheduleJob('uniqueId', scheduleTime, () => {
+                console.log('Inside scheduleJob');
                 webpush.sendNotification(subscriptionToPush, payload, options);
             });
 
@@ -252,7 +256,7 @@ export const cancelSceduleJob = () => {
                 (data) =>
                     data.roomId === requestedRoomId &&
                     data.endTime === requestedEndTime
-            )?._id;
+            );
             if (!uniqueId) {
                 return responses.internalServerError(req, res);
             }
