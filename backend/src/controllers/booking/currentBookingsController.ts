@@ -153,7 +153,7 @@ export const simplifyBookings = (
         const attendees = booking.attendees;
         // TODO: Remove me
 
-        const htmlLink: any = booking?.htmlLink as string;
+        const htmlLink: string | undefined = booking?.htmlLink as string;
 
         const eventEidWithTImeZone: string = htmlLink?.split('=')[1];
         const eventEid: string = eventEidWithTImeZone?.split('&')[0];
