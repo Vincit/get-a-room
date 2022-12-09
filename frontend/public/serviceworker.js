@@ -53,13 +53,11 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-self.addEventListener('push', event => {
+self.addEventListener('push', (event) => {
     console.log(event);
     const data = JSON.parse(event.data.text());
     const options = {
         body: data.content
     };
-    event.waitUntil(
-        self.registration.showNotification(data.title, options)
-    );
+    event.waitUntil(self.registration.showNotification(data.title, options));
 });
