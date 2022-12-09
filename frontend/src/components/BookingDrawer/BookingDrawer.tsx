@@ -4,9 +4,11 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { DateTime } from 'luxon';
 
-import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
-import { Room } from '../types';
-import { getTimeLeft, getTimeLeftMinutes2 } from './util/TimeLeft';
+import SwipeableEdgeDrawer, {
+    DrawerContent
+} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
+import { Room } from '../../types';
+import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
 
 const MIN_DURATION = 15;
 
@@ -51,11 +53,25 @@ export function minutesToSimpleString(minutes: number) {
 /**
  *
  * @param minutes
+ * @param startingTime
  * @returns Example "(15.15 - 15.30)"
  */
-function getBookingRangeText(minutes: number) {
-    let startTime = DateTime.local();
-    let endTime = startTime.plus({ minutes: minutes });
+function getBookingRangeText(minutes: number, startingTime: string) {
+    if (startingTime !== 'Now' && startingTime !== undefined) {
+        const h = Number(startingTime.split(':')[0]);
+        const m = Number(startingTime.split(':')[1]);
+        const dt = DateTime.local().set({ hour: h, minute: m });
+        const endTime = dt.plus({ minutes: minutes });
+        return (
+            '(' +
+            dt.toLocaleString(DateTime.TIME_24_SIMPLE) +
+            ' - ' +
+            endTime.toLocaleString(DateTime.TIME_24_SIMPLE) +
+            ')'
+        );
+    }
+    const startTime = DateTime.local();
+    const endTime = startTime.plus({ minutes: minutes });
     return (
         '(' +
         startTime.toLocaleString(DateTime.TIME_24_SIMPLE) +
@@ -154,6 +170,7 @@ interface Props {
     onAddTimeUntilNext: (minutes: number) => void;
     availableMinutes: number;
     room?: Room;
+    startingTime: string;
 }
 
 const BookingDrawer = (props: Props) => {
@@ -168,7 +185,8 @@ const BookingDrawer = (props: Props) => {
         onAddTimeUntilHalf,
         onAddTimeUntilFull,
         onAddTimeUntilNext,
-        availableMinutes
+        availableMinutes,
+        startingTime
     } = props;
 
     useEffect(() => {
@@ -219,7 +237,16 @@ const BookingDrawer = (props: Props) => {
     };
 
     const updateHalfHour = () => {
-        let halfHour = DateTime.now().toObject();
+        const halfHour =
+            startingTime === 'Now'
+                ? DateTime.now().toObject()
+                : DateTime.fromObject({
+                      hour: Number(startingTime.split(':')[0]),
+                      minute: Number(startingTime.split(':')[1]),
+                      second: 0
+                  })
+                      .plus({ minutes: duration })
+                      .toObject();
         if (halfHour.minute >= 30) {
             halfHour.hour = halfHour.hour + 1;
         }
@@ -231,7 +258,16 @@ const BookingDrawer = (props: Props) => {
     };
 
     const updateFullHour = () => {
-        let fullHour = DateTime.now().toObject();
+        let fullHour =
+            startingTime === 'Now'
+                ? DateTime.now().toObject()
+                : DateTime.fromObject({
+                      hour: Number(startingTime.split(':')[0]),
+                      minute: Number(startingTime.split(':')[1]),
+                      second: 0
+                  })
+                      .plus({ minutes: duration })
+                      .toObject();
         fullHour.minute = 0;
         fullHour.hour = fullHour.hour + 1;
         let fullHourString =
@@ -248,77 +284,91 @@ const BookingDrawer = (props: Props) => {
             toggle={toggle}
             disableSwipeToOpen={true}
         >
-            <DrawerContent>
-                <RowCentered>
-                    <TimeTextBold>
-                        {minutesToSimpleString(duration + additionalDuration)}
-                    </TimeTextBold>
-                    <TimeText>
-                        {getBookingRangeText(duration + additionalDuration)}
-                    </TimeText>
-                </RowCentered>
-                <RowCentered>
-                    <AvailableText>
-                        Maximum {getTimeAvailable(room)} available
-                    </AvailableText>
-                </RowCentered>
-                <Row>
-                    <SmallText>booking (rounded to next 5 min)</SmallText>
-                </Row>
-                <Row>
-                    <DrawerButtonPrimary
-                        aria-label="subtract 15 minutes"
-                        data-testid="subtract15"
-                        onClick={(e) => handleAdditionalTime(-15)}
-                        disabled={disableSubtractTime()}
-                    >
-                        <RemoveIcon /> 15 min
-                    </DrawerButtonPrimary>
-                    <Spacer />
-                    <DrawerButtonPrimary
-                        aria-label="add 15 minutes"
-                        data-testid="add15"
-                        onClick={(e) => handleAdditionalTime(15)}
-                        disabled={disableAddTime()}
-                    >
-                        <AddIcon /> 15 min
-                    </DrawerButtonPrimary>
-                </Row>
-                <Row>
-                    <DrawerButtonSecondary
-                        onClick={() => handleNextHalfHour()}
-                        disabled={disableNextHalfHour()}
-                    >
-                        Until {nextHalfHour}
-                    </DrawerButtonSecondary>
-                    <Spacer />
-                    <DrawerButtonSecondary
-                        onClick={() => handleNextFullHour()}
-                        disabled={disableNextFullHour()}
-                    >
-                        Until {nextFullHour}
-                    </DrawerButtonSecondary>
-                </Row>
-                <Row>
-                    <DrawerButtonSecondary
-                        aria-label="until next meeting"
-                        onClick={() =>
-                            handleUntilNext(getTimeAvailableMinutes(room))
-                        }
-                    >
-                        Until next meeting
-                    </DrawerButtonSecondary>
-                </Row>
-                <Row>
-                    <DrawerButtonPrimary
-                        aria-label="book now"
-                        data-testid="BookNowButton"
-                        onClick={bookRoom}
-                    >
-                        Book now
-                    </DrawerButtonPrimary>
-                </Row>
-            </DrawerContent>
+            <Box
+                style={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                }}
+            >
+                <DrawerContent>
+                    <RowCentered>
+                        <TimeTextBold>
+                            {minutesToSimpleString(
+                                duration + additionalDuration
+                            )}
+                        </TimeTextBold>
+                        <TimeText>
+                            {getBookingRangeText(
+                                duration + additionalDuration,
+                                startingTime
+                            )}
+                        </TimeText>
+                    </RowCentered>
+                    <RowCentered>
+                        <AvailableText>
+                            Maximum {getTimeAvailable(room)} available
+                        </AvailableText>
+                    </RowCentered>
+                    <Row>
+                        <SmallText>booking (rounded to next 5 min)</SmallText>
+                    </Row>
+                    <Row>
+                        <DrawerButtonPrimary
+                            aria-label="subtract 15 minutes"
+                            data-testid="subtract15"
+                            onClick={(e) => handleAdditionalTime(-15)}
+                            disabled={disableSubtractTime()}
+                        >
+                            <RemoveIcon /> 15 min
+                        </DrawerButtonPrimary>
+                        <Spacer />
+                        <DrawerButtonPrimary
+                            aria-label="add 15 minutes"
+                            data-testid="add15"
+                            onClick={(e) => handleAdditionalTime(15)}
+                            disabled={disableAddTime()}
+                        >
+                            <AddIcon /> 15 min
+                        </DrawerButtonPrimary>
+                    </Row>
+                    <Row>
+                        <DrawerButtonSecondary
+                            onClick={() => handleNextHalfHour()}
+                            disabled={disableNextHalfHour()}
+                        >
+                            Until {nextHalfHour}
+                        </DrawerButtonSecondary>
+                        <Spacer />
+                        <DrawerButtonSecondary
+                            onClick={() => handleNextFullHour()}
+                            disabled={disableNextFullHour()}
+                        >
+                            Until {nextFullHour}
+                        </DrawerButtonSecondary>
+                    </Row>
+                    <Row>
+                        <DrawerButtonSecondary
+                            aria-label="until next meeting"
+                            onClick={() =>
+                                handleUntilNext(getTimeAvailableMinutes(room))
+                            }
+                        >
+                            Until next meeting
+                        </DrawerButtonSecondary>
+                    </Row>
+                    <Row>
+                        <DrawerButtonPrimary
+                            aria-label="book now"
+                            data-testid="BookNowButton"
+                            onClick={bookRoom}
+                        >
+                            Book now
+                        </DrawerButtonPrimary>
+                    </Row>
+                </DrawerContent>
+            </Box>
         </SwipeableEdgeDrawer>
     );
 };

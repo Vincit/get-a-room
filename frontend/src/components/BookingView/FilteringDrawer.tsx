@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box, styled, Typography } from '@mui/material';
-import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
+import SwipeableEdgeDrawer, {
+    DrawerContent
+} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import TextField from '@mui/material/TextField';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -120,75 +122,84 @@ const FilteringDrawer = (props: Props) => {
             disableSwipeToOpen={false}
             mounted={true}
         >
-            <DrawerContent>
-                <Row>
-                    <SmallText>Custom Filter</SmallText>
-                </Row>
-                <TextField
-                    onChange={handleCustomFilter}
-                    value={customFilter}
-                    placeholder="Room name, resource..."
-                    size="small"
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon />
-                            </InputAdornment>
-                        )
-                    }}
-                />
+            <Box
+                style={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                }}
+            >
+                <DrawerContent>
+                    <Row>
+                        <SmallText>Custom Filter</SmallText>
+                    </Row>
+                    <TextField
+                        onChange={handleCustomFilter}
+                        value={customFilter}
+                        placeholder="Room name, resource..."
+                        size="small"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            )
+                        }}
+                    />
 
-                <Row>
-                    <SmallText>Custom Duration (Minutes)</SmallText>
-                </Row>
+                    <Row>
+                        <SmallText>Custom Duration (Minutes)</SmallText>
+                    </Row>
 
-                <TextField
-                    size="small"
-                    type="number"
-                    placeholder="Give duration in minutes"
-                    inputProps={{ min: 0, max: 1439 }}
-                    value={duration}
-                    onChange={handleCustomDuration}
-                />
+                    <TextField
+                        size="small"
+                        type="number"
+                        placeholder="Give duration in minutes"
+                        inputProps={{ min: 0, max: 1439 }}
+                        value={duration}
+                        onChange={handleCustomDuration}
+                    />
 
-                <Row>
-                    <SmallText>Room Size (People)</SmallText>
-                </Row>
-                <StyledToggleButtonGroup
-                    value={roomSize}
-                    onChange={handleRoomSizeChange}
-                >
-                    <ToggleButton value="1-2">1-2</ToggleButton>
-                    <ToggleButton value="3-5">3-5</ToggleButton>
-                    <ToggleButton value="6-7">6-7</ToggleButton>
-                    <ToggleButton value="8-99999">8+</ToggleButton>
-                </StyledToggleButtonGroup>
-                <Row>
-                    <SmallText>Resources</SmallText>
-                </Row>
-                <StyledToggleButtonGroup
-                    value={resources}
-                    onChange={handleResourcesChange}
-                    sx={{ minHeight: '56px' }}
-                >
-                    {allFeatures.map((feature) => (
-                        <ToggleButton key={feature} value={feature}>
-                            {feature}
-                        </ToggleButton>
-                    ))}
-                </StyledToggleButtonGroup>
-                <Row>
-                    <SmallText>Favourites</SmallText>
-                </Row>
-                <ToggleButton
-                    value="favourites"
-                    selected={onlyFavourites}
-                    onChange={() => setOnlyFavourites(!onlyFavourites)}
-                >
-                    <FavoriteBorderIcon />
-                    &nbsp; Only Favourites
-                </ToggleButton>
-            </DrawerContent>
+                    <Row>
+                        <SmallText>Room Size (People)</SmallText>
+                    </Row>
+                    <StyledToggleButtonGroup
+                        value={roomSize}
+                        onChange={handleRoomSizeChange}
+                    >
+                        <ToggleButton value="1-2">1-2</ToggleButton>
+                        <ToggleButton value="3-5">3-5</ToggleButton>
+                        <ToggleButton value="6-7">6-7</ToggleButton>
+                        <ToggleButton value="8-99999">8+</ToggleButton>
+                    </StyledToggleButtonGroup>
+                    <Row>
+                        <SmallText>Resources</SmallText>
+                    </Row>
+                    <StyledToggleButtonGroup
+                        value={resources}
+                        onChange={handleResourcesChange}
+                        sx={{ minHeight: '56px' }}
+                    >
+                        {allFeatures.map((feature) => (
+                            <ToggleButton key={feature} value={feature}>
+                                {feature}
+                            </ToggleButton>
+                        ))}
+                    </StyledToggleButtonGroup>
+                    <Row>
+                        <SmallText>Favourites</SmallText>
+                    </Row>
+                    <ToggleButton
+                        value="favourites"
+                        selected={onlyFavourites}
+                        onChange={() => setOnlyFavourites(!onlyFavourites)}
+                    >
+                        <FavoriteBorderIcon />
+                        &nbsp; Only Favourites
+                    </ToggleButton>
+                </DrawerContent>
+            </Box>
         </SwipeableEdgeDrawer>
     );
 };

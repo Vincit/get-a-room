@@ -144,20 +144,20 @@ export const scheduleNotification = () => {
         next: NextFunction
     ) => {
         try {
-            const endTime: String = res.locals.endTime;
             //Current Date
             const currentDate = new Date();
 
             // Time setting problem
             // Check the hours
-            const minute: String = endTime.split(':')[1];
-            //const hour: String = endTime.split(':')[0].split('T')[1];
+            const minute: string = res.locals.endMinute;
+            const hour: string = res.locals.endHour;
 
-            //const hourN: Number = Number(hour) + 2;
-            const minuteN: Number = Number(minute) - 5;
-            const minute2: String = String(minuteN);
+            const hourN: Number = Number(hour) + 2;
+            const minuteN: Number = Number(minute) - 13;
+            //const minute2: String = String(minuteN);
+            console.log('The hour is ', hourN);
 
-            const scheduleTime = minute2 + ' ' + currentDate.getHours() + ' * * *';
+            const scheduleTime = minuteN + ' ' + hourN + ' * * *';
 
             const sub = res.locals.sub;
             const user = await getUserWithSubject(sub);
@@ -179,21 +179,25 @@ export const scheduleNotification = () => {
             const requestedEndTime = scheduleData.endTime;
 
             if (!sub) {
+                console.log('No sub');
                 return responses.badRequest(req, res);
             }
 
-            const uniqueId = user.scheduleDataArray?.find(
+            const uniqueId: string | undefined = user.scheduleDataArray?.find(
                 (data) =>
                     data.roomId === requestedRoomId &&
                     data.endTime === requestedEndTime
-            );
+            )?._id;
 
+            console.log('data id', uniqueId);
             if (!uniqueId) {
+                console.log('No uniqueId');
                 return responses.internalServerError(req, res);
             }
 
             const subscription: any = user?.subscription;
             if (!subscription) {
+                console.log('No subscription');
                 return responses.internalServerError(req, res);
             }
 
@@ -208,7 +212,7 @@ export const scheduleNotification = () => {
                 body: 'Your current meeting is going to an end in 5 minutes!'
             });
 
-            const job = schedule.scheduleJob('uniqueId', scheduleTime, () => {
+            const job = schedule.scheduleJob(uniqueId, scheduleTime, () => {
                 console.log('Inside scheduleJob');
                 webpush.sendNotification(subscriptionToPush, payload, options);
             });
@@ -256,12 +260,100 @@ export const cancelSceduleJob = () => {
                 (data) =>
                     data.roomId === requestedRoomId &&
                     data.endTime === requestedEndTime
-            );
+            )?._id;
             if (!uniqueId) {
                 return responses.internalServerError(req, res);
             }
-            const scheduleJob = schedule.scheduledJobs['_id'];
+            const scheduleJob = schedule.scheduledJobs[uniqueId];
             scheduleJob.cancel();
+
+            const subscription: any = user?.subscription;
+            if (!subscription) {
+                console.log('No subscription');
+                return responses.internalServerError(req, res);
+            }
+
+            const options = {
+                vapidDetails: {
+                    subject: 'mailto:test@test.com',
+                    publicKey: publicKey,
+                    privateKey: privateKey
+                },
+                TTL: 60
+            };
+
+            const subscriptionToPush = {
+                endpoint: subscription.endpoint,
+                expirationTime: subscription.expirationTime,
+                keys: subscription.keys
+            };
+
+            const payload = JSON.stringify({
+                title: 'Meeting End Notification',
+                body: 'Your current meeting ends now!'
+            });
+
+            webpush.sendNotification(subscriptionToPush, payload, options);
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    };
+
+    return middleware;
+};
+
+/**
+ * Send an immediate notification
+ * @returns
+ */
+export const pushNotification = () => {
+    const middleware = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const sub = res.locals.sub;
+            const scheduleData: ScheduleData = res.locals.scheduleData;
+
+            if (!sub) {
+                return responses.badRequest(req, res);
+            }
+
+            const user = await getUserWithSubject(sub);
+            if (!user) {
+                return responses.internalServerError(req, res);
+            }
+
+            const subscription: any = user?.subscription;
+            if (!subscription) {
+                console.log('No subscription');
+                return responses.internalServerError(req, res);
+            }
+
+            const options = {
+                vapidDetails: {
+                    subject: 'mailto:test@test.com',
+                    publicKey: publicKey,
+                    privateKey: privateKey
+                },
+                TTL: 60
+            };
+
+            const subscriptionToPush = {
+                endpoint: subscription.endpoint,
+                expirationTime: subscription.expirationTime,
+                keys: subscription.keys
+            };
+
+            const payload = JSON.stringify({
+                title: 'Meeting End Notification',
+                body: 'Your current meeting ends now!'
+            });
+
+            webpush.sendNotification(subscriptionToPush, payload, options);
 
             next();
         } catch (err) {

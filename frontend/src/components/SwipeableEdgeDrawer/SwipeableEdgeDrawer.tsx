@@ -35,8 +35,7 @@ const Puller = styled(Box)(({ theme }) => ({
 const DrawerHeader = styled(Box)(({ theme }) => ({
     padding: '24px',
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: 'center',
     position: 'absolute',
     top: -drawerBleeding,
     borderTopLeftRadius: 40,
@@ -76,7 +75,9 @@ export const DrawerContent = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    margin: '0 24px 24px 24px'
+    margin: '0 24px 24px 24px',
+    width: 'calc(100% - 48px)',
+    maxWidth: '1000px'
 }));
 
 interface Props {
@@ -176,21 +177,35 @@ const SwipeableEdgeDrawer = (props: Props) => {
                 swipeAreaWidth={drawerBleeding}
                 disableSwipeToOpen={disableSwipeToOpen}
                 keepMounted={mounted}
+                style={{
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: '1000px'
+                }}
             >
                 <DrawerHeader onClick={handleHeaderClick}>
-                    {left}
-                    <Puller />
-                    {title}
-                    {filters}
-                    <Puller />
-                    <IconButton
-                        onClick={toggleDrawer(false)}
-                        aria-label={label}
+                    <Box
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            width: '100%',
+                            maxWidth: '1000px'
+                        }}
                     >
-                        {right}
-                    </IconButton>
+                        {left}
+                        <Puller />
+                        {title}
+                        {filters}
+                        <Puller />
+                        <IconButton
+                            onClick={toggleDrawer(false)}
+                            aria-label={label}
+                        >
+                            {right}
+                        </IconButton>
+                    </Box>
                 </DrawerHeader>
-
                 {children}
             </SwipeableDrawer>
         </Root>

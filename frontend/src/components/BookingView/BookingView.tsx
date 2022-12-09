@@ -1,23 +1,24 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Box, styled, IconButton } from '@mui/material';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Person from '@mui/icons-material/Person';
 
-import { getRooms } from '../services/roomService';
-import { deleteBooking, getBookings } from '../services/bookingService';
-import { Room, Booking, Preferences } from '../types';
-import CurrentBooking from './CurrentBooking';
-import AvailableRoomList from './AvailableRoomList';
-import CenteredProgress from './util/CenteredProgress';
+import { getRooms } from '../../services/roomService';
+import { deleteBooking, getBookings } from '../../services/bookingService';
+import { Room, Booking, Preferences } from '../../types';
+import CurrentBooking from '../CurrentBooking/CurrentBooking';
+import AvailableRoomList from '../AvailableRoomList/AvailableRoomList';
+import CenteredProgress from '../util/CenteredProgress';
 import DurationPicker from './DurationPicker';
 import FilteringDrawer from './FilteringDrawer';
 
 import { useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SwipeableEdgeDrawer, { DrawerContent } from './SwipeableEdgeDrawer';
-import UserDrawer from './UserDrawer';
-import BusyRoomList from './BusyRoomList';
-import useCreateNotification from '../hooks/useCreateNotification';
+import SwipeableEdgeDrawer, {
+    DrawerContent
+} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
+import UserDrawer from '../UserDrawer/UserDrawer';
+import BusyRoomList from '../BusyRoomList/BusyRoomList';
+import useCreateNotification from '../../hooks/useCreateNotification';
 
 const UPDATE_FREQUENCY = 30000;
 const GET_RESERVED = true;
@@ -25,10 +26,6 @@ const GET_RESERVED = true;
 // Check if rooms are fetched
 function areRoomsFetched(rooms: Room[]) {
     return Array.isArray(rooms) && rooms.length > 0;
-}
-
-function isActiveBooking(bookings: Booking[]) {
-    return bookings.length > 0;
 }
 
 const deleteDeclinedBookings = (
@@ -383,17 +380,29 @@ function BookingView(props: BookingViewProps) {
                     toggle={toggle}
                     disableSwipeToOpen={true}
                 >
-                    <DrawerContent>
-                        <RowCentered>
-                            <Typography
-                                variant="body1"
-                                sx={{ color: '#000000', font: 'Roboto Mono' }}
-                            >
-                                {preferences?.building?.name} was selected as
-                                your office based on your GPS location
-                            </Typography>
-                        </RowCentered>
-                    </DrawerContent>
+                    <Box
+                        style={{
+                            width: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center'
+                        }}
+                    >
+                        <DrawerContent>
+                            <RowCentered>
+                                <Typography
+                                    variant="body1"
+                                    sx={{
+                                        color: '#000000',
+                                        font: 'Roboto Mono'
+                                    }}
+                                >
+                                    {preferences?.building?.name} was selected
+                                    as your office based on your GPS location
+                                </Typography>
+                            </RowCentered>
+                        </DrawerContent>
+                    </Box>
                 </SwipeableEdgeDrawer>
             </div>
 
@@ -454,30 +463,6 @@ function BookingView(props: BookingViewProps) {
                     </IconButton>
                 </Typography>
             </RowCentered>
-
-            {isActiveBooking(bookings) ? (
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        py: 2,
-                        px: 3
-                    }}
-                >
-                    <ErrorOutlineIcon />
-                    <Typography
-                        sx={{
-                            fontSize: '18px',
-                            textAlign: 'center',
-                            px: 1
-                        }}
-                    >
-                        You cannot book a new room unless you remove your
-                        current booking
-                    </Typography>
-                </Box>
-            ) : null}
 
             <DurationPicker
                 duration={duration}

@@ -8,6 +8,7 @@ type scheduleDataArray = [
     {
         endTime?: string | null | undefined;
         roomId?: string | undefined;
+        _id?: string | undefined;
     }
 ];
 

@@ -27,6 +27,12 @@ export const addTimeToBooking = () => {
                 return responses.badRequest(req, res);
             }
 
+            const endTimeUTC = DateTime.fromISO(
+                eventData.end?.dateTime as string
+            )
+                .plus({ minutes: timeToAdd })
+                .toUTC();
+
             // New end time
             const endTime = DateTime.fromISO(eventData.end?.dateTime as string)
                 .plus({ minutes: timeToAdd })
@@ -52,6 +58,8 @@ export const addTimeToBooking = () => {
                 attendeeList
             );
             res.locals.event = result;
+            res.locals.endHour = endTimeUTC.get('hour');
+            res.locals.endMinute = endTimeUTC.get('minute');
 
             next();
         } catch (err) {

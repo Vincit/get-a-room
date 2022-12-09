@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import BookingView from './BookingView';
-import ChooseOfficeView from './ChooseOfficeView';
-import { Building, Preferences } from '../types';
+import BookingView from '../BookingView/BookingView';
+import ChooseOfficeView from '../ChooseOfficeView/ChooseOfficeView';
+import { Building, Preferences } from '../../types';
 import {
     getPreferences,
     getPreferencesWithGPS
-} from '../services/preferencesService';
+} from '../../services/preferencesService';
 import {
     getBuildings,
     getBuildingsWithPosition
-} from '../services/buildingService';
+} from '../../services/buildingService';
 import { Box } from '@mui/material';
-import { getName } from '../services/nameService';
+import { getName } from '../../services/nameService';
 import { useHistory } from 'react-router-dom';
 
 const MainView = () => {
@@ -102,11 +102,12 @@ const MainView = () => {
             id="main-view"
             display="flex"
             flexDirection="column"
-            height="100vh"
+            minHeight="100vh"
+            alignItems="center"
         >
             <Box
                 id="main-view-content"
-                sx={{ flexGrow: 1, overflowY: 'scroll' }}
+                sx={{ flexGrow: 1, maxWidth: '1000px', width: '100%' }}
             >
                 <Switch>
                     <Route path="/(preferences|auth/success)/">

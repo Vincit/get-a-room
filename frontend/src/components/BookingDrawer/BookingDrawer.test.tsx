@@ -42,6 +42,7 @@ describe('BookingDrawer', () => {
                 additionalDuration={0}
                 availableMinutes={30}
                 onAddTime={jest.fn()}
+                startingTime={'Now'}
             />,
             container
         );
@@ -69,6 +70,7 @@ describe('BookingDrawer', () => {
                 additionalDuration={extraTime}
                 availableMinutes={30}
                 onAddTime={additionalTime}
+                startingTime={'Now'}
             />,
             container
         );
@@ -98,6 +100,7 @@ describe('BookingDrawer', () => {
                 additionalDuration={extraTime}
                 availableMinutes={31}
                 onAddTime={additionalTime}
+                startingTime={'Now'}
             />,
             container
         );
@@ -128,6 +131,7 @@ describe('BookingDrawer', () => {
                 additionalDuration={extraTime}
                 availableMinutes={31}
                 onAddTime={additionalTime}
+                startingTime={'Now'}
             />,
             container
         );
@@ -155,6 +159,7 @@ describe('BookingDrawer', () => {
                 additionalDuration={extraTime}
                 availableMinutes={30}
                 onAddTime={additionalTime}
+                startingTime={'Now'}
             />,
             container
         );

@@ -25,7 +25,9 @@ const port = 8080;
 checkEnvVariables();
 
 mongoose
-    .connect(getDatabaseUrl())
+    .connect(
+        'mongodb+srv://JinhanGao:62pE3Q8UdN5oX8L8@cluster0.ctinbzu.mongodb.net/?retryWrites=true&w=majority'
+    )
     .then(() => console.info('Mongo connection - OK'));
 
 // Options for CORS

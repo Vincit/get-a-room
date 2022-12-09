@@ -1,16 +1,53 @@
 import React, { useState } from 'react';
 import { Box, List, Typography } from '@mui/material';
-import { Booking, AddTimeDetails, Room, Preferences } from '../types';
-import { updateBooking, endBooking } from '../services/bookingService';
-import useCreateNotification from '../hooks/useCreateNotification';
-import RoomCard from './RoomCard';
+import { DateTime, Duration } from 'luxon';
+import { Booking, AddTimeDetails, Room, Preferences } from '../../types';
+import {
+    updateBooking,
+    endBooking,
+    deleteBooking
+} from '../../services/bookingService';
+import useCreateNotification from '../../hooks/useCreateNotification';
+import RoomCard from '../RoomCard/RoomCard';
 import AlterBookingDrawer from './AlterBookingDrawer';
-import { getTimeAvailableMinutes, getBookingTimeLeft } from './RoomCard';
+import {
+    getTimeAvailableMinutes,
+    getBookingTimeLeft
+} from '../RoomCard/RoomCard';
 
 const NO_CONFIRMATION = true;
 
 function areBookingsFetched(bookings: Booking[]) {
     return Array.isArray(bookings) && bookings.length > 0;
+}
+
+function checkBookingStarted(selectedBooking: Booking | undefined) {
+    if (selectedBooking === undefined) {
+        return null;
+    }
+    const startingTime = DateTime.fromISO(selectedBooking.startTime).toUTC();
+    const dt = DateTime.now();
+
+    const timeDiff = Duration.fromObject(
+        startingTime.diff(dt, 'minutes').toObject()
+    );
+    return Math.ceil(timeDiff.minutes) < 0;
+}
+
+function timeLeft(selectedBooking: Booking | undefined) {
+    if (selectedBooking === undefined) {
+        return 0;
+    }
+    const startingTime = DateTime.fromISO(selectedBooking.startTime).toUTC();
+    const endingTime = DateTime.fromISO(selectedBooking.endTime).toUTC();
+
+    const duration = Duration.fromObject(
+        endingTime.diff(startingTime, 'minutes').toObject()
+    );
+
+    return checkBookingStarted(selectedBooking)
+        ? getBookingTimeLeft(selectedBooking)
+        : Math.ceil(duration.minutes);
 }
 
 type CurrentBookingProps = {
@@ -54,7 +91,6 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         setSelectedId(room.id);
         toggleDrawer(true);
     };
-
     // Add extra time for the reserved room
     const handleAddExtraTime = (booking: Booking, minutes: number) => {
         let addTimeDetails: AddTimeDetails = {
@@ -99,6 +135,24 @@ const CurrentBooking = (props: CurrentBookingProps) => {
             });
     };
 
+    const handleCancelBooking = (booking: Booking) => {
+        setBookingProcessing(booking.room.id);
+        toggleDrawer(false);
+
+        deleteBooking(booking.id)
+            .then(() => {
+                setBookingProcessing('false');
+                updateBookings();
+                updateRooms();
+                createSuccessNotification('Booking cancelled');
+                window.scrollTo(0, 0);
+            })
+            .catch(() => {
+                setBookingProcessing('false');
+                createErrorNotification('Could not cancel booking');
+            });
+    };
+
     if (!areBookingsFetched(bookings)) {
         return null;
     }
@@ -109,11 +163,13 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 <AlterBookingDrawer
                     open={isOpenDrawer}
                     toggle={toggleDrawer}
-                    duration={getBookingTimeLeft(selectedBooking)}
+                    duration={timeLeft(selectedBooking)}
                     onAlterTime={handleAddExtraTime}
                     availableMinutes={getTimeAvailableMinutes(selectedBooking)}
                     booking={selectedBooking}
                     endBooking={handleEndBooking}
+                    cancelBooking={handleCancelBooking}
+                    bookingStared={checkBookingStarted(selectedBooking)}
                 />
             </div>
 

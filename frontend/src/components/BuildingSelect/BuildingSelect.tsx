@@ -6,8 +6,8 @@ import {
     Box,
     SelectChangeEvent
 } from '@mui/material';
-import { Building } from '../types';
-import { isNonEmptyArray } from '../util/objectUtils';
+import { Building } from '../../types';
+import { isNonEmptyArray } from '../../util/objectUtils';
 
 type BuildingSelectProps = {
     selectedBuildingId: string;

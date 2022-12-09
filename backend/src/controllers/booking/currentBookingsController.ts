@@ -220,7 +220,7 @@ export const filterCurrentBookings = (
             if (booking.organizerEmail !== userEmail) {
                 return false;
             }
-            return booking.startTime <= now && booking.endTime >= now;
+            return booking.endTime >= now;
         });
 
     return onlyCurrentlyRunningBookings;
