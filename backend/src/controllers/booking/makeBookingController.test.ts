@@ -33,17 +33,19 @@ describe('makeBookingController', () => {
     let mockRequest: Partial<Request>;
     let mockResponse: Partial<Response>;
     let mockNext: jest.Mock;
+    let startingTime: DateTime;
 
     describe('validateInput', () => {
-        const VALIDATEINPUT_BODY_PAYLOAD = {
+        const VALIDATE_INPUT_BODY_PAYLOAD = {
             roomId: 'testroom@oispahuone.com',
             title: 'Test reservation',
-            duration: 60
+            duration: 60,
+            startTime: '9:0'
         };
 
         beforeEach(() => {
             mockRequest = {
-                body: VALIDATEINPUT_BODY_PAYLOAD
+                body: VALIDATE_INPUT_BODY_PAYLOAD
             };
             mockResponse = { locals: {} };
             mockNext = jest.fn();
@@ -60,10 +62,13 @@ describe('makeBookingController', () => {
 
             const locals = mockResponse.locals;
             expect(mockNext).toBeCalledWith();
-            expect(locals?.roomId).toEqual(VALIDATEINPUT_BODY_PAYLOAD.roomId);
-            expect(locals?.title).toEqual(VALIDATEINPUT_BODY_PAYLOAD.title);
+            expect(locals?.roomId).toEqual(VALIDATE_INPUT_BODY_PAYLOAD.roomId);
+            expect(locals?.title).toEqual(VALIDATE_INPUT_BODY_PAYLOAD.title);
             expect(locals?.duration).toEqual(
-                VALIDATEINPUT_BODY_PAYLOAD.duration
+                VALIDATE_INPUT_BODY_PAYLOAD.duration
+            );
+            expect(locals?.startTime).toEqual(
+                VALIDATE_INPUT_BODY_PAYLOAD.startTime
             );
         });
 
@@ -106,6 +111,19 @@ describe('makeBookingController', () => {
             expect(mockedBadRequest).toBeCalledWith(mockRequest, mockResponse);
         });
 
+        test('Should return bad request if startTime missing', async () => {
+            mockRequest.body.startTime = undefined;
+
+            await validateInput()(
+                mockRequest as Request,
+                mockResponse as Response,
+                mockNext
+            );
+
+            expect(mockNext).not.toBeCalledWith();
+            expect(mockedBadRequest).toBeCalledWith(mockRequest, mockResponse);
+        });
+
         test('Should return bad request if duration is not a integer', async () => {
             mockRequest.body.duration = 'not number';
 
@@ -124,7 +142,8 @@ describe('makeBookingController', () => {
         beforeEach(() => {
             mockRequest = {
                 body: {
-                    duration: 60
+                    duration: 60,
+                    startTime: '9:0'
                 }
             };
             mockResponse = {
@@ -132,7 +151,9 @@ describe('makeBookingController', () => {
                     oAuthClient: 'client',
                     roomId: 'test room',
                     email: 'test@oispahuone.com',
-                    title: 'Test title'
+                    title: 'Test title',
+                    duration: 60,
+                    startTime: '9:0'
                 }
             };
             mockNext = jest.fn();
@@ -178,12 +199,14 @@ describe('makeBookingController', () => {
 
     describe('checkRoomIsFree', () => {
         beforeEach(() => {
+            startingTime = DateTime.now();
             mockRequest = {};
             mockResponse = {
                 locals: {
                     oAuthClient: 'client',
                     roomId: 'room',
-                    duration: 60
+                    duration: 60,
+                    startTime: `${startingTime.hour}:${startingTime.minute}`
                 }
             };
             mockNext = jest.fn();
@@ -206,7 +229,7 @@ describe('makeBookingController', () => {
 
         test('Should return Conflict when there is event overlap', async () => {
             mockedFreeBusyQuery.mockResolvedValueOnce({
-                room: DateTime.now().toUTC().toISO()
+                room: startingTime.toISO()
             });
 
             await checkRoomIsFree()(
@@ -222,7 +245,7 @@ describe('makeBookingController', () => {
 
         test('Should call next when successful and room is free', async () => {
             mockedFreeBusyQuery.mockResolvedValueOnce({
-                room: DateTime.now().plus({ minutes: 60 }).toUTC().toISO()
+                room: startingTime.plus({ minutes: 60 }).toISO()
             });
 
             await checkRoomIsFree()(

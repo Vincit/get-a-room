@@ -65,6 +65,15 @@ export const getTimeLeftMinutes2 = (endTime: string) => {
     return Math.ceil(duration.minutes) - 5;
 };
 
+export const getTimeDiff = (start: string, end: string) => {
+    const startTime = DateTime.fromISO(start);
+    const endTime = DateTime.fromISO(end);
+    return Math.ceil(
+        Duration.fromObject(endTime.diff(startTime, 'minutes').toObject())
+            .minutes
+    );
+};
+
 type TimeLeftProps = {
     endTime: string;
     timeLeftText: string;

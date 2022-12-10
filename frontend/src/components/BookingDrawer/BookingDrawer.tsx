@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
 
 import SwipeableEdgeDrawer, {
     DrawerContent
-} from '../BookingView/SwipeableEdgeDrawer';
+} from '../SwipeableEdgeDrawer/SwipeableEdgeDrawer';
 import { Room } from '../../types';
 import { getTimeLeft, getTimeLeftMinutes2 } from '../util/TimeLeft';
 
@@ -53,11 +53,25 @@ export function minutesToSimpleString(minutes: number) {
 /**
  *
  * @param minutes
+ * @param startingTime
  * @returns Example "(15.15 - 15.30)"
  */
-function getBookingRangeText(minutes: number) {
-    let startTime = DateTime.local();
-    let endTime = startTime.plus({ minutes: minutes });
+function getBookingRangeText(minutes: number, startingTime: string) {
+    if (startingTime !== 'Now' && startingTime !== undefined) {
+        const h = Number(startingTime.split(':')[0]);
+        const m = Number(startingTime.split(':')[1]);
+        const dt = DateTime.local().set({ hour: h, minute: m });
+        const endTime = dt.plus({ minutes: minutes });
+        return (
+            '(' +
+            dt.toLocaleString(DateTime.TIME_24_SIMPLE) +
+            ' - ' +
+            endTime.toLocaleString(DateTime.TIME_24_SIMPLE) +
+            ')'
+        );
+    }
+    const startTime = DateTime.local();
+    const endTime = startTime.plus({ minutes: minutes });
     return (
         '(' +
         startTime.toLocaleString(DateTime.TIME_24_SIMPLE) +
@@ -156,6 +170,7 @@ interface Props {
     onAddTimeUntilNext: (minutes: number) => void;
     availableMinutes: number;
     room?: Room;
+    startingTime: string;
 }
 
 const BookingDrawer = (props: Props) => {
@@ -170,7 +185,8 @@ const BookingDrawer = (props: Props) => {
         onAddTimeUntilHalf,
         onAddTimeUntilFull,
         onAddTimeUntilNext,
-        availableMinutes
+        availableMinutes,
+        startingTime
     } = props;
 
     useEffect(() => {
@@ -221,7 +237,16 @@ const BookingDrawer = (props: Props) => {
     };
 
     const updateHalfHour = () => {
-        let halfHour = DateTime.now().toObject();
+        const halfHour =
+            startingTime === 'Now'
+                ? DateTime.now().toObject()
+                : DateTime.fromObject({
+                      hour: Number(startingTime.split(':')[0]),
+                      minute: Number(startingTime.split(':')[1]),
+                      second: 0
+                  })
+                      .plus({ minutes: duration })
+                      .toObject();
         if (halfHour.minute >= 30) {
             halfHour.hour = halfHour.hour + 1;
         }
@@ -233,7 +258,16 @@ const BookingDrawer = (props: Props) => {
     };
 
     const updateFullHour = () => {
-        let fullHour = DateTime.now().toObject();
+        let fullHour =
+            startingTime === 'Now'
+                ? DateTime.now().toObject()
+                : DateTime.fromObject({
+                      hour: Number(startingTime.split(':')[0]),
+                      minute: Number(startingTime.split(':')[1]),
+                      second: 0
+                  })
+                      .plus({ minutes: duration })
+                      .toObject();
         fullHour.minute = 0;
         fullHour.hour = fullHour.hour + 1;
         let fullHourString =
@@ -266,7 +300,10 @@ const BookingDrawer = (props: Props) => {
                             )}
                         </TimeTextBold>
                         <TimeText>
-                            {getBookingRangeText(duration + additionalDuration)}
+                            {getBookingRangeText(
+                                duration + additionalDuration,
+                                startingTime
+                            )}
                         </TimeText>
                     </RowCentered>
                     <RowCentered>
