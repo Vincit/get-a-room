@@ -1,5 +1,5 @@
 type scheduleData = {
-    endTime?: string | null | undefined;
+    endTime: string;
     roomId?: string | undefined;
 };
 

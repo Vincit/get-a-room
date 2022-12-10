@@ -22,7 +22,7 @@ router.post(
     makeBookingController.makeBooking(),
     makeBookingController.checkRoomAccepted(), // This middleware slows things down :(
     makeBookingController.removeDeclinedEvent(),
-    notifyBookingController.updateScheduleDataToDatabse(),
+    notifyBookingController.updateScheduleDataToDatabase(),
     notifyBookingController.scheduleNotification(),
     simplifyEventData(),
     (req: Request, res: Response) => {
@@ -74,9 +74,11 @@ router.patch(
     makeBookingController.checkRoomAccepted(),
     updateBookingController.rollBackDeclinedUpdate(),
     //Cancle old schedule job
-    notifyBookingController.cancelSceduleJob(),
+    notifyBookingController.updateEndTime(),
+    //New middleware function
+    notifyBookingController.updateNewScheduleDataToDatabase(),
     //Arrange a new one
-
+    notifyBookingController.scheduleNotification(),
     simplifyEventData(),
     (req: Request, res: Response) => {
         res.status(200).json(res.locals.event);

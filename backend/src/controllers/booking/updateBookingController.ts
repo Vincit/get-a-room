@@ -4,6 +4,7 @@ import { OAuth2Client } from 'google-auth-library';
 import * as calendar from '../googleAPI/calendarAPI';
 import * as responses from '../../utils/responses';
 import * as schema from '../../utils/googleSchema';
+import ScheduleData from '../../types/scheduleData';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -61,6 +62,11 @@ export const addTimeToBooking = () => {
             res.locals.endHour = endTimeUTC.get('hour');
             res.locals.endMinute = endTimeUTC.get('minute');
 
+            if(!eventData.end?.dateTime) {return responses.internalServerError(req, res)};
+            const scheduleData: ScheduleData = { endTime: eventData.end?.dateTime, roomId: res.locals.roomId};
+            res.locals.scheduleData = scheduleData;
+            res.locals.newEndTime = endTime;
+
             next();
         } catch (err) {
             next(err);
@@ -79,6 +85,7 @@ export const endBookingNow = () => {
         next: NextFunction
     ) => {
         try {
+            const eventData: schema.EventData = res.locals.event;
             const bookingId: string = req.params.bookingId;
             const client: OAuth2Client = res.locals.oAuthClient;
 
@@ -106,6 +113,9 @@ export const endBookingNow = () => {
                 attendeeList
             );
             res.locals.event = result;
+            if(!eventData.end?.dateTime) {return responses.internalServerError(req, res)};
+            const scheduleData: ScheduleData = { endTime: eventData.end?.dateTime, roomId: res.locals.roomId};
+            res.locals.scheduleData = scheduleData;
 
             next();
         } catch (err) {

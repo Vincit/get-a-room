@@ -99,7 +99,7 @@ export const updateSubscriptionToDatabse = () => {
  * Create the user subscription to the database
  * @returns
  */
-export const updateScheduleDataToDatabse = () => {
+export const updateScheduleDataToDatabase = () => {
     const middleware = async (
         req: Request,
         res: Response,
@@ -111,6 +111,37 @@ export const updateScheduleDataToDatabse = () => {
                 endTime: res.locals.endTime,
                 roomId: res.locals.roomId
             };
+
+            if (!sub) {
+                return responses.badRequest(req, res);
+            }
+
+            const user = await updateScheduleData(sub, scheduleData);
+
+            if (!user) {
+                return responses.internalServerError(req, res);
+            } else {
+                res.locals.scheduleData = scheduleData;
+            }
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    };
+
+    return middleware;
+};
+
+export const updateNewScheduleDataToDatabase = () => {
+    const middleware = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const sub = res.locals.sub;
+            const scheduleData: ScheduleData = res.locals.scheduleData;
 
             if (!sub) {
                 return responses.badRequest(req, res);
@@ -153,9 +184,7 @@ export const scheduleNotification = () => {
             const hour: string = res.locals.endHour;
 
             const hourN: Number = Number(hour) + 2;
-            const minuteN: Number = Number(minute) - 13;
-            //const minute2: String = String(minuteN);
-            console.log('The hour is ', hourN);
+            const minuteN: Number = Number(minute) - 5;
 
             const scheduleTime = minuteN + ' ' + hourN + ' * * *';
 
@@ -179,7 +208,6 @@ export const scheduleNotification = () => {
             const requestedEndTime = scheduleData.endTime;
 
             if (!sub) {
-                console.log('No sub');
                 return responses.badRequest(req, res);
             }
 
@@ -189,15 +217,12 @@ export const scheduleNotification = () => {
                     data.endTime === requestedEndTime
             )?._id;
 
-            console.log('data id', uniqueId);
             if (!uniqueId) {
-                console.log('No uniqueId');
                 return responses.internalServerError(req, res);
             }
 
             const subscription: any = user?.subscription;
             if (!subscription) {
-                console.log('No subscription');
                 return responses.internalServerError(req, res);
             }
 
@@ -212,14 +237,64 @@ export const scheduleNotification = () => {
                 body: 'Your current meeting is going to an end in 5 minutes!'
             });
 
-            const job = schedule.scheduleJob(uniqueId, scheduleTime, () => {
-                console.log('Inside scheduleJob');
+            const job = schedule.scheduleJob(`${uniqueId}`, scheduleTime, () => {
                 webpush.sendNotification(subscriptionToPush, payload, options);
             });
 
-            /* if (!job) {
+            if (!job) {
                 return responses.internalServerError(req, res);
-            } */
+            } 
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    };
+
+    return middleware;
+};
+
+export const updateEndTime = () => {
+    const middleware = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const sub = res.locals.sub;
+            let scheduleData: ScheduleData = res.locals.scheduleData;
+
+            if (!sub) {
+                return responses.badRequest(req, res);
+            }
+
+            const user = await getUserWithSubject(sub);
+            if (!user) {
+                return responses.internalServerError(req, res);
+            }
+
+            const requestedRoomId = scheduleData.roomId;
+            const requestedEndTime = scheduleData.endTime;
+            const re2 = requestedEndTime.split(':'); 
+            const re3 = re2[0]+':'+re2[1]+':'+'00.000Z'
+
+            const uniqueId = user.scheduleDataArray?.find(
+                (data) =>
+                    data.roomId === requestedRoomId &&
+                    data.endTime === re3
+            )?._id;
+
+            if (!uniqueId) {
+                return responses.internalServerError(req, res);
+            }
+            const scheduleJob = schedule.scheduledJobs[uniqueId];
+            scheduleJob.cancel();
+
+            const reEndTime = res.locals.newEndTime.split(':'); 
+            const reEndTime2 = reEndTime[0]+':'+reEndTime[1]+':'+'00.000Z'
+            scheduleData = { endTime: reEndTime2, roomId: requestedRoomId};
+
+            res.locals.scheduleData = scheduleData;
 
             next();
         } catch (err) {
@@ -255,45 +330,20 @@ export const cancelSceduleJob = () => {
 
             const requestedRoomId = scheduleData.roomId;
             const requestedEndTime = scheduleData.endTime;
+            const re2 = requestedEndTime.split(':'); 
+            const re3 = re2[0]+':'+re2[1]+':'+'00.000Z'
 
             const uniqueId = user.scheduleDataArray?.find(
                 (data) =>
                     data.roomId === requestedRoomId &&
-                    data.endTime === requestedEndTime
+                    data.endTime === re3
             )?._id;
+
             if (!uniqueId) {
                 return responses.internalServerError(req, res);
             }
             const scheduleJob = schedule.scheduledJobs[uniqueId];
             scheduleJob.cancel();
-
-            const subscription: any = user?.subscription;
-            if (!subscription) {
-                console.log('No subscription');
-                return responses.internalServerError(req, res);
-            }
-
-            const options = {
-                vapidDetails: {
-                    subject: 'mailto:test@test.com',
-                    publicKey: publicKey,
-                    privateKey: privateKey
-                },
-                TTL: 60
-            };
-
-            const subscriptionToPush = {
-                endpoint: subscription.endpoint,
-                expirationTime: subscription.expirationTime,
-                keys: subscription.keys
-            };
-
-            const payload = JSON.stringify({
-                title: 'Meeting End Notification',
-                body: 'Your current meeting ends now!'
-            });
-
-            webpush.sendNotification(subscriptionToPush, payload, options);
 
             next();
         } catch (err) {
@@ -329,7 +379,6 @@ export const pushNotification = () => {
 
             const subscription: any = user?.subscription;
             if (!subscription) {
-                console.log('No subscription');
                 return responses.internalServerError(req, res);
             }
 
