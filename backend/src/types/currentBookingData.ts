@@ -6,6 +6,7 @@ export type CurrentBookingData = {
     endTime: string | null | undefined;
     organizerEmail: string | null | undefined;
     resourceStatus: string | null | undefined;
+    meetingLink: string | null | undefined;
     room: RoomData;
 };
 
