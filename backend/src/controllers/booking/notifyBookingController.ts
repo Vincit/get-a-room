@@ -237,13 +237,21 @@ export const scheduleNotification = () => {
                 body: 'Your current meeting is going to an end in 5 minutes!'
             });
 
-            const job = schedule.scheduleJob(`${uniqueId}`, scheduleTime, () => {
-                webpush.sendNotification(subscriptionToPush, payload, options);
-            });
+            const job = schedule.scheduleJob(
+                `${uniqueId}`,
+                scheduleTime,
+                () => {
+                    webpush.sendNotification(
+                        subscriptionToPush,
+                        payload,
+                        options
+                    );
+                }
+            );
 
             if (!job) {
                 return responses.internalServerError(req, res);
-            } 
+            }
 
             next();
         } catch (err) {
@@ -275,13 +283,12 @@ export const updateEndTime = () => {
 
             const requestedRoomId = scheduleData.roomId;
             const requestedEndTime = scheduleData.endTime;
-            const re2 = requestedEndTime.split(':'); 
-            const re3 = re2[0]+':'+re2[1]+':'+'00.000Z'
+            const re2 = requestedEndTime.split(':');
+            const re3 = re2[0] + ':' + re2[1] + ':' + '00.000Z';
 
             const uniqueId = user.scheduleDataArray?.find(
                 (data) =>
-                    data.roomId === requestedRoomId &&
-                    data.endTime === re3
+                    data.roomId === requestedRoomId && data.endTime === re3
             )?._id;
 
             if (!uniqueId) {
@@ -290,9 +297,10 @@ export const updateEndTime = () => {
             const scheduleJob = schedule.scheduledJobs[uniqueId];
             scheduleJob.cancel();
 
-            const reEndTime = res.locals.newEndTime.split(':'); 
-            const reEndTime2 = reEndTime[0]+':'+reEndTime[1]+':'+'00.000Z'
-            scheduleData = { endTime: reEndTime2, roomId: requestedRoomId};
+            const reEndTime = res.locals.newEndTime.split(':');
+            const reEndTime2 =
+                reEndTime[0] + ':' + reEndTime[1] + ':' + '00.000Z';
+            scheduleData = { endTime: reEndTime2, roomId: requestedRoomId };
 
             res.locals.scheduleData = scheduleData;
 
@@ -330,13 +338,12 @@ export const cancelSceduleJob = () => {
 
             const requestedRoomId = scheduleData.roomId;
             const requestedEndTime = scheduleData.endTime;
-            const re2 = requestedEndTime.split(':'); 
-            const re3 = re2[0]+':'+re2[1]+':'+'00.000Z'
+            const re2 = requestedEndTime.split(':');
+            const re3 = re2[0] + ':' + re2[1] + ':' + '00.000Z';
 
             const uniqueId = user.scheduleDataArray?.find(
                 (data) =>
-                    data.roomId === requestedRoomId &&
-                    data.endTime === re3
+                    data.roomId === requestedRoomId && data.endTime === re3
             )?._id;
 
             if (!uniqueId) {
