@@ -8,8 +8,6 @@ import * as makeBookingController from '../controllers/booking/makeBookingContro
 import * as updateBookingController from '../controllers/booking/updateBookingController';
 import * as notifyBookingController from '../controllers/booking/notifyBookingController';
 import * as responses from '../utils/responses';
-import { WebPushError } from 'web-push';
-import webpush from 'web-push';
 
 export const router = express.Router();
 
@@ -103,6 +101,7 @@ router.post(
     '/notification',
     notifyBookingController.getSubscription(),
     notifyBookingController.updateSubscriptionToDatabse(),
+
     (req: Request, res: Response) => {
         res.status(200).json(res.locals.subscription);
     }

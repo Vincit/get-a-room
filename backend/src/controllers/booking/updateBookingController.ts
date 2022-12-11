@@ -59,11 +59,17 @@ export const addTimeToBooking = () => {
                 attendeeList
             );
             res.locals.event = result;
+
             res.locals.endHour = endTimeUTC.get('hour');
             res.locals.endMinute = endTimeUTC.get('minute');
 
-            if(!eventData.end?.dateTime) {return responses.internalServerError(req, res)};
-            const scheduleData: ScheduleData = { endTime: eventData.end?.dateTime, roomId: res.locals.roomId};
+            if (!eventData.end?.dateTime) {
+                return responses.internalServerError(req, res);
+            }
+            const scheduleData: ScheduleData = {
+                endTime: eventData.end?.dateTime,
+                roomId: res.locals.roomId
+            };
             res.locals.scheduleData = scheduleData;
             res.locals.newEndTime = endTime;
 
@@ -113,8 +119,13 @@ export const endBookingNow = () => {
                 attendeeList
             );
             res.locals.event = result;
-            if(!eventData.end?.dateTime) {return responses.internalServerError(req, res)};
-            const scheduleData: ScheduleData = { endTime: eventData.end?.dateTime, roomId: res.locals.roomId};
+            if (!eventData.end?.dateTime) {
+                return responses.internalServerError(req, res);
+            }
+            const scheduleData: ScheduleData = {
+                endTime: eventData.end?.dateTime,
+                roomId: res.locals.roomId
+            };
             res.locals.scheduleData = scheduleData;
 
             next();
