@@ -152,12 +152,20 @@ export const simplifyBookings = (
     const simplifiedBookings = allBookings.map((booking: schema.EventData) => {
         const attendees = booking.attendees;
         // TODO: Remove me
+
+        const htmlLink: string | undefined = booking?.htmlLink as string;
+
+        const eventEidWithTImeZone: string = htmlLink?.split('=')[1];
+        const eventEid: string = eventEidWithTImeZone?.split('&')[0];
+        const link: string =
+            'https://calendar.google.com/calendar/u/1/r/eventedit/' + eventEid;
         const simpleEvent: CurrentBookingData = {
             id: booking.id,
             startTime: booking.start?.dateTime,
             endTime: booking.end?.dateTime,
             organizerEmail: booking?.organizer?.email,
             resourceStatus: '',
+            meetingLink: link,
             room: {
                 id: '',
                 name: null,

@@ -69,8 +69,11 @@ const CurrentBooking = (props: CurrentBookingProps) => {
         updateRooms
     } = props;
 
-    const { createSuccessNotification, createErrorNotification } =
-        useCreateNotification();
+    const {
+        createSuccessNotification,
+        createErrorNotification,
+        createNotificationWithType
+    } = useCreateNotification();
 
     const [selectedId, setSelectedId] = useState('false');
     const [bookingProcessing, setBookingProcessing] = useState('false');
@@ -126,7 +129,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                 // replace updated booking
                 updateBookings();
                 updateRooms();
-                createSuccessNotification('Booking ended');
+                createNotificationWithType('Booking ended', 'success');
                 window.scrollTo(0, 0);
             })
             .catch(() => {

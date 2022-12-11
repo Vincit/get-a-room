@@ -1,7 +1,5 @@
 import { Schema } from 'mongoose';
 import subscription from '../types/subscription';
-import scheduleData from '../types/scheduleData';
-import { type } from 'os';
 
 export const subscriptionSchema = new Schema<subscription>(
     {

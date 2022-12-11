@@ -4,7 +4,6 @@ import * as schema from '../../utils/googleSchema';
 import * as responses from '../../utils/responses';
 import { simplifySingleRoomData } from '../roomController';
 import { DateTime } from 'luxon';
-import { scheduleJob } from 'node-schedule';
 
 /**
  * Simplify the event data to defined type

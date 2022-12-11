@@ -26,8 +26,7 @@ const useCreateNotification = () => {
         (message: string, type: NotificationType) => {
             enqueueSnackbar(message, {
                 variant: type,
-                action: closeAction,
-                autoHideDuration: 15000
+                action: closeAction
             });
         },
         [enqueueSnackbar, closeAction]
@@ -35,6 +34,17 @@ const useCreateNotification = () => {
 
     const createSuccessNotification = useCallback(
         (message: string) => {
+            enqueueSnackbar(
+                <div>Booking was succesful!</div>,
+
+                {
+                    variant: 'success',
+                    action: closeAction,
+                    persist: true,
+                    style: { whiteSpace: 'pre-line' },
+                    preventDuplicate: false
+                }
+            );
             enqueueSnackbar(message, {
                 variant: 'success',
                 action: closeAction

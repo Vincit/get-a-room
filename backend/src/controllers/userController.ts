@@ -4,7 +4,6 @@ import Preferences from '../types/preferences';
 import Subscription from '../types/subscription';
 import ScheduleData from '../types/scheduleData';
 import User from '../types/user';
-import scheduleDataArray from '../types/scheduleDataArray';
 
 export function createUserFromTokenPayload(
     payload: TokenPayload,

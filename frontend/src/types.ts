@@ -6,6 +6,7 @@ export interface Booking {
     id: string;
     startTime: string;
     endTime: string;
+    meetingLink: string;
     room: Room;
     resourceStatus: string;
 }

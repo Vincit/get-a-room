@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
 import * as calendar from '../googleAPI/calendarAPI';
 import * as responses from '../../utils/responses';
 import { OAuth2Client } from 'google-auth-library';
 import _ from 'lodash';
-import { start } from 'repl';
 
 /**
  * Add res.locals.roomAccepted boolean that tells if the room has accepted the event

@@ -1,5 +1,4 @@
 import Preferences from '../types/preferences';
-import ScheduleData from '../types/scheduleData';
 import Subcription from '../types/subscription';
 import ScheduleDataArray from '../types/scheduleDataArray';
 

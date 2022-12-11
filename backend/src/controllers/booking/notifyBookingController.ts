@@ -1,8 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { DateTime } from 'luxon';
-import * as calendar from '../googleAPI/calendarAPI';
 import * as responses from '../../utils/responses';
-import { OAuth2Client } from 'google-auth-library';
 import schedule from 'node-schedule';
 import Subscription from '../../types/subscription';
 import ScheduleData from '../../types/scheduleData';
@@ -13,14 +10,12 @@ import {
     getUserWithSubject
 } from '../userController';
 import _ from 'lodash';
-import scheduleDataArray from '../../types/scheduleDataArray';
-import { scheduleDataSchema } from '../../models/scheduleData';
 
 // PublicKey adn privateKey
 
-const publicKey: string =
+const publicKey =
     'BEvPpDPDB543o1VH8QsnHJC2BW2znZqip3KJ4kxtFR98zetTY4TSozQIWllDfV8bnyZoQP_XCfuYC1G0C5WUNgU';
-const privateKey: string = '2sy8ts8Z7yXDnB2E5EZhwfx3Y7nXcJRnhgT12SgDVOA';
+const privateKey = '2sy8ts8Z7yXDnB2E5EZhwfx3Y7nXcJRnhgT12SgDVOA';
 
 webpush.setVapidDetails('mailto:test@test.com', publicKey, privateKey);
 
@@ -175,16 +170,13 @@ export const scheduleNotification = () => {
         next: NextFunction
     ) => {
         try {
-            //Current Date
-            const currentDate = new Date();
-
             // Time setting problem
             // Check the hours
             const minute: string = res.locals.endMinute;
             const hour: string = res.locals.endHour;
 
-            const hourN: Number = Number(hour) + 2;
-            const minuteN: Number = Number(minute) - 5;
+            const hourN: number = Number(hour) + 2;
+            const minuteN: number = Number(minute) - 5;
 
             const scheduleTime = minuteN + ' ' + hourN + ' * * *';
 
@@ -220,7 +212,7 @@ export const scheduleNotification = () => {
             if (!uniqueId) {
                 return responses.internalServerError(req, res);
             }
-
+            // eslint-disable-next-line
             const subscription: any = user?.subscription;
             if (!subscription) {
                 return responses.internalServerError(req, res);
@@ -373,7 +365,6 @@ export const pushNotification = () => {
     ) => {
         try {
             const sub = res.locals.sub;
-            const scheduleData: ScheduleData = res.locals.scheduleData;
 
             if (!sub) {
                 return responses.badRequest(req, res);
@@ -383,7 +374,7 @@ export const pushNotification = () => {
             if (!user) {
                 return responses.internalServerError(req, res);
             }
-
+            // eslint-disable-next-line
             const subscription: any = user?.subscription;
             if (!subscription) {
                 return responses.internalServerError(req, res);

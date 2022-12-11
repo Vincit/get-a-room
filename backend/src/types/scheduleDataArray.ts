@@ -1,5 +1,3 @@
-import ScheduleData from '../types/scheduleData';
-
 /* type scheduleDataArray = Array<{
     scheduleData?: ScheduleData | undefined;
 }>; */
