@@ -134,11 +134,13 @@ export const makeBooking = () => {
             const time: string = res.locals.startTime;
             const hour: string = time.split(':')[0];
             const minute: string = time.split(':')[1];
+
             const startTime = DateTime.fromObject({
                 hour: Number(hour),
                 minute: Number(minute),
                 second: 0
             }).toUTC();
+
             const endTime = startTime
                 .plus({ minutes: res.locals.duration })
                 .toUTC();
@@ -155,9 +157,14 @@ export const makeBooking = () => {
             if (!response.id) {
                 return responses.internalServerError(req, res);
             }
-
+            res.locals.endTime = endTime.toISO();
+            res.locals.startTime = startTime;
             res.locals.event = response;
             res.locals.eventId = response.id;
+
+            res.locals.endHour = endTime.get('hour');
+            res.locals.endMinute = endTime.get('minute');
+            //console.log('The end time hour is',endTime.get('hour'));
 
             next();
         } catch (err) {

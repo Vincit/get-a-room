@@ -1,6 +1,8 @@
 import { TokenPayload } from 'google-auth-library';
 import UserModel from '../models/user';
 import Preferences from '../types/preferences';
+import Subscription from '../types/subscription';
+import ScheduleData from '../types/scheduleData';
 import User from '../types/user';
 
 export function createUserFromTokenPayload(
@@ -12,6 +14,8 @@ export function createUserFromTokenPayload(
         name: payload.name,
         refreshToken: refreshToken,
         preferences: {}
+        //scheduleDataArray: [{}],
+        /* subscription: {} */
     };
     const user = new UserModel(userBase);
     return user.save();
@@ -33,4 +37,21 @@ export function updatePreferences(
     preferences: Preferences
 ): Promise<User | null> {
     return UserModel.findOneAndUpdate({ subject }, { preferences }).exec();
+}
+
+export function updateSubscription(
+    subject: string,
+    subscription: Subscription
+): Promise<User | null> {
+    return UserModel.findOneAndUpdate({ subject }, { subscription }).exec();
+}
+
+export function updateScheduleData(
+    subject: string,
+    scheduleData: ScheduleData
+): Promise<User | null> {
+    return UserModel.findOneAndUpdate(
+        { subject },
+        { $push: { scheduleDataArray: scheduleData } }
+    ).exec();
 }

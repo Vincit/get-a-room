@@ -45,6 +45,10 @@ const useCreateNotification = () => {
                     preventDuplicate: false
                 }
             );
+            enqueueSnackbar(message, {
+                variant: 'success',
+                action: closeAction
+            });
         },
         [enqueueSnackbar, closeAction]
     );

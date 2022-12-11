@@ -6,6 +6,7 @@ import { simplifyEventData } from '../controllers/booking/bookingUtils';
 import * as currentBookingsController from '../controllers/booking/currentBookingsController';
 import * as makeBookingController from '../controllers/booking/makeBookingController';
 import * as updateBookingController from '../controllers/booking/updateBookingController';
+import * as notifyBookingController from '../controllers/booking/notifyBookingController';
 import * as responses from '../utils/responses';
 
 export const router = express.Router();
@@ -19,6 +20,8 @@ router.post(
     makeBookingController.makeBooking(),
     makeBookingController.checkRoomAccepted(), // This middleware slows things down :(
     makeBookingController.removeDeclinedEvent(),
+    notifyBookingController.updateScheduleDataToDatabase(),
+    notifyBookingController.scheduleNotification(),
     simplifyEventData(),
     (req: Request, res: Response) => {
         res.status(201).json(res.locals.event);
@@ -68,6 +71,12 @@ router.patch(
     updateBookingController.addTimeToBooking(),
     makeBookingController.checkRoomAccepted(),
     updateBookingController.rollBackDeclinedUpdate(),
+    //Cancle old schedule job
+    notifyBookingController.updateEndTime(),
+    //New middleware function
+    notifyBookingController.updateNewScheduleDataToDatabase(),
+    //Arrange a new one
+    notifyBookingController.scheduleNotification(),
     simplifyEventData(),
     (req: Request, res: Response) => {
         res.status(200).json(res.locals.event);
@@ -79,8 +88,21 @@ router.patch(
     '/:bookingId/endNow',
     getBooking(),
     updateBookingController.endBookingNow(),
-
+    //Cancle a schedule job
+    notifyBookingController.cancelSceduleJob(),
+    notifyBookingController.pushNotification(),
     (req: Request, res: Response) => {
         res.status(200).json(res.locals.event);
+    }
+);
+
+// Get the user subscription
+router.post(
+    '/notification',
+    notifyBookingController.getSubscription(),
+    notifyBookingController.updateSubscriptionToDatabse(),
+
+    (req: Request, res: Response) => {
+        res.status(200).json(res.locals.subscription);
     }
 );

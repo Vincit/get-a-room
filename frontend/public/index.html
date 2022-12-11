@@ -33,25 +33,6 @@
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root"></div>
-        <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker
-                        .register('/serviceworker.js')
-                        .then((reg) =>
-                            console.log(
-                                'Service workker registration was successfull with scope: ',
-                                reg.scope
-                            )
-                        )
-                        .catch((err) =>
-                            console.log(
-                                'Service worker registration failed with error: ',
-                                err
-                            )
-                        );
-                });
-            }
-        </script>
+        <script src="sw.js"></script>
     </body>
 </html>
