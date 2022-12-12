@@ -9,7 +9,6 @@ import {
     updateScheduleData,
     getUserWithSubject
 } from '../userController';
-//import _ from 'lodash';
 
 // PublicKey adn privateKey
 
@@ -225,8 +224,8 @@ export const scheduleNotification = () => {
             };
 
             const payload = JSON.stringify({
-                title: 'Meeting End Notification',
-                body: 'Your current meeting is going to an end in 5 minutes!'
+                title: 'Your current meeting is going to end in 5 minutes!',
+                body: 'Meeting End Notification'
             });
 
             const job = schedule.scheduleJob(
@@ -396,8 +395,8 @@ export const pushNotification = () => {
             };
 
             const payload = JSON.stringify({
-                title: 'Meeting End Notification',
-                body: 'Your current meeting ends now!'
+                title: 'Your current meeting ends now!',
+                body: 'Meeting End Notification'
             });
 
             webpush.sendNotification(subscriptionToPush, payload, options);

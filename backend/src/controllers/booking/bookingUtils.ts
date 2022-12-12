@@ -42,8 +42,7 @@ export const simplifyEventData = () => {
                 id: event.id,
                 startTime: start,
                 endTime: end,
-                room: roomData,
-                scheduleJob: res.locals.scheduleData
+                room: roomData
             };
 
             // Check if any of the properties are undefined
@@ -51,8 +50,7 @@ export const simplifyEventData = () => {
                 !simpleEvent.id ||
                 !simpleEvent.startTime ||
                 !simpleEvent.endTime ||
-                !simpleEvent.room ||
-                !simpleEvent.scheduleJob
+                !simpleEvent.room
             ) {
                 return responses.internalServerError(req, res);
             }
