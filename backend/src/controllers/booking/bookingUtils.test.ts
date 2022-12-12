@@ -66,7 +66,18 @@ describe('bookingUtils', () => {
             );
 
             const locals = mockResponse.locals;
+            expect(mockNext).toBeCalledWith();
             expect(locals).toHaveProperty('event');
+            expect(locals?.event).toHaveProperty('id', TEST_EVENTDATA.id);
+            expect(locals?.event).toHaveProperty(
+                'startTime',
+                TEST_EVENTDATA.start?.dateTime
+            );
+            expect(locals?.event).toHaveProperty(
+                'endTime',
+                TEST_EVENTDATA.end?.dateTime
+            );
+            expect(locals?.event.room).toEqual(MOCK_ROOM_DATA);
         });
 
         test('Should return internal server error if roomId property is missing', async () => {
