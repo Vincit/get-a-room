@@ -21,9 +21,6 @@ self.addEventListener('fetch', (event) => {
         return false;
     }
 
-    // Debug printing of URL:s that will be cached
-    // console.log(event.request.url);
-
     event.respondWith(
         caches.match(event.request).then(function (response) {
             return (
@@ -54,7 +51,6 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('push', (event) => {
-    console.log(event);
     const data = JSON.parse(event.data.text());
     const options = {
         body: data.content

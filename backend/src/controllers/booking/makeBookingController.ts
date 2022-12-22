@@ -164,7 +164,6 @@ export const makeBooking = () => {
 
             res.locals.endHour = endTime.get('hour');
             res.locals.endMinute = endTime.get('minute');
-            //console.log('The end time hour is',endTime.get('hour'));
 
             next();
         } catch (err) {

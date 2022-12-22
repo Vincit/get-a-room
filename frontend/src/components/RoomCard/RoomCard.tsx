@@ -183,7 +183,6 @@ const RoomCard = (props: RoomCardProps) => {
         event.preventDefault();
 
         if (preferences === undefined) {
-            console.log('undefined');
             return;
         }
         let fav_rooms_now = preferences.fav_rooms as Array<string>;

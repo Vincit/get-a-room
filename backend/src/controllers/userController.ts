@@ -14,8 +14,6 @@ export function createUserFromTokenPayload(
         name: payload.name,
         refreshToken: refreshToken,
         preferences: {}
-        //scheduleDataArray: [{}],
-        /* subscription: {} */
     };
     const user = new UserModel(userBase);
     return user.save();

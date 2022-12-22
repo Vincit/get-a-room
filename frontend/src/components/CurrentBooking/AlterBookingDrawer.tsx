@@ -221,17 +221,9 @@ const AlterBookingDrawer = (props: Props) => {
 
     const handleOnClick = (shareDetails: any) => {
         if (navigator.share) {
-            navigator
-                .share(shareDetails)
-                .then(() => {
-                    console.log('Successfully shared');
-                })
-                .catch((error) => {
-                    console.error(
-                        'Something went wrong sharing the link',
-                        error
-                    );
-                });
+            navigator.share(shareDetails).catch((error) => {
+                console.error('Something went wrong sharing the link', error);
+            });
         }
     };
 

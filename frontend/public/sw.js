@@ -1,12 +1,10 @@
-//import pushSubscriptionData from '../src/services/NotificationManager'
-
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker
             .register('/serviceworker.js')
             .then((reg) => {
                 console.log(
-                    'Service workker registration was successfull with scope: ',
+                    'Service worker registration was successfull with scope: ',
                     reg.scope
                 );
             })
@@ -51,12 +49,7 @@ function subscribingToPush() {
             });
         })
         .then((pushSubscription) => {
-            console.log(
-                'Received PushSubscription: ',
-                JSON.stringify(pushSubscription)
-            );
             sendSubscriptionToBackEnd(pushSubscription);
-            //pushSubscriptionData(pushSubscription);
             return pushSubscription;
         });
 }
@@ -74,8 +67,7 @@ function sendSubscriptionToBackEnd(subscriptionData) {
         },
         body: JSON.stringify(subscription)
     }).then(function (response) {
-        console.log(response);
-        if (!response) {
+        if (response?.status !== 200) {
             throw new Error('Bad status code from server.');
         }
 
