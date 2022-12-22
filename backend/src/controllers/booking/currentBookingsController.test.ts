@@ -30,7 +30,8 @@ describe('currentBookingsController', () => {
             mockRequest = {};
             mockResponse = {
                 locals: {
-                    oAuthClient: 'client'
+                    oAuthClient: 'client',
+                    email: userEmail
                 }
             };
             mockNext = jest.fn();
@@ -57,7 +58,7 @@ describe('currentBookingsController', () => {
             expect(currentBookings).not.toBeFalsy();
             expect(currentBookings.items).not.toBeUndefined();
             expect(currentBookings?.kind).toBe('calendar#events');
-            expect(currentBookings?.items?.length).toBe(3);
+            expect(currentBookings?.items?.length).toBe(4);
         });
 
         test('Should respond with internal server error if response object is empty', async () => {
@@ -84,7 +85,8 @@ describe('currentBookingsController', () => {
             mockResponse = {
                 locals: {
                     oAuthClient: 'client',
-                    currentBookings: allCurrentAndFutureBookings
+                    currentBookings: allCurrentAndFutureBookings,
+                    email: userEmail
                 }
             };
             mockNext = jest.fn();
@@ -118,7 +120,8 @@ describe('currentBookingsController', () => {
             mockResponse = {
                 locals: {
                     oAuthClient: 'client',
-                    currentBookings: { kind: 'calendar#events', items: [] }
+                    currentBookings: { kind: 'calendar#events', items: [] },
+                    email: userEmail
                 }
             };
             mockNext = jest.fn();
@@ -141,6 +144,9 @@ describe('currentBookingsController', () => {
 });
 
 // Test mock data
+const userEmail = 'mock@mock.com';
+
+// Test mock data
 const allCurrentAndFutureBookings: schema.EventsData = {
     kind: 'calendar#events',
     items: [
@@ -152,6 +158,9 @@ const allCurrentAndFutureBookings: schema.EventsData = {
             },
             end: {
                 dateTime: DateTime.now().toUTC().minus({ minutes: 1 }).toISO()
+            },
+            organizer: {
+                email: userEmail
             },
             attendees: [
                 {
@@ -169,6 +178,9 @@ const allCurrentAndFutureBookings: schema.EventsData = {
             end: {
                 dateTime: DateTime.now().toUTC().plus({ minutes: 30 }).toISO()
             },
+            organizer: {
+                email: userEmail
+            },
             attendees: [
                 {
                     resource: true,
@@ -185,10 +197,32 @@ const allCurrentAndFutureBookings: schema.EventsData = {
             end: {
                 dateTime: DateTime.now().toUTC().plus({ minutes: 61 }).toISO()
             },
+            organizer: {
+                email: userEmail
+            },
             attendees: [
                 {
                     resource: true,
                     displayName: 'Arkadia-4-Arkadia (6) [TV]'
+                }
+            ]
+        },
+        {
+            id: '1j17pp72bmld5an9abls35p298',
+            location: 'Hermia 5-2-Namu-Sofas (10) [TV]',
+            start: {
+                dateTime: DateTime.now().toUTC().plus({ minutes: 11 }).toISO()
+            },
+            end: {
+                dateTime: DateTime.now().toUTC().minus({ minutes: 26 }).toISO()
+            },
+            organizer: {
+                email: 'another-mock-user@mock.com'
+            },
+            attendees: [
+                {
+                    resource: true,
+                    displayName: 'Hermia 5-2-Namu-Sofas (10) [TV]'
                 }
             ]
         }

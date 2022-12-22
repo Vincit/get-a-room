@@ -225,7 +225,11 @@ export const filterCurrentBookings = (
                 return false;
             }
 
-            if (booking.organizerEmail !== userEmail) {
+            if (
+                !booking.organizerEmail ||
+                !userEmail ||
+                booking.organizerEmail !== userEmail
+            ) {
                 return false;
             }
             return booking.endTime >= now;
