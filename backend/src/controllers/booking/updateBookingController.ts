@@ -60,9 +60,6 @@ export const addTimeToBooking = () => {
             );
             res.locals.event = result;
 
-            res.locals.endHour = endTimeUTC.get('hour');
-            res.locals.endMinute = endTimeUTC.get('minute');
-
             if (!eventData.end?.dateTime) {
                 return responses.internalServerError(req, res);
             }

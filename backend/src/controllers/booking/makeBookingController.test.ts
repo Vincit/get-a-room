@@ -40,7 +40,7 @@ describe('makeBookingController', () => {
             roomId: 'testroom@oispahuone.com',
             title: 'Test reservation',
             duration: 60,
-            startTime: '9:0'
+            startTime: DateTime.fromFormat('09:00', 'hh:mm').toISO()
         };
 
         beforeEach(() => {
@@ -143,7 +143,7 @@ describe('makeBookingController', () => {
             mockRequest = {
                 body: {
                     duration: 60,
-                    startTime: '9:0'
+                    startTime: DateTime.fromFormat('09:00', 'hh:mm').toISO()
                 }
             };
             mockResponse = {
@@ -153,7 +153,7 @@ describe('makeBookingController', () => {
                     email: 'test@oispahuone.com',
                     title: 'Test title',
                     duration: 60,
-                    startTime: '9:0'
+                    startTime: DateTime.fromFormat('09:00', 'hh:mm').toISO()
                 }
             };
             mockNext = jest.fn();
@@ -206,7 +206,9 @@ describe('makeBookingController', () => {
                     oAuthClient: 'client',
                     roomId: 'room',
                     duration: 60,
-                    startTime: `${startingTime.hour}:${startingTime.minute}`
+                    startTime: startingTime
+                        .set({ second: 0, millisecond: 0 })
+                        .toISO()
                 }
             };
             mockNext = jest.fn();

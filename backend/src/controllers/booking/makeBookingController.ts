@@ -76,18 +76,11 @@ export const checkRoomIsFree = () => {
             const client: OAuth2Client = res.locals.oAuthClient;
             const roomId: string = res.locals.roomId;
 
-            const time: string = res.locals.startTime;
-            const hour: string = time.split(':')[0];
-            const minute: string = time.split(':')[1];
-
-            const startTime = DateTime.fromObject({
-                hour: Number(hour),
-                minute: Number(minute),
-                second: 0
-            }).toUTC();
+            const startTime = DateTime.fromISO(res.locals.startTime).toUTC();
             const endTime = startTime
                 .plus({ minutes: res.locals.duration })
                 .toUTC();
+
             const freeBusyResult = (
                 await calendar.freeBusyQuery(
                     client,
@@ -131,16 +124,7 @@ export const makeBooking = () => {
         next: NextFunction
     ) => {
         try {
-            const time: string = res.locals.startTime;
-            const hour: string = time.split(':')[0];
-            const minute: string = time.split(':')[1];
-
-            const startTime = DateTime.fromObject({
-                hour: Number(hour),
-                minute: Number(minute),
-                second: 0
-            }).toUTC();
-
+            const startTime = DateTime.fromISO(res.locals.startTime).toUTC();
             const endTime = startTime
                 .plus({ minutes: res.locals.duration })
                 .toUTC();
@@ -158,12 +142,8 @@ export const makeBooking = () => {
                 return responses.internalServerError(req, res);
             }
             res.locals.endTime = endTime.toISO();
-            res.locals.startTime = startTime;
             res.locals.event = response;
             res.locals.eventId = response.id;
-
-            res.locals.endHour = endTime.get('hour');
-            res.locals.endMinute = endTime.get('minute');
 
             next();
         } catch (err) {

@@ -9,6 +9,7 @@ import {
     updateScheduleData,
     getUserWithSubject
 } from '../userController';
+import { DateTime } from 'luxon';
 
 // PublicKey adn privateKey
 
@@ -169,15 +170,7 @@ export const scheduleNotification = () => {
         next: NextFunction
     ) => {
         try {
-            // Time setting problem
-            // Check the hours
-            const minute: string = res.locals.endMinute;
-            const hour: string = res.locals.endHour;
-
-            const hourN: number = Number(hour) + 2;
-            const minuteN: number = Number(minute) - 5;
-
-            const scheduleTime = minuteN + ' ' + hourN + ' * * *';
+            const endTime = DateTime.fromISO(res.locals.endTime);
 
             const sub = res.locals.sub;
             const user = await getUserWithSubject(sub);
@@ -228,6 +221,7 @@ export const scheduleNotification = () => {
                 body: 'Meeting End Notification'
             });
 
+            const scheduleTime = endTime.minus({ minutes: 5 }).toJSDate();
             const job = schedule.scheduleJob(
                 `${uniqueId}`,
                 scheduleTime,

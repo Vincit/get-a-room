@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { List, Typography, Box, styled, ToggleButton } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { makeBooking } from '../../services/bookingService';
@@ -213,20 +213,22 @@ const AvailableRoomList = (props: BookingListProps) => {
         if (room === undefined) {
             return;
         }
-        const currentTime = DateTime.now();
-        const h =
-            currentTime.hour < 10
-                ? `0${currentTime.hour}`
-                : `${currentTime.hour}`;
-        const m =
-            currentTime.minute < 10
-                ? `0${currentTime.minute}`
-                : `${currentTime.minute}`;
+
+        const bookingStartTime =
+            startingTime === 'Now'
+                ? DateTime.utc()
+                      .set({
+                          second: 0,
+                          millisecond: 0
+                      })
+                      .toISO()
+                : DateTime.fromFormat(startingTime, 'hh:mm').toUTC().toISO();
+
         let bookingDetails: BookingDetails = {
             duration: duration,
             title: 'Reservation from Get a Room!',
             roomId: room.id,
-            startTime: startingTime === 'Now' ? `${h}:${m}` : startingTime
+            startTime: bookingStartTime
         };
 
         setBookingLoading(room.id);

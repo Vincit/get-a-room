@@ -176,13 +176,13 @@ describe('AvailableRoomList', () => {
     });
 
     it('default books for a room for 15 minutes', async () => {
-        const dt = DateTime.now();
-        const h = `${dt.hour < 10 ? `0${dt.hour}` : `${dt.hour}`}`;
-        const m = `${dt.minute < 10 ? `0${dt.minute}` : `${dt.minute}`}`;
+        const startTime = DateTime.utc()
+            .set({ second: 0, millisecond: 0 })
+            .toISO();
         (makeBooking as jest.Mock).mockResolvedValueOnce({
             duration: 15,
             roomId: fakeRooms[0].id,
-            startTime: `${h}:${m}`,
+            startTime: startTime,
             title: 'Reservation from Get a Room!'
         });
 
@@ -205,7 +205,7 @@ describe('AvailableRoomList', () => {
                 {
                     duration: 15,
                     roomId: fakeRooms[0].id,
-                    startTime: `${h}:${m}`,
+                    startTime: startTime,
                     title: 'Reservation from Get a Room!'
                 },
                 true
@@ -214,13 +214,13 @@ describe('AvailableRoomList', () => {
     });
 
     it('books for a room for 30 minutes', async () => {
-        const dt = DateTime.now();
-        const h = `${dt.hour < 10 ? `0${dt.hour}` : `${dt.hour}`}`;
-        const m = `${dt.minute < 10 ? `0${dt.minute}` : `${dt.minute}`}`;
+        const startTime = DateTime.utc()
+            .set({ second: 0, millisecond: 0 })
+            .toISO();
         (makeBooking as jest.Mock).mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
-            startTime: `${h}:${m}`,
+            startTime: startTime,
             title: 'Reservation from Get a Room!'
         });
 
@@ -243,7 +243,7 @@ describe('AvailableRoomList', () => {
                 {
                     duration: 30,
                     roomId: fakeRooms[0].id,
-                    startTime: `${h}:${m}`,
+                    startTime: startTime,
                     title: 'Reservation from Get a Room!'
                 },
                 true
@@ -252,13 +252,13 @@ describe('AvailableRoomList', () => {
     });
 
     it('books for a room for 60 minutes', async () => {
-        const dt = DateTime.now();
-        const h = `${dt.hour < 10 ? `0${dt.hour}` : `${dt.hour}`}`;
-        const m = `${dt.minute < 10 ? `0${dt.minute}` : `${dt.minute}`}`;
+        const startTime = DateTime.utc()
+            .set({ second: 0, millisecond: 0 })
+            .toISO();
         (makeBooking as jest.Mock).mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
-            startTime: `${h}:${m}`,
+            startTime: startTime,
             title: 'Reservation from Get a Room!'
         });
 
@@ -281,7 +281,7 @@ describe('AvailableRoomList', () => {
                 {
                     duration: 60,
                     roomId: fakeRooms[0].id,
-                    startTime: `${h}:${m}`,
+                    startTime: startTime,
                     title: 'Reservation from Get a Room!'
                 },
                 true
@@ -290,13 +290,13 @@ describe('AvailableRoomList', () => {
     });
 
     it('books for a room for 120 minutes', async () => {
-        const dt = DateTime.now();
-        const h = `${dt.hour < 10 ? `0${dt.hour}` : `${dt.hour}`}`;
-        const m = `${dt.minute < 10 ? `0${dt.minute}` : `${dt.minute}`}`;
+        const startTime = DateTime.utc()
+            .set({ second: 0, millisecond: 0 })
+            .toISO();
         (makeBooking as jest.Mock).mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
-            startTime: `${h}:${m}`,
+            startTime: startTime,
             title: 'Reservation from Get a Room!'
         });
 
@@ -319,7 +319,7 @@ describe('AvailableRoomList', () => {
                 {
                     duration: 120,
                     roomId: fakeRooms[0].id,
-                    startTime: `${h}:${m}`,
+                    startTime: startTime,
                     title: 'Reservation from Get a Room!'
                 },
                 true
