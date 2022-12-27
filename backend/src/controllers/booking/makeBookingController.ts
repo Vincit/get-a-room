@@ -99,7 +99,6 @@ export const checkRoomIsFree = () => {
                 .toUTC()
                 .diff(endTime, 'seconds');
 
-            // Allow difference of +- 15 seconds for conflict cases
             if (diff.seconds < 0) {
                 return responses.custom(req, res, 409, 'Conflict');
             }
@@ -141,7 +140,6 @@ export const makeBooking = () => {
             if (!response.id) {
                 return responses.internalServerError(req, res);
             }
-            res.locals.endTime = endTime.toISO();
             res.locals.event = response;
             res.locals.eventId = response.id;
 

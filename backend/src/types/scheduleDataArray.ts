@@ -1,7 +1,3 @@
-/* type scheduleDataArray = Array<{
-    scheduleData?: ScheduleData | undefined;
-}>; */
-
 type scheduleDataArray = [
     {
         endTime: string;

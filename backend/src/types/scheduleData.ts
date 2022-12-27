@@ -1,6 +1,6 @@
 type scheduleData = {
     endTime: string;
-    roomId?: string | undefined;
+    roomId: string;
 };
 
 export default scheduleData;

@@ -1,8 +1,8 @@
 import keys from '../types/keys';
 
 type subscription = {
-    endpoint?: string | null | undefined;
-    expirationTime?: string | null | undefined;
+    endpoint?: string | undefined;
+    expirationTime?: string | undefined;
     keys?: keys | undefined;
 };
 

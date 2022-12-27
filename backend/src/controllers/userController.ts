@@ -1,4 +1,5 @@
 import { TokenPayload } from 'google-auth-library';
+import { Types } from 'mongoose';
 import UserModel from '../models/user';
 import Preferences from '../types/preferences';
 import Subscription from '../types/subscription';
@@ -44,12 +45,24 @@ export function updateSubscription(
     return UserModel.findOneAndUpdate({ subject }, { subscription }).exec();
 }
 
-export function updateScheduleData(
+export function addScheduleData(
     subject: string,
     scheduleData: ScheduleData
 ): Promise<User | null> {
     return UserModel.findOneAndUpdate(
         { subject },
-        { $push: { scheduleDataArray: scheduleData } }
+        { $push: { scheduleDataArray: scheduleData } },
+        // return the updated document, see: https://mongoosejs.com/docs/tutorials/findoneandupdate.html
+        { new: true }
+    ).exec();
+}
+
+export function removeScheduleData(
+    subject: string,
+    id: string
+): Promise<User | null> {
+    return UserModel.findOneAndUpdate(
+        { subject },
+        { $pull: { scheduleDataArray: { _id: new Types.ObjectId(id) } } }
     ).exec();
 }

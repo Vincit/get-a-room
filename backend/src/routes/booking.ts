@@ -20,7 +20,6 @@ router.post(
     makeBookingController.makeBooking(),
     makeBookingController.checkRoomAccepted(), // This middleware slows things down :(
     makeBookingController.removeDeclinedEvent(),
-    notifyBookingController.updateScheduleDataToDatabase(),
     notifyBookingController.scheduleNotification(),
     simplifyEventData(),
     (req: Request, res: Response) => {
@@ -57,9 +56,16 @@ router.get(
 );
 
 // Delete a booking
-router.delete('/:bookingId', deleteBooking(), (req: Request, res: Response) => {
-    res.status(204).send('No Content');
-});
+router.delete(
+    '/:bookingId',
+    // Fetch original booking for notification cancellation
+    getBooking(),
+    deleteBooking(),
+    notifyBookingController.cancelNotification(),
+    (req: Request, res: Response) => {
+        res.status(204).send('No Content');
+    }
+);
 
 // Add time to a booking
 router.patch(
@@ -68,14 +74,10 @@ router.patch(
     body('timeToAdd').trim().escape().isNumeric(),
     getBooking(),
     updateBookingController.checkRoomIsFree(),
+    notifyBookingController.cancelNotification(),
     updateBookingController.addTimeToBooking(),
     makeBookingController.checkRoomAccepted(),
     updateBookingController.rollBackDeclinedUpdate(),
-    //Cancle old schedule job
-    notifyBookingController.updateEndTime(),
-    //New middleware function
-    notifyBookingController.updateNewScheduleDataToDatabase(),
-    //Arrange a new one
     notifyBookingController.scheduleNotification(),
     simplifyEventData(),
     (req: Request, res: Response) => {
@@ -83,13 +85,12 @@ router.patch(
     }
 );
 
-// Change booking endtime to now
+// Change booking endTime to now
 router.patch(
     '/:bookingId/endNow',
     getBooking(),
+    notifyBookingController.cancelNotification(),
     updateBookingController.endBookingNow(),
-    //Cancle a schedule job
-    notifyBookingController.cancelSceduleJob(),
     notifyBookingController.pushNotification(),
     (req: Request, res: Response) => {
         res.status(200).json(res.locals.event);
@@ -100,8 +101,7 @@ router.patch(
 router.post(
     '/notification',
     notifyBookingController.getSubscription(),
-    notifyBookingController.updateSubscriptionToDatabse(),
-
+    notifyBookingController.updateSubscriptionToDatabase(),
     (req: Request, res: Response) => {
         res.status(200).json(res.locals.subscription);
     }
