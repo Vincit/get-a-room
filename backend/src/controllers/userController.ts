@@ -45,6 +45,10 @@ export function updateSubscription(
     return UserModel.findOneAndUpdate({ subject }, { subscription }).exec();
 }
 
+export function removeSubscription(subject: string): Promise<User | null> {
+    return UserModel.findOneAndUpdate({ subject }, { subscription: {} }).exec();
+}
+
 export function addScheduleData(
     subject: string,
     scheduleData: ScheduleData

@@ -96,13 +96,3 @@ router.patch(
         res.status(200).json(res.locals.event);
     }
 );
-
-// Get the user subscription
-router.post(
-    '/notification',
-    notifyBookingController.getSubscription(),
-    notifyBookingController.updateSubscriptionToDatabase(),
-    (req: Request, res: Response) => {
-        res.status(200).json(res.locals.subscription);
-    }
-);

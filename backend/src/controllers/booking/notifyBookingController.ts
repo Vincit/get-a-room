@@ -9,7 +9,8 @@ import {
     updateSubscription,
     addScheduleData,
     getUserWithSubject,
-    removeScheduleData
+    removeScheduleData,
+    removeSubscription
 } from '../userController';
 import { DateTime } from 'luxon';
 import keys from '../../types/keys';
@@ -87,6 +88,28 @@ export const updateSubscriptionToDatabase = () => {
         }
     };
 
+    return middleware;
+};
+
+export const unsubscribeFromNotification = () => {
+    const middleware = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const sub = res.locals.sub;
+            if (!sub) {
+                return responses.badRequest(req, res);
+            }
+
+            await removeSubscription(sub);
+
+            next();
+        } catch (error) {
+            next(error);
+        }
+    };
     return middleware;
 };
 
@@ -224,7 +247,8 @@ export const cancelNotification = () => {
 
             // Cancel the job
             const scheduleJob = schedule.scheduledJobs[jobId];
-            scheduleJob.cancel();
+            // ScheduleJob is undefined when the notification job is already run.
+            scheduleJob?.cancel();
 
             // Remove the job from database
             await removeScheduleData(sub, jobId);
