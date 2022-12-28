@@ -12,7 +12,9 @@ describe('checkEnvVariables', () => {
             GOOGLE_CLIENT_ID: 'Test ID',
             GOOGLE_CLIENT_SECRET: 'Test secret',
             GOOGLE_CUSTOMER_ID: 'Test customer ID',
-            JWT_SECRET: 'Test JWT secret'
+            JWT_SECRET: 'Test JWT secret',
+            VAPID_PUBLIC_KEY: 'Test VAPID pub key',
+            VAPID_PRIVATE_KEY: 'Test VAPID priv key'
         };
     });
 
@@ -72,12 +74,40 @@ describe('checkEnvVariables', () => {
         }).toThrow('JWT secret');
     });
 
+    test('Should fail without VAPID Public key', () => {
+        process.env.VAPID_PUBLIC_KEY = undefined;
+        expect(() => {
+            checkEnvVariables();
+        }).toThrow('VAPID public key not set');
+    });
+
+    test('Should fail with empty VAPID Public key', () => {
+        process.env.VAPID_PUBLIC_KEY = '';
+        expect(() => {
+            checkEnvVariables();
+        }).toThrow('VAPID public key not set');
+    });
+
+    test('Should fail without VAPID Private key', () => {
+        process.env.VAPID_PRIVATE_KEY = undefined;
+        expect(() => {
+            checkEnvVariables();
+        }).toThrow('VAPID private key not set');
+    });
+
+    test('Should fail with empty VAPID Private key', () => {
+        process.env.VAPID_PRIVATE_KEY = '';
+        expect(() => {
+            checkEnvVariables();
+        }).toThrow('VAPID private key not set');
+    });
+
     test('Should replace double quotes in Google env variables', () => {
         process.env = {
+            ...process.env,
             GOOGLE_CLIENT_ID: '"Test ID"',
             GOOGLE_CLIENT_SECRET: '"Test secret"',
-            GOOGLE_CUSTOMER_ID: '"Test customer ID"',
-            JWT_SECRET: 'Test JWT secret'
+            GOOGLE_CUSTOMER_ID: '"Test customer ID"'
         };
 
         checkEnvVariables();

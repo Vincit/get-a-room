@@ -14,12 +14,9 @@ import {
 import { DateTime } from 'luxon';
 import keys from '../../types/keys';
 
-// PublicKey adn privateKey
-
-const publicKey =
-    'BEvPpDPDB543o1VH8QsnHJC2BW2znZqip3KJ4kxtFR98zetTY4TSozQIWllDfV8bnyZoQP_XCfuYC1G0C5WUNgU';
-const privateKey = '2sy8ts8Z7yXDnB2E5EZhwfx3Y7nXcJRnhgT12SgDVOA';
-
+// PublicKey and privateKey
+const publicKey = process.env.VAPID_PUBLIC_KEY as string;
+const privateKey = process.env.VAPID_PRIVATE_KEY as string;
 webpush.setVapidDetails('mailto:test@test.com', publicKey, privateKey);
 
 /**

@@ -3,7 +3,9 @@ export const checkEnvVariables = () => {
         GOOGLE_CLIENT_ID,
         GOOGLE_CLIENT_SECRET,
         GOOGLE_CUSTOMER_ID,
-        JWT_SECRET
+        JWT_SECRET,
+        VAPID_PUBLIC_KEY,
+        VAPID_PRIVATE_KEY
     } = process.env;
 
     if (!GOOGLE_CLIENT_ID) {
@@ -20,6 +22,14 @@ export const checkEnvVariables = () => {
 
     if (!JWT_SECRET) {
         throw new Error('JWT secret not set');
+    }
+
+    if (!VAPID_PUBLIC_KEY) {
+        throw new Error('VAPID public key not set');
+    }
+
+    if (!VAPID_PRIVATE_KEY) {
+        throw new Error('VAPID private key not set');
     }
 
     // Remove double quotes if there are any
