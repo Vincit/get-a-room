@@ -14,6 +14,7 @@ import {
 import { Box } from '@mui/material';
 import { getName } from '../../services/nameService';
 import { useHistory } from 'react-router-dom';
+import usePushNotificationRegistration from '../../hooks/usePushNotificationRegistration';
 
 const MainView = () => {
     const [preferences, setPreferences] = useState<Preferences | undefined>();
@@ -25,6 +26,8 @@ const MainView = () => {
     const [expandBookingDrawer, setExpandBookingDrawer] = useState(false);
 
     const history = useHistory();
+
+    usePushNotificationRegistration();
 
     useEffect(() => {
         getPreferences()
