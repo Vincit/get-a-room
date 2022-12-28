@@ -3,7 +3,7 @@ import { getUserWithSubject, updatePreferences } from './userController';
 import { badRequest, internalServerError } from '../utils/responses';
 import {
     getPreferences,
-    readPrefenceBody,
+    readPreferenceBody,
     updatePreferencesToDatabase
 } from './preferencesController';
 import { mocked } from 'ts-jest/utils';
@@ -117,7 +117,7 @@ describe('preferencesController', () => {
         });
 
         test('Should set buildingId and buildingName to locals', async () => {
-            await readPrefenceBody()(
+            await readPreferenceBody()(
                 mockRequest as Request,
                 mockResponse as Response,
                 mockNext
@@ -136,7 +136,7 @@ describe('preferencesController', () => {
         test('Should return bad request if building is not set', async () => {
             delete mockRequest.body.building;
 
-            await readPrefenceBody()(
+            await readPreferenceBody()(
                 mockRequest as Request,
                 mockResponse as Response,
                 mockNext
@@ -149,7 +149,7 @@ describe('preferencesController', () => {
         test('Should return bad request if id is not set', async () => {
             delete mockRequest.body.building.id;
 
-            await readPrefenceBody()(
+            await readPreferenceBody()(
                 mockRequest as Request,
                 mockResponse as Response,
                 mockNext
@@ -162,7 +162,7 @@ describe('preferencesController', () => {
         test('Should return bad request if name is not set', async () => {
             delete mockRequest.body.building.name;
 
-            await readPrefenceBody()(
+            await readPreferenceBody()(
                 mockRequest as Request,
                 mockResponse as Response,
                 mockNext

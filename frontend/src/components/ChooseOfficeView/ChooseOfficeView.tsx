@@ -19,7 +19,7 @@ const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
     const { buildings, preferences, setPreferences, name, setBuildings } =
         props;
 
-    const [selectedBuildingId, setSelecedBuildingId] = useState('');
+    const [selectedBuildingId, setSelectedBuildingId] = useState('');
 
     const { createSuccessNotification, createErrorNotification } =
         useCreateNotification();
@@ -41,7 +41,7 @@ const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
             (building) => building.id === preferencesBuildingId
         );
         if (preferencesBuildingId && isValidBuilding) {
-            setSelecedBuildingId(preferencesBuildingId);
+            setSelectedBuildingId(preferencesBuildingId);
         }
     }, [preferences, buildings]);
 
@@ -75,7 +75,7 @@ const ChooseOfficeView = (props: ChooseOfficeViewProps) => {
         <BuildingList
             buildings={buildings}
             selectedBuildingId={selectedBuildingId}
-            setSelectedBuildingId={setSelecedBuildingId}
+            setSelectedBuildingId={setSelectedBuildingId}
             handlePreferencesSubmit={handlePreferencesSubmit}
             name={name}
         />

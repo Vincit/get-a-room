@@ -1,5 +1,5 @@
 import Preferences from '../types/preferences';
-import Subcription from '../types/subscription';
+import Subscription from '../types/subscription';
 import ScheduleDataArray from '../types/scheduleDataArray';
 
 type User = {
@@ -8,7 +8,7 @@ type User = {
     name?: string;
     refreshToken?: string;
     scheduleDataArray?: ScheduleDataArray;
-    subscription?: Subcription;
+    subscription?: Subscription;
 };
 
 export default User;

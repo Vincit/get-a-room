@@ -118,7 +118,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
             });
     };
 
-    // End booking by changing the endtime to now
+    // End booking by changing the end time to now
     const handleEndBooking = (booking: Booking) => {
         setBookingProcessing(booking.room.id);
         toggleDrawer(false);

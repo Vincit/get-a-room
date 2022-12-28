@@ -22,7 +22,7 @@ const MainView = () => {
 
     const [name, setName] = useState<String>();
 
-    const [expandBookingDrawer, setexpandBookingDrawer] = useState(false);
+    const [expandBookingDrawer, setExpandBookingDrawer] = useState(false);
 
     const history = useHistory();
 
@@ -52,13 +52,13 @@ const MainView = () => {
         building: { name: string };
     }) => {
         if (
-            localStorage.getItem('preferedBuildingName') ===
+            localStorage.getItem('preferredBuildingName') ===
             preference.building.name
         ) {
             toggleDrawn(false);
         } else {
             localStorage.setItem(
-                'preferedBuildingName',
+                'preferredBuildingName',
                 preference.building.name
             );
             toggleDrawn(true);
@@ -82,7 +82,7 @@ const MainView = () => {
     }, []);
 
     const goToMainView = useCallback(() => {
-        // Use replace in place of push because it's a temporary page and wouln't work if navigated back to
+        // Use replace in place of push because it's a temporary page and wouldn't work if navigated back to
         history.replace('/');
     }, [history]);
 
@@ -94,7 +94,7 @@ const MainView = () => {
     }, [preferences, goToMainView]);
 
     const toggleDrawn = (newOpen: boolean) => {
-        setexpandBookingDrawer(newOpen);
+        setExpandBookingDrawer(newOpen);
     };
 
     return (

@@ -15,7 +15,7 @@ router.get('/', controller.getPreferences(), (req, res) => {
 // Update preferences
 router.put(
     '/',
-    controller.readPrefenceBody(),
+    controller.readPreferenceBody(),
     validateBuildingInOrg(),
     controller.updatePreferencesToDatabase(),
     (req, res) => {

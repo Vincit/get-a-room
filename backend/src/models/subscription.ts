@@ -1,7 +1,7 @@
 import { Schema } from 'mongoose';
-import subscription from '../types/subscription';
+import Subscription from '../types/subscription';
 
-export const subscriptionSchema = new Schema<subscription>(
+export const subscriptionSchema = new Schema<Subscription>(
     {
         endpoint: { required: false, type: String },
         expirationTime: { required: false, type: String },

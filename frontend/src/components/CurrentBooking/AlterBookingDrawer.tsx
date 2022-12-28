@@ -256,7 +256,7 @@ const AlterBookingDrawer = (props: Props) => {
                     )}
                     <RowCentered>
                         <TimeTextBoldGreen>
-                            {duration} min remaning
+                            {duration} min remaining
                         </TimeTextBoldGreen>
                     </RowCentered>
                     <RowCentered>

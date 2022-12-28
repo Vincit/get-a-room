@@ -24,7 +24,7 @@ const NavBar = () => {
     const doLogout = () => {
         logout()
             .then(() => {
-                createSuccessNotification('Logout succesful');
+                createSuccessNotification('Logout successful');
                 history.push('/login');
             })
             .catch(() => {

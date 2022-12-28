@@ -35,7 +35,7 @@ const useCreateNotification = () => {
     const createSuccessNotification = useCallback(
         (message: string) => {
             enqueueSnackbar(
-                <div>Booking was succesful!</div>,
+                <div>Booking was successful!</div>,
 
                 {
                     variant: 'success',

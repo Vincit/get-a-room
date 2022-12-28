@@ -96,7 +96,7 @@ const AvailableRoomList = (props: BookingListProps) => {
 
     const [bookingLoading, setBookingLoading] = useState('false');
 
-    const [expandBookingDrawer, setexpandBookingDrawer] = useState(false);
+    const [expandBookingDrawer, setExpandBookingDrawer] = useState(false);
     const [additionalDuration, setAdditionalDuration] = useState(0);
     const [availableMinutes, setAvailableMinutes] = useState(0);
     const [selectedRoom, setSelectedRoom] = useState<Room | undefined>(
@@ -106,7 +106,7 @@ const AvailableRoomList = (props: BookingListProps) => {
     const [expandTimePickerDrawer, setExpandTimePickerDrawer] = useState(false);
     const [startingTime, setStartingTime] = useState<string>('Now');
 
-    const handleAdditionaDurationChange = (additionalMinutes: number) => {
+    const handleAdditionalDurationChange = (additionalMinutes: number) => {
         setAdditionalDuration(additionalDuration + additionalMinutes);
     };
 
@@ -195,7 +195,7 @@ const AvailableRoomList = (props: BookingListProps) => {
     };
 
     const handleCardClick = (room: Room) => {
-        setexpandBookingDrawer(true);
+        setExpandBookingDrawer(true);
         setSelectedRoom(room);
         setAvailableMinutes(availableForMinutes(room, startingTime));
     };
@@ -206,7 +206,7 @@ const AvailableRoomList = (props: BookingListProps) => {
             setAdditionalDuration(0);
             setAvailableMinutes(0);
         }
-        setexpandBookingDrawer(newOpen);
+        setExpandBookingDrawer(newOpen);
     };
 
     const book = (room: Room | undefined, duration: number) => {
@@ -242,7 +242,7 @@ const AvailableRoomList = (props: BookingListProps) => {
                 setTimeout(() => {
                     updateData();
                 }, 2500);
-                createSuccessNotification('Booking was succesful');
+                createSuccessNotification('Booking was successful');
                 setBookingLoading('false');
                 document.getElementById('main-view-content')?.scrollTo(0, 0);
             })
@@ -262,7 +262,7 @@ const AvailableRoomList = (props: BookingListProps) => {
                     duration={bookingDuration}
                     additionalDuration={additionalDuration}
                     availableMinutes={availableMinutes}
-                    onAddTime={handleAdditionaDurationChange}
+                    onAddTime={handleAdditionalDurationChange}
                     onAddTimeUntilHalf={handleUntilHalf}
                     onAddTimeUntilFull={handleUntilFull}
                     onAddTimeUntilNext={handleUntilNextDurationChange}

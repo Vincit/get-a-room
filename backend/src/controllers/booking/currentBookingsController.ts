@@ -137,7 +137,7 @@ export const addNextCalendarEventMiddleware = () => {
 };
 
 /**
- * Simlpifies bookings
+ * Simplifies bookings
  * @returns simplified bookings
  * @param allBookings
  * @param rooms

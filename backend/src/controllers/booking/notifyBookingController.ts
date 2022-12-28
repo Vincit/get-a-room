@@ -34,16 +34,16 @@ export const getSubscription = () => {
         next: NextFunction
     ) => {
         try {
-            const userSubcription: Subscription = req.body.subscription;
+            const userSubscription: Subscription = req.body.subscription;
 
-            if (!userSubcription) {
+            if (!userSubscription) {
                 return responses.badRequest(req, res);
             }
 
-            res.locals.subscription = userSubcription;
-            res.locals.endpoint = userSubcription.endpoint;
-            res.locals.expirationTime = userSubcription.expirationTime;
-            res.locals.keys = userSubcription.keys;
+            res.locals.subscription = userSubscription;
+            res.locals.endpoint = userSubscription.endpoint;
+            res.locals.expirationTime = userSubscription.expirationTime;
+            res.locals.keys = userSubscription.keys;
 
             next();
         } catch (err) {

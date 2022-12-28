@@ -31,7 +31,7 @@ export const addTimeToBooking = () => {
                 .toUTC()
                 .toISO();
 
-            // Keep responseStatus as accepcted, because in case of
+            // Keep responseStatus as accepted, because in case of
             // conflicts in Google calendar, adding time to the existing
             // booking should win over new bookings.
             const attendeeList: schema.EventAttendee[] = [
@@ -60,7 +60,7 @@ export const addTimeToBooking = () => {
     return middleware;
 };
 /**
- * Change the booking endtime to now
+ * Change the booking end time to now
  */
 export const endBookingNow = () => {
     const middleware = async (
