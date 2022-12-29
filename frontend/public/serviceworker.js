@@ -51,9 +51,12 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('push', (event) => {
-    const data = JSON.parse(event.data.text());
-    const options = {
-        body: data.content
-    };
-    event.waitUntil(self.registration.showNotification(data.title, options));
+    if (!event.data) {
+        return;
+    }
+
+    const data = event.data.json();
+    event.waitUntil(
+        self.registration.showNotification(data.title, data.options)
+    );
 });

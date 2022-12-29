@@ -10,11 +10,14 @@ export function createUserFromTokenPayload(
     payload: TokenPayload,
     refreshToken?: string
 ) {
-    const userBase: User = {
+    const userBase = {
         subject: payload.sub,
         name: payload.name,
         refreshToken: refreshToken,
-        preferences: {}
+        preferences: {},
+        scheduleDataArray: [],
+        subscription: {},
+        notificationPermission: false
     };
     const user = new UserModel(userBase);
     return user.save();
@@ -42,11 +45,17 @@ export function updateSubscription(
     subject: string,
     subscription: Subscription
 ): Promise<User | null> {
-    return UserModel.findOneAndUpdate({ subject }, { subscription }).exec();
+    return UserModel.findOneAndUpdate(
+        { subject },
+        { subscription, notificationPermission: true }
+    ).exec();
 }
 
 export function removeSubscription(subject: string): Promise<User | null> {
-    return UserModel.findOneAndUpdate({ subject }, { subscription: {} }).exec();
+    return UserModel.findOneAndUpdate(
+        { subject },
+        { subscription: {}, notificationPermission: false }
+    ).exec();
 }
 
 export function addScheduleData(
@@ -63,10 +72,17 @@ export function addScheduleData(
 
 export function removeScheduleData(
     subject: string,
-    id: string
+    id: Types.ObjectId
 ): Promise<User | null> {
     return UserModel.findOneAndUpdate(
         { subject },
-        { $pull: { scheduleDataArray: { _id: new Types.ObjectId(id) } } }
+        { $pull: { scheduleDataArray: { _id: id } } }
+    ).exec();
+}
+
+export function removeScheduleDataArray(subject: string): Promise<User | null> {
+    return UserModel.findOneAndUpdate(
+        { subject },
+        { $set: { scheduleDataArray: [] } }
     ).exec();
 }

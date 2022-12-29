@@ -16,7 +16,7 @@ router.post(
 // Unsubscribe from notifications
 router.delete(
     '/',
-    // TODO Remove all previous notifications!
+    notifyBookingController.removePendingNotifications(),
     notifyBookingController.unsubscribeFromNotification(),
     (req: Request, res: Response) => {
         res.status(200).json({});
