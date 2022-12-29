@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import Preferences from '../types/preferences';
 import Subscription from '../types/subscription';
 import ScheduleData from './scheduleData';
@@ -8,7 +7,7 @@ type User = {
     preferences: Preferences;
     name?: string;
     refreshToken?: string;
-    scheduleDataArray: Types.DocumentArray<ScheduleData>;
+    scheduleDataArray: ScheduleData[];
     subscription?: Subscription;
     notificationPermission: boolean;
 };

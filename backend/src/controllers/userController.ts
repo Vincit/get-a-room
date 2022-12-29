@@ -54,7 +54,7 @@ export function updateSubscription(
 export function removeSubscription(subject: string): Promise<User | null> {
     return UserModel.findOneAndUpdate(
         { subject },
-        { subscription: {}, notificationPermission: false }
+        { $unset: { subscription: null }, notificationPermission: false }
     ).exec();
 }
 
