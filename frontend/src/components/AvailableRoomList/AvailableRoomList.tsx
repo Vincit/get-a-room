@@ -216,12 +216,7 @@ const AvailableRoomList = (props: BookingListProps) => {
 
         const bookingStartTime =
             startingTime === 'Now'
-                ? DateTime.utc()
-                      .set({
-                          second: 0,
-                          millisecond: 0
-                      })
-                      .toISO()
+                ? DateTime.utc().toISO()
                 : DateTime.fromFormat(startingTime, 'hh:mm').toUTC().toISO();
 
         let bookingDetails: BookingDetails = {

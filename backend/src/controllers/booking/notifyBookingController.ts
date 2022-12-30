@@ -243,8 +243,9 @@ export const cancelNotification = () => {
             )?._id;
 
             if (!jobId) {
-                console.log(`No jobId found. EndTime was: ${endTime}`);
-                return responses.internalServerError(req, res);
+                // User might have created the event without notification permission
+                // which means there's no scheduleJob to be cancelled
+                return next();
             }
 
             // Cancel the job
