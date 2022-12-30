@@ -65,7 +65,7 @@ interface Props {
     onAlterTime: (booking: Booking, minutes: number) => void;
     availableMinutes: number;
     booking?: Booking;
-    bookingStared?: boolean | null;
+    bookingStarted: boolean;
 }
 
 const AlterBookingDrawer = (props: Props) => {
@@ -78,7 +78,7 @@ const AlterBookingDrawer = (props: Props) => {
         duration,
         onAlterTime,
         availableMinutes,
-        bookingStared
+        bookingStarted
     } = props;
 
     //For share button
@@ -175,7 +175,7 @@ const AlterBookingDrawer = (props: Props) => {
     };
 
     const disableSubtractTime = () => {
-        return duration < MIN_DURATION;
+        return duration <= MIN_DURATION;
     };
 
     const disableAddTime = () => {
@@ -219,7 +219,7 @@ const AlterBookingDrawer = (props: Props) => {
         cancelBooking(booking);
     };
 
-    const handleOnClick = (shareDetails: any) => {
+    const handleOnShareClick = (shareDetails: ShareData) => {
         if (navigator.share) {
             navigator.share(shareDetails).catch((error) => {
                 console.error('Something went wrong sharing the link', error);
@@ -247,7 +247,7 @@ const AlterBookingDrawer = (props: Props) => {
                 }}
             >
                 <DrawerContent>
-                    {!bookingStared && (
+                    {!bookingStarted && (
                         <RowCentered>
                             <PreBookBoldRed>
                                 You have pre-booked the room
@@ -274,7 +274,7 @@ const AlterBookingDrawer = (props: Props) => {
                     <Row>
                         <DrawerButtonSecondary
                             onClick={() =>
-                                handleOnClick({
+                                handleOnShareClick({
                                     url,
                                     title,
                                     text

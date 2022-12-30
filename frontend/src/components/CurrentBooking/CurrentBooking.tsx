@@ -21,17 +21,13 @@ function areBookingsFetched(bookings: Booking[]) {
     return Array.isArray(bookings) && bookings.length > 0;
 }
 
-function checkBookingStarted(selectedBooking: Booking | undefined) {
+function hasBookingStarted(selectedBooking?: Booking): boolean {
     if (selectedBooking === undefined) {
-        return null;
+        return false;
     }
     const startingTime = DateTime.fromISO(selectedBooking.startTime).toUTC();
-    const dt = DateTime.now();
-
-    const timeDiff = Duration.fromObject(
-        startingTime.diff(dt, 'minutes').toObject()
-    );
-    return Math.ceil(timeDiff.minutes) < 0;
+    const dt = DateTime.now().toUTC();
+    return startingTime < dt;
 }
 
 function timeLeft(selectedBooking: Booking | undefined) {
@@ -45,7 +41,7 @@ function timeLeft(selectedBooking: Booking | undefined) {
         endingTime.diff(startingTime, 'minutes').toObject()
     );
 
-    return checkBookingStarted(selectedBooking)
+    return hasBookingStarted(selectedBooking)
         ? getBookingTimeLeft(selectedBooking)
         : Math.ceil(duration.minutes);
 }
@@ -172,7 +168,7 @@ const CurrentBooking = (props: CurrentBookingProps) => {
                     booking={selectedBooking}
                     endBooking={handleEndBooking}
                     cancelBooking={handleCancelBooking}
-                    bookingStared={checkBookingStarted(selectedBooking)}
+                    bookingStarted={hasBookingStarted(selectedBooking)}
                 />
             </div>
 
