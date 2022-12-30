@@ -14,12 +14,15 @@ import {
     removeScheduleDataArray
 } from '../userController';
 import { DateTime } from 'luxon';
-import keys from '../../types/keys';
 
-// PublicKey and privateKey
-const publicKey = process.env.VAPID_PUBLIC_KEY as string;
-const privateKey = process.env.VAPID_PRIVATE_KEY as string;
-webpush.setVapidDetails('mailto:test@test.com', publicKey, privateKey);
+const notificationOptions = {
+    vapidDetails: {
+        subject: 'mailto:test@test.com',
+        publicKey: process.env.VAPID_PUBLIC_KEY,
+        privateKey: process.env.VAPID_PRIVATE_KEY
+    },
+    TTL: 60
+};
 
 /**
  * Receive and store the subscription
@@ -71,8 +74,6 @@ export const updateSubscriptionToDatabase = () => {
 
             if (!user) {
                 return responses.internalServerError(req, res);
-            } else {
-                res.locals.subscription = subscription;
             }
 
             next();
@@ -160,21 +161,6 @@ export const scheduleNotification = () => {
                 return responses.internalServerError(req, res);
             }
 
-            const options = {
-                vapidDetails: {
-                    subject: 'mailto:test@test.com',
-                    publicKey: publicKey,
-                    privateKey: privateKey
-                },
-                TTL: 60
-            };
-
-            const subscriptionToPush = {
-                endpoint: subscription.endpoint as string,
-                expirationTime: subscription.expirationTime as number,
-                keys: subscription.keys as keys
-            };
-
             const payload = JSON.stringify({
                 title: 'Your current meeting is going to end in 5 minutes!',
                 body: 'Meeting End Notification'
@@ -186,9 +172,9 @@ export const scheduleNotification = () => {
                 scheduleTime,
                 () => {
                     webpush.sendNotification(
-                        subscriptionToPush,
+                        subscription,
                         payload,
-                        options
+                        notificationOptions
                     );
                 }
             );
@@ -334,27 +320,16 @@ export const pushNotification = () => {
                 return responses.internalServerError(req, res);
             }
 
-            const options = {
-                vapidDetails: {
-                    subject: 'mailto:test@test.com',
-                    publicKey: publicKey,
-                    privateKey: privateKey
-                },
-                TTL: 60
-            };
-
-            const subscriptionToPush = {
-                endpoint: subscription.endpoint as string,
-                expirationTime: subscription.expirationTime as number,
-                keys: subscription.keys as keys
-            };
-
             const payload = JSON.stringify({
                 title: 'Your current meeting ends now!',
                 body: 'Meeting End Notification'
             });
 
-            webpush.sendNotification(subscriptionToPush, payload, options);
+            webpush.sendNotification(
+                subscription,
+                payload,
+                notificationOptions
+            );
 
             next();
         } catch (err) {

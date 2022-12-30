@@ -9,7 +9,7 @@ import mongoose from 'mongoose';
 import { authFilter, parseToken, validateAccessToken } from './authMiddleware';
 import { checkEnvVariables } from './utils/checkEnvVariables';
 import { gaxiosErrorHandler } from './utils/gaxiosErrorHandler';
-import { getDatabaseUrl } from './utils/config';
+import { getDatabaseUrl, setupVapidDetails } from './utils/config';
 
 import { router as indexRouter } from './routes/index';
 import { router as authRouter } from './routes/auth';
@@ -24,6 +24,7 @@ const app = express();
 const port = 8080;
 
 checkEnvVariables();
+setupVapidDetails();
 
 mongoose
     .connect(getDatabaseUrl())

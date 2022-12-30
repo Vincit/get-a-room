@@ -3,9 +3,15 @@ import Subscription from '../types/subscription';
 
 export const subscriptionSchema = new Schema<Subscription>(
     {
-        endpoint: { required: false, type: String },
+        endpoint: { required: true, type: String },
         expirationTime: { required: false, type: String },
-        keys: { required: false, type: Object }
+        keys: {
+            required: true,
+            type: {
+                p256dh: String,
+                auth: String
+            }
+        }
     },
     { _id: false }
 );
