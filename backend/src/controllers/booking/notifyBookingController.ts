@@ -18,8 +18,8 @@ import { DateTime } from 'luxon';
 const notificationOptions = {
     vapidDetails: {
         subject: 'mailto:test@test.com',
-        publicKey: process.env.VAPID_PUBLIC_KEY,
-        privateKey: process.env.VAPID_PRIVATE_KEY
+        publicKey: process.env.VAPID_PUBLIC_KEY as string,
+        privateKey: process.env.VAPID_PRIVATE_KEY as string
     },
     TTL: 60
 };

@@ -21,7 +21,7 @@ export const userSchema = new Schema<User>({
     subscription: {
         required: false,
         type: subscriptionSchema,
-        default: {}
+        default: undefined
     },
     notificationPermission: {
         required: true,

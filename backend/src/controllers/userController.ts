@@ -16,7 +16,7 @@ export function createUserFromTokenPayload(
         refreshToken: refreshToken,
         preferences: {},
         scheduleDataArray: [],
-        subscription: {},
+        subscription: undefined,
         notificationPermission: false
     };
     const user = new UserModel(userBase);
