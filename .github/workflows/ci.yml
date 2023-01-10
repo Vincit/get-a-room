@@ -8,6 +8,8 @@ env:
     RUN_REGION: europe-north1
     REACT_FRONTEND_CLOUD_RUN_SERVICE_NAME: get-a-room
     NODE_BACKEND_CLOUD_RUN_SERVICE_NAME: get-a-room-node-backend
+    REACT_FRONTEND_VAPID_KEY_STAGING: ${{ secrets.VAPID_KEY_STAGING }}
+    REACT_FRONTEND_VAPID_KEY_PRODUCTION: ${{ secrets.VAPID_KEY_PRODUCTION }}
 
 jobs:
     check-style:
@@ -37,8 +39,15 @@ jobs:
               with:
                   node-version: 16
                   cache: npm
+            - name: Set env variable for staging
+              if: github.ref == 'refs/heads/dev'
+              run: echo "VAPID_KEY=$REACT_FRONTEND_VAPID_KEY_STAGING"
+            - name: Set env variable for production
+              if: github.ref == 'refs/heads/main'
+              run: echo "VAPID_KEY=$REACT_FRONTEND_VAPID_KEY_PRODUCTION"
+
             - run: npm ci
-            - run: npm run build:ci
+            - run: REACT_APP_SERVER_KEY=${{ env.VAPID_KEY }} npm run build:ci
             - uses: actions/upload-artifact@main
               with:
                   name: frontend-build
