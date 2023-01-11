@@ -8,8 +8,6 @@ env:
     RUN_REGION: europe-north1
     REACT_FRONTEND_CLOUD_RUN_SERVICE_NAME: get-a-room
     NODE_BACKEND_CLOUD_RUN_SERVICE_NAME: get-a-room-node-backend
-    REACT_FRONTEND_VAPID_KEY_STAGING: ${{ secrets.VAPID_KEY_STAGING }}
-    REACT_FRONTEND_VAPID_KEY_PRODUCTION: ${{ secrets.VAPID_KEY_PRODUCTION }}
 
 jobs:
     check-style:
@@ -43,7 +41,7 @@ jobs:
             - run: npm ci
             - run: npm run build:ci
               env:
-                  REACT_APP_SERVER_KEY: "${{ github.ref == 'refs/heads/main' && secrets.VAPID_KEY_PRODUCTION || secrets.VAPID_KEY_STAGING }}"
+                  REACT_APP_SERVER_KEY: "${{ github.ref == 'refs/heads/main' && secrets.REACT_FRONTEND_VAPID_KEY_PRODUCTION || secrets.REACT_FRONTEND_VAPID_KEY_STAGING }}"
             - uses: actions/upload-artifact@main
               with:
                   name: frontend-build
