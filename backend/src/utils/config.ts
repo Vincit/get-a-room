@@ -1,3 +1,5 @@
+import webpush from 'web-push';
+
 export const getDatabaseUrl = () => {
     const { DB_USER, DB_NAME, DB_PASSWORD, DB_URL } = process.env;
     return createDatabaseUrl(DB_USER, DB_NAME, DB_PASSWORD, DB_URL);
@@ -23,4 +25,10 @@ export const createDatabaseUrl = (
     }
 
     return `mongodb+srv://${dbUser}:${dbPassword}@${dbUrl}/${dbName}?retryWrites=true&w=majority`;
+};
+
+export const setupVapidDetails = () => {
+    const publicKey = process.env.VAPID_PUBLIC_KEY as string;
+    const privateKey = process.env.VAPID_PRIVATE_KEY as string;
+    webpush.setVapidDetails('mailto:test@test.com', publicKey, privateKey);
 };

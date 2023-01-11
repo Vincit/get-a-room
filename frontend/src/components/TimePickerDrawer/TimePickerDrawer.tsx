@@ -1,6 +1,7 @@
+import React, { useState, useEffect } from 'react';
 import { TextField, Box } from '@mui/material';
 import { DateTime } from 'luxon';
-import React, { useState } from 'react';
+
 import {
     DrawerButtonPrimary,
     DrawerButtonSecondary,
@@ -18,10 +19,6 @@ interface TimePickerDrawerProps {
     setExpandTimePickerDrawer: (state: boolean) => void;
 }
 
-const formatTime = (h: Number, m: Number) => {
-    return `${h < 10 ? `0${h}` : `${h}`}:${m < 10 ? `0${m}` : `${m}`}`;
-};
-
 const TimePickerDrawer = (props: TimePickerDrawerProps) => {
     const {
         open,
@@ -30,25 +27,28 @@ const TimePickerDrawer = (props: TimePickerDrawerProps) => {
         setStartingTime,
         setExpandTimePickerDrawer
     } = props;
-    const currentTime = DateTime.now();
-    const defaultValue =
-        startingTime === 'Now'
-            ? formatTime(currentTime.hour, currentTime.minute)
-            : startingTime;
+    const [time, setTime] = useState<string>(DateTime.now().toFormat('hh:mm'));
 
-    const [time, setTime] = useState<string>(defaultValue);
+    // Whenever drawer is opened, set the time to current time - otherwise it can display old time as the default
+    useEffect(() => {
+        if (!(open && startingTime === 'Now')) {
+            return;
+        }
+        setTime(DateTime.now().toFormat('hh:mm'));
+    }, [open, startingTime]);
 
     const handleSetTime = (isNow: Boolean) => {
         const h = Number(time.split(':')[0]);
         const m = Number(time.split(':')[1]);
+        const currentTime = DateTime.now();
 
         if (
             h < currentTime.hour ||
             isNow ||
-            (h === currentTime.hour && m < currentTime.minute)
+            (h === currentTime.hour && m <= currentTime.minute)
         ) {
             setStartingTime('Now');
-            setTime(formatTime(currentTime.hour, currentTime.minute));
+            setTime(currentTime.toFormat('hh:mm'));
         } else {
             setStartingTime(time);
         }
@@ -102,7 +102,7 @@ const TimePickerDrawer = (props: TimePickerDrawerProps) => {
                                 setTime(
                                     e?.target?.value
                                         ? e?.target?.value
-                                        : `${currentTime.hour}:${currentTime.minute}`
+                                        : DateTime.now().toFormat('hh:mm')
                                 );
                             }}
                             style={{ width: '150px' }}

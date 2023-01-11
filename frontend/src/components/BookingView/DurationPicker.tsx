@@ -7,14 +7,14 @@ const DurationButton = styled(ToggleButton)(() => ({
     padding: '8px 16px'
 }));
 
-type DucationPickerProps = {
+type DurationPickerProps = {
     onChange: (duration: number) => void;
     title: string;
     duration: number;
     setDuration: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const DurationPicker = (props: DucationPickerProps) => {
+const DurationPicker = (props: DurationPickerProps) => {
     const { onChange, title, duration, setDuration } = props;
 
     const handleChange = (

@@ -1,9 +1,9 @@
 import keys from '../types/keys';
 
-type subscription = {
-    endpoint?: string | null | undefined;
-    expirationTime?: string | null | undefined;
-    keys?: keys | undefined;
+type Subscription = {
+    endpoint: string;
+    expirationTime?: number | undefined;
+    keys: keys;
 };
 
-export default subscription;
+export default Subscription;

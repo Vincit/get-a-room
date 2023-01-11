@@ -27,7 +27,7 @@ const PreferencesLoader = (props: PreferencesLoaderProps) => {
     const { createErrorNotification } = useCreateNotification();
 
     const goToMainView = useCallback(() => {
-        // Use replace in place of push because it's a temporary page and wouln't work if navigated back to
+        // Use replace in place of push because it's a temporary page and wouldn't work if navigated back to
         history.replace('/');
     }, [history]);
 

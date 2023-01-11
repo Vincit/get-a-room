@@ -11,7 +11,7 @@ import { ReactComponent as MobileBackground } from './images/Background image.sv
 import { ReactComponent as DesktopBackground } from './images/Background image desktop.svg';
 
 const App = () => {
-    // Basic solution for differiating between desktop and mobile. Switch from desktop to mobile resolution requires a page refresh
+    // Basic solution for differentiating between desktop and mobile. Switch from desktop to mobile resolution requires a page refresh
     // to show background correctly.
     let svgString = encodeURIComponent(
         renderToStaticMarkup(<MobileBackground />)

@@ -1,4 +1,5 @@
 import { TokenPayload } from 'google-auth-library';
+import { Types } from 'mongoose';
 import UserModel from '../models/user';
 import Preferences from '../types/preferences';
 import Subscription from '../types/subscription';
@@ -9,13 +10,14 @@ export function createUserFromTokenPayload(
     payload: TokenPayload,
     refreshToken?: string
 ) {
-    const userBase: User = {
+    const userBase = {
         subject: payload.sub,
         name: payload.name,
         refreshToken: refreshToken,
-        preferences: {}
-        //scheduleDataArray: [{}],
-        /* subscription: {} */
+        preferences: {},
+        scheduleDataArray: [],
+        subscription: undefined,
+        notificationPermission: false
     };
     const user = new UserModel(userBase);
     return user.save();
@@ -43,15 +45,44 @@ export function updateSubscription(
     subject: string,
     subscription: Subscription
 ): Promise<User | null> {
-    return UserModel.findOneAndUpdate({ subject }, { subscription }).exec();
+    return UserModel.findOneAndUpdate(
+        { subject },
+        { subscription, notificationPermission: true }
+    ).exec();
 }
 
-export function updateScheduleData(
+export function removeSubscription(subject: string): Promise<User | null> {
+    return UserModel.findOneAndUpdate(
+        { subject },
+        { $unset: { subscription: null }, notificationPermission: false }
+    ).exec();
+}
+
+export function addScheduleData(
     subject: string,
     scheduleData: ScheduleData
 ): Promise<User | null> {
     return UserModel.findOneAndUpdate(
         { subject },
-        { $push: { scheduleDataArray: scheduleData } }
+        { $push: { scheduleDataArray: scheduleData } },
+        // return the updated document, see: https://mongoosejs.com/docs/tutorials/findoneandupdate.html
+        { new: true }
+    ).exec();
+}
+
+export function removeScheduleData(
+    subject: string,
+    id: Types.ObjectId
+): Promise<User | null> {
+    return UserModel.findOneAndUpdate(
+        { subject },
+        { $pull: { scheduleDataArray: { _id: id } } }
+    ).exec();
+}
+
+export function removeScheduleDataArray(subject: string): Promise<User | null> {
+    return UserModel.findOneAndUpdate(
+        { subject },
+        { $set: { scheduleDataArray: [] } }
     ).exec();
 }

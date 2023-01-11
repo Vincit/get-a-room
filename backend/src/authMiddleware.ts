@@ -68,7 +68,7 @@ export const parseToken = () => {
 /**
  * Validate that the access token included in the authorization header is valid
  * if not, check for refresh token and if found try to refresh the access token
- * @param noAuthPaths Array of paths that don't require autentication
+ * @param noAuthPaths Array of paths that don't require authentication
  * @returns -
  */
 export const validateAccessToken = () => {

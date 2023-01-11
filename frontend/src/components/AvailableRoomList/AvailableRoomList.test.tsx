@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
-import { DateTime } from 'luxon';
+import { DateTime, Settings } from 'luxon';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AvailableRoomList from './AvailableRoomList';
 import { makeBooking } from '../../services/bookingService';
@@ -69,12 +69,17 @@ jest.mock('../../services/bookingService');
 const fakeBookings = [];
 
 let container = null;
+let now: DateTime = null;
 
 describe('AvailableRoomList', () => {
     beforeEach(() => {
         // Setup a DOM element as a render target
         container = document.createElement('div');
         document.body.appendChild(container);
+
+        // Override luxon's DateTime.now
+        now = DateTime.now();
+        Settings.now = () => now.toMillis();
     });
 
     afterEach(() => {
@@ -176,13 +181,11 @@ describe('AvailableRoomList', () => {
     });
 
     it('default books for a room for 15 minutes', async () => {
-        const dt = DateTime.now();
-        const h = `${dt.hour < 10 ? `0${dt.hour}` : `${dt.hour}`}`;
-        const m = `${dt.minute < 10 ? `0${dt.minute}` : `${dt.minute}`}`;
+        const startTime = now.toUTC().toISO();
         (makeBooking as jest.Mock).mockResolvedValueOnce({
             duration: 15,
             roomId: fakeRooms[0].id,
-            startTime: `${h}:${m}`,
+            startTime: startTime,
             title: 'Reservation from Get a Room!'
         });
 
@@ -205,7 +208,7 @@ describe('AvailableRoomList', () => {
                 {
                     duration: 15,
                     roomId: fakeRooms[0].id,
-                    startTime: `${h}:${m}`,
+                    startTime: startTime,
                     title: 'Reservation from Get a Room!'
                 },
                 true
@@ -214,13 +217,11 @@ describe('AvailableRoomList', () => {
     });
 
     it('books for a room for 30 minutes', async () => {
-        const dt = DateTime.now();
-        const h = `${dt.hour < 10 ? `0${dt.hour}` : `${dt.hour}`}`;
-        const m = `${dt.minute < 10 ? `0${dt.minute}` : `${dt.minute}`}`;
+        const startTime = now.toUTC().toISO();
         (makeBooking as jest.Mock).mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
-            startTime: `${h}:${m}`,
+            startTime: startTime,
             title: 'Reservation from Get a Room!'
         });
 
@@ -243,7 +244,7 @@ describe('AvailableRoomList', () => {
                 {
                     duration: 30,
                     roomId: fakeRooms[0].id,
-                    startTime: `${h}:${m}`,
+                    startTime: startTime,
                     title: 'Reservation from Get a Room!'
                 },
                 true
@@ -252,13 +253,11 @@ describe('AvailableRoomList', () => {
     });
 
     it('books for a room for 60 minutes', async () => {
-        const dt = DateTime.now();
-        const h = `${dt.hour < 10 ? `0${dt.hour}` : `${dt.hour}`}`;
-        const m = `${dt.minute < 10 ? `0${dt.minute}` : `${dt.minute}`}`;
+        const startTime = now.toUTC().toISO();
         (makeBooking as jest.Mock).mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
-            startTime: `${h}:${m}`,
+            startTime: startTime,
             title: 'Reservation from Get a Room!'
         });
 
@@ -281,7 +280,7 @@ describe('AvailableRoomList', () => {
                 {
                     duration: 60,
                     roomId: fakeRooms[0].id,
-                    startTime: `${h}:${m}`,
+                    startTime: startTime,
                     title: 'Reservation from Get a Room!'
                 },
                 true
@@ -290,13 +289,11 @@ describe('AvailableRoomList', () => {
     });
 
     it('books for a room for 120 minutes', async () => {
-        const dt = DateTime.now();
-        const h = `${dt.hour < 10 ? `0${dt.hour}` : `${dt.hour}`}`;
-        const m = `${dt.minute < 10 ? `0${dt.minute}` : `${dt.minute}`}`;
+        const startTime = now.toUTC().toISO();
         (makeBooking as jest.Mock).mockResolvedValueOnce({
             duration: 30,
             roomId: fakeRooms[0].id,
-            startTime: `${h}:${m}`,
+            startTime: startTime,
             title: 'Reservation from Get a Room!'
         });
 
@@ -319,7 +316,7 @@ describe('AvailableRoomList', () => {
                 {
                     duration: 120,
                     roomId: fakeRooms[0].id,
-                    startTime: `${h}:${m}`,
+                    startTime: startTime,
                     title: 'Reservation from Get a Room!'
                 },
                 true

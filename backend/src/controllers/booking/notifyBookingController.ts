@@ -1,28 +1,33 @@
 import { Request, Response, NextFunction } from 'express';
 import * as responses from '../../utils/responses';
+import * as schema from '../../utils/googleSchema';
 import schedule from 'node-schedule';
 import Subscription from '../../types/subscription';
 import ScheduleData from '../../types/scheduleData';
 import webpush from 'web-push';
 import {
     updateSubscription,
-    updateScheduleData,
-    getUserWithSubject
+    addScheduleData,
+    getUserWithSubject,
+    removeScheduleData,
+    removeSubscription,
+    removeScheduleDataArray
 } from '../userController';
+import { DateTime } from 'luxon';
 
-// PublicKey adn privateKey
-
-const publicKey =
-    'BEvPpDPDB543o1VH8QsnHJC2BW2znZqip3KJ4kxtFR98zetTY4TSozQIWllDfV8bnyZoQP_XCfuYC1G0C5WUNgU';
-const privateKey = '2sy8ts8Z7yXDnB2E5EZhwfx3Y7nXcJRnhgT12SgDVOA';
-
-webpush.setVapidDetails('mailto:test@test.com', publicKey, privateKey);
+const notificationOptions = {
+    vapidDetails: {
+        subject: 'mailto:test@test.com',
+        publicKey: process.env.VAPID_PUBLIC_KEY as string,
+        privateKey: process.env.VAPID_PRIVATE_KEY as string
+    },
+    TTL: 60
+};
 
 /**
  * Receive and store the subscription
  * @returns
  */
-
 export const getSubscription = () => {
     const middleware = async (
         req: Request,
@@ -30,16 +35,13 @@ export const getSubscription = () => {
         next: NextFunction
     ) => {
         try {
-            const userSubcription: Subscription = req.body.subscription;
+            const userSubscription: Subscription = req.body.subscription;
 
-            if (!userSubcription) {
+            if (!userSubscription) {
                 return responses.badRequest(req, res);
             }
 
-            res.locals.subscription = userSubcription;
-            res.locals.endpoint = userSubcription.endpoint;
-            res.locals.expirationTime = userSubcription.expirationTime;
-            res.locals.keys = userSubcription.keys;
+            res.locals.subscription = userSubscription;
 
             next();
         } catch (err) {
@@ -54,7 +56,7 @@ export const getSubscription = () => {
  * Create the user subscription to the database
  * @returns
  */
-export const updateSubscriptionToDatabse = () => {
+export const updateSubscriptionToDatabase = () => {
     const middleware = async (
         req: Request,
         res: Response,
@@ -62,11 +64,7 @@ export const updateSubscriptionToDatabse = () => {
     ) => {
         try {
             const sub = res.locals.sub;
-            const subscription: Subscription = {
-                endpoint: res.locals.endpoint,
-                expirationTime: res.locals.expirationTime,
-                keys: res.locals.keys
-            };
+            const subscription: Subscription = res.locals.subscription;
 
             if (!sub) {
                 return responses.badRequest(req, res);
@@ -76,8 +74,6 @@ export const updateSubscriptionToDatabse = () => {
 
             if (!user) {
                 return responses.internalServerError(req, res);
-            } else {
-                res.locals.subscription = subscription;
             }
 
             next();
@@ -89,11 +85,7 @@ export const updateSubscriptionToDatabse = () => {
     return middleware;
 };
 
-/**
- * Create the user subscription to the database
- * @returns
- */
-export const updateScheduleDataToDatabase = () => {
+export const unsubscribeFromNotification = () => {
     const middleware = async (
         req: Request,
         res: Response,
@@ -101,65 +93,22 @@ export const updateScheduleDataToDatabase = () => {
     ) => {
         try {
             const sub = res.locals.sub;
-            const scheduleData: ScheduleData = {
-                endTime: res.locals.endTime,
-                roomId: res.locals.roomId
-            };
-
             if (!sub) {
                 return responses.badRequest(req, res);
             }
 
-            const user = await updateScheduleData(sub, scheduleData);
-
-            if (!user) {
-                return responses.internalServerError(req, res);
-            } else {
-                res.locals.scheduleData = scheduleData;
-            }
+            await removeSubscription(sub);
 
             next();
-        } catch (err) {
-            next(err);
+        } catch (error) {
+            next(error);
         }
     };
-
-    return middleware;
-};
-
-export const updateNewScheduleDataToDatabase = () => {
-    const middleware = async (
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) => {
-        try {
-            const sub = res.locals.sub;
-            const scheduleData: ScheduleData = res.locals.scheduleData;
-
-            if (!sub) {
-                return responses.badRequest(req, res);
-            }
-
-            const user = await updateScheduleData(sub, scheduleData);
-
-            if (!user) {
-                return responses.internalServerError(req, res);
-            } else {
-                res.locals.scheduleData = scheduleData;
-            }
-
-            next();
-        } catch (err) {
-            next(err);
-        }
-    };
-
     return middleware;
 };
 
 /**
- * Schedule to push notification
+ * Schedule to push notification based on EventData
  * @returns
  */
 export const scheduleNotification = () => {
@@ -169,73 +118,63 @@ export const scheduleNotification = () => {
         next: NextFunction
     ) => {
         try {
-            // Time setting problem
-            // Check the hours
-            const minute: string = res.locals.endMinute;
-            const hour: string = res.locals.endHour;
-
-            const hourN: number = Number(hour) + 2;
-            const minuteN: number = Number(minute) - 5;
-
-            const scheduleTime = minuteN + ' ' + hourN + ' * * *';
-
             const sub = res.locals.sub;
-            const user = await getUserWithSubject(sub);
-            if (!user) {
-                return responses.internalServerError(req, res);
-            }
-
-            const scheduleData: ScheduleData = res.locals.scheduleData;
-            const options = {
-                vapidDetails: {
-                    subject: 'mailto:test@test.com',
-                    publicKey: publicKey,
-                    privateKey: privateKey
-                },
-                TTL: 60
+            const eventData: schema.EventData = res.locals.event;
+            const roomId: string = res.locals.roomId;
+            const endTime = DateTime.fromISO(
+                eventData.end?.dateTime as string
+            ).toUTC();
+            const endTimeISO = endTime.toISO();
+            const scheduleData: ScheduleData = {
+                endTime: endTimeISO,
+                roomId: roomId
             };
-
-            const requestedRoomId = scheduleData.roomId;
-            const requestedEndTime = scheduleData.endTime;
 
             if (!sub) {
                 return responses.badRequest(req, res);
             }
 
-            const uniqueId: string | undefined = user.scheduleDataArray?.find(
-                (data) =>
-                    data.roomId === requestedRoomId &&
-                    data.endTime === requestedEndTime
-            )?._id;
+            let user = await getUserWithSubject(sub);
+            // No permission for notifications - don't schedule one
+            if (!user?.notificationPermission) {
+                return next();
+            }
 
-            if (!uniqueId) {
+            user = await addScheduleData(sub, scheduleData);
+            if (!user) {
                 return responses.internalServerError(req, res);
             }
-            // eslint-disable-next-line
-            const subscription: any = user?.subscription;
+
+            const subscription: Subscription | undefined = user?.subscription;
             if (!subscription) {
                 return responses.internalServerError(req, res);
             }
 
-            const subscriptionToPush = {
-                endpoint: subscription.endpoint,
-                expirationTime: subscription.expirationTime,
-                keys: subscription.keys
-            };
+            const uniqueId: string | undefined = user.scheduleDataArray
+                .find(
+                    (data) =>
+                        data.roomId === roomId && data.endTime === endTimeISO
+                )
+                ?._id?.toString();
+
+            if (!uniqueId) {
+                return responses.internalServerError(req, res);
+            }
 
             const payload = JSON.stringify({
                 title: 'Your current meeting is going to end in 5 minutes!',
                 body: 'Meeting End Notification'
             });
 
+            const scheduleTime = endTime.minus({ minutes: 5 }).toJSDate();
             const job = schedule.scheduleJob(
                 `${uniqueId}`,
                 scheduleTime,
                 () => {
                     webpush.sendNotification(
-                        subscriptionToPush,
+                        subscription,
                         payload,
-                        options
+                        notificationOptions
                     );
                 }
             );
@@ -253,15 +192,24 @@ export const scheduleNotification = () => {
     return middleware;
 };
 
-export const updateEndTime = () => {
+/**
+ * Cancels notification job that is associated with EventData
+ * @returns
+ */
+export const cancelNotification = () => {
     const middleware = async (
         req: Request,
         res: Response,
         next: NextFunction
     ) => {
         try {
+            const eventData: schema.EventData = res.locals.event;
+            const roomId: string = res.locals.roomId;
             const sub = res.locals.sub;
-            let scheduleData: ScheduleData = res.locals.scheduleData;
+
+            if (!eventData) {
+                return responses.badRequest(req, res);
+            }
 
             if (!sub) {
                 return responses.badRequest(req, res);
@@ -272,28 +220,27 @@ export const updateEndTime = () => {
                 return responses.internalServerError(req, res);
             }
 
-            const requestedRoomId = scheduleData.roomId;
-            const requestedEndTime = scheduleData.endTime;
-            const re2 = requestedEndTime.split(':');
-            const re3 = re2[0] + ':' + re2[1] + ':' + '00.000Z';
+            const endTime = DateTime.fromISO(eventData.end?.dateTime as string)
+                .toUTC()
+                .toISO();
 
-            const uniqueId = user.scheduleDataArray?.find(
-                (data) =>
-                    data.roomId === requestedRoomId && data.endTime === re3
+            const jobId = user.scheduleDataArray.find(
+                (data) => data.roomId === roomId && data.endTime === endTime
             )?._id;
 
-            if (!uniqueId) {
-                return responses.internalServerError(req, res);
+            if (!jobId) {
+                // User might have created the event without notification permission
+                // which means there's no scheduleJob to be cancelled
+                return next();
             }
-            const scheduleJob = schedule.scheduledJobs[uniqueId];
-            scheduleJob.cancel();
 
-            const reEndTime = res.locals.newEndTime.split(':');
-            const reEndTime2 =
-                reEndTime[0] + ':' + reEndTime[1] + ':' + '00.000Z';
-            scheduleData = { endTime: reEndTime2, roomId: requestedRoomId };
+            // Cancel the job
+            const scheduleJob = schedule.scheduledJobs[jobId.toString()];
+            // ScheduleJob is undefined when the notification job is already run.
+            scheduleJob?.cancel();
 
-            res.locals.scheduleData = scheduleData;
+            // Remove the job from database
+            await removeScheduleData(sub, jobId);
 
             next();
         } catch (err) {
@@ -305,10 +252,10 @@ export const updateEndTime = () => {
 };
 
 /**
- * Cancel a scedule job if user cancel a meeting
+ * Cancels all pending notifications for the user
  * @returns
  */
-export const cancelSceduleJob = () => {
+export const removePendingNotifications = () => {
     const middleware = async (
         req: Request,
         res: Response,
@@ -316,39 +263,28 @@ export const cancelSceduleJob = () => {
     ) => {
         try {
             const sub = res.locals.sub;
-            const scheduleData: ScheduleData = res.locals.scheduleData;
-
             if (!sub) {
                 return responses.badRequest(req, res);
             }
 
             const user = await getUserWithSubject(sub);
             if (!user) {
-                return responses.internalServerError(req, res);
+                return responses.badRequest(req, res);
             }
 
-            const requestedRoomId = scheduleData.roomId;
-            const requestedEndTime = scheduleData.endTime;
-            const re2 = requestedEndTime.split(':');
-            const re3 = re2[0] + ':' + re2[1] + ':' + '00.000Z';
+            user.scheduleDataArray.forEach((data) => {
+                const scheduleJob =
+                    schedule.scheduledJobs[data._id?.toString() ?? ''];
+                scheduleJob?.cancel();
+            });
 
-            const uniqueId = user.scheduleDataArray?.find(
-                (data) =>
-                    data.roomId === requestedRoomId && data.endTime === re3
-            )?._id;
-
-            if (!uniqueId) {
-                return responses.internalServerError(req, res);
-            }
-            const scheduleJob = schedule.scheduledJobs[uniqueId];
-            scheduleJob.cancel();
+            await removeScheduleDataArray(sub);
 
             next();
-        } catch (err) {
-            next(err);
+        } catch (error) {
+            next(error);
         }
     };
-
     return middleware;
 };
 
@@ -373,33 +309,27 @@ export const pushNotification = () => {
             if (!user) {
                 return responses.internalServerError(req, res);
             }
-            // eslint-disable-next-line
-            const subscription: any = user?.subscription;
+
+            // No permission for notifications
+            if (!user.notificationPermission) {
+                return next();
+            }
+
+            const subscription: Subscription | undefined = user?.subscription;
             if (!subscription) {
                 return responses.internalServerError(req, res);
             }
-
-            const options = {
-                vapidDetails: {
-                    subject: 'mailto:test@test.com',
-                    publicKey: publicKey,
-                    privateKey: privateKey
-                },
-                TTL: 60
-            };
-
-            const subscriptionToPush = {
-                endpoint: subscription.endpoint,
-                expirationTime: subscription.expirationTime,
-                keys: subscription.keys
-            };
 
             const payload = JSON.stringify({
                 title: 'Your current meeting ends now!',
                 body: 'Meeting End Notification'
             });
 
-            webpush.sendNotification(subscriptionToPush, payload, options);
+            webpush.sendNotification(
+                subscription,
+                payload,
+                notificationOptions
+            );
 
             next();
         } catch (err) {

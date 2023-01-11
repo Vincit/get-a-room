@@ -1,14 +1,15 @@
 import Preferences from '../types/preferences';
-import Subcription from '../types/subscription';
-import ScheduleDataArray from '../types/scheduleDataArray';
+import Subscription from '../types/subscription';
+import ScheduleData from './scheduleData';
 
 type User = {
     subject: string;
     preferences: Preferences;
     name?: string;
     refreshToken?: string;
-    scheduleDataArray?: ScheduleDataArray;
-    subscription?: Subcription;
+    scheduleDataArray: ScheduleData[];
+    subscription?: Subscription;
+    notificationPermission: boolean;
 };
 
 export default User;

@@ -68,13 +68,13 @@ function BookingView(props: BookingViewProps) {
     const [displayRooms, setDisplayRooms] = useState<Room[]>(rooms);
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [bookingDuration, setBookingDuration] = useState(15);
-    const [expandSettingsDrawer, setexpandSettingsDrawer] = useState(
+    const [expandSettingsDrawer, setExpandSettingsDrawer] = useState(
         false as boolean
     );
     const [expandedFeaturesAll, setExpandedFeaturesAll] = useState(
         false as boolean
     );
-    const [expandFilteringDrawer, setexpandFilteringDrawer] = useState(false);
+    const [expandFilteringDrawer, setExpandFilteringDrawer] = useState(false);
 
     // Filtering states
     const [roomSize, setRoomSize] = useState<string[]>([]);
@@ -82,7 +82,7 @@ function BookingView(props: BookingViewProps) {
     const [customFilter, setCustomFilter] = useState('');
     const [onlyFavourites, setOnlyFavourites] = useState(false);
     const [filterCount, setFilterCount] = useState(0);
-    const [allFeatures, setAllfeatures] = useState<string[]>([]);
+    const [allFeatures, setAllFeatures] = useState<string[]>([]);
 
     const { createErrorNotification } = useCreateNotification();
 
@@ -133,14 +133,14 @@ function BookingView(props: BookingViewProps) {
                     }
                 }
             }
-            setAllfeatures(Array.from(allFeaturesSet));
+            setAllFeatures(Array.from(allFeaturesSet));
         },
         []
     );
 
     /**
-     * Exracts the upper and lower bound values for room capacity from button
-     * states. Removes rooms that dont fit between min and max capacity.
+     * Extracts the upper and lower bound values for room capacity from button
+     * states. Removes rooms that don't fit between min and max capacity.
      * @param rooms Rooms to be filtered
      * @returns filtered array of rooms
      */
@@ -205,7 +205,7 @@ function BookingView(props: BookingViewProps) {
     };
 
     /**
-     * Does substring matching to filter out rooms that dont match the custom
+     * Does substring matching to filter out rooms that don't match the custom
      * text filter.
      */
     const filterByCustomString = (rooms: Room[], customFilter: string) => {
@@ -325,11 +325,11 @@ function BookingView(props: BookingViewProps) {
     };
 
     const openSettingsDrawer = () => {
-        setexpandSettingsDrawer(true);
+        setExpandSettingsDrawer(true);
     };
 
     const toggleDrawers = (newOpen: boolean) => {
-        setexpandSettingsDrawer(newOpen);
+        setExpandSettingsDrawer(newOpen);
     };
 
     const updateData = useCallback(() => {
@@ -338,7 +338,7 @@ function BookingView(props: BookingViewProps) {
     }, [updateRooms, updateBookings]);
 
     const toggleDrawn = (newOpen: boolean) => {
-        setexpandFilteringDrawer(newOpen);
+        setExpandFilteringDrawer(newOpen);
     };
 
     // Update data periodically
@@ -363,7 +363,7 @@ function BookingView(props: BookingViewProps) {
 
     const openFiltering = () => {
         if (expandFilteringDrawer === false) {
-            setexpandFilteringDrawer(true);
+            setExpandFilteringDrawer(true);
         }
     };
 

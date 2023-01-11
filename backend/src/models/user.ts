@@ -14,18 +14,18 @@ export const userSchema = new Schema<User>({
     name: String,
     refreshToken: String,
     preferences: { required: true, type: preferencesSchema },
-    scheduleDataArray: [
-        {
-            required: false,
-            type: scheduleDataSchema,
-            index: true,
-            default: []
-        }
-    ],
+    scheduleDataArray: {
+        required: false,
+        type: [scheduleDataSchema]
+    },
     subscription: {
         required: false,
         type: subscriptionSchema,
-        default: {}
+        default: undefined
+    },
+    notificationPermission: {
+        required: true,
+        type: Boolean
     }
 });
 

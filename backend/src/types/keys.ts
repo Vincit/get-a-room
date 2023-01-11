@@ -1,6 +1,6 @@
 type keys = {
-    p256dh?: string | null | undefined;
-    auth?: string | null | undefined;
+    p256dh: string;
+    auth: string;
 };
 
 export default keys;
