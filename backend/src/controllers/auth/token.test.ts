@@ -21,12 +21,15 @@ describe('token', () => {
         name: 'testName',
         email: 'test@email.com'
     };
-    const testToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0U3ViIiwi' +
-        'bmFtZSI6InRlc3ROYW1lIiwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSIsImFjY' +
-        '2Vzc1Rva2VuIjoidG9rZW4iLCJyZWZyZXNoVG9rZW4iOiJydG9rZW4iLCJpYX' +
-        'QiOjE2Mzg0NjUyODAsImV4cCI6MTY3MDAwMTI4MCwiaXNzIjoidGVzdERvbWF' +
-        'pbi5jb20ifQ.7VfY3M_PmKOBge8NFOtwrRgNsmu91Bx4ewvw5fThfco';
+
+    const testTokenPayload = {
+        sub: 'testSub',
+        name: 'testName',
+        email: 'test@email.com',
+        accessToken: 'token',
+        refreshToken: 'rtoken'
+    };
+    let testToken: string;
 
     beforeEach(() => {
         mockRequest = {};
@@ -41,6 +44,7 @@ describe('token', () => {
 
         process.env.HOSTED_DOMAIN = 'testDomain.com';
         process.env.JWT_SECRET = 'testSecret';
+        testToken = writeToken(testTokenPayload);
 
         jest.resetAllMocks();
     });
