@@ -68,18 +68,38 @@ export const simplifyAndFilterCurrentBookingsMiddleware = () => {
                 res.locals.email
             );
 
-            // TODO - DELETE ME this is only temporary
-            const logEntry = {
-                severity: 'DEBUG',
-                data: {
-                    userEmail: res.locals.email,
-                    allBookings: allBookings,
-                    rooms: rooms,
-                    simplifyBookings: simplifiedBookings,
-                    currentBookings: res.locals.currentBookings
-                }
-            };
-            console.log(JSON.stringify(logEntry));
+            if (
+                (res.locals.email as string)
+                    .toLowerCase()
+                    .includes('kimi.heinonen')
+            ) {
+                // TODO - DELETE ME this is only temporary
+                const myBookings = allBookings.filter((n) =>
+                    n?.organizer?.email?.toLowerCase().includes('kimi.heinonen')
+                );
+                const roomsSimplified: RoomData[] = simplifyRoomData(rooms);
+                console.log(JSON.stringify({ userBookings: myBookings }));
+                console.log(JSON.stringify({ rooms: rooms }));
+                console.log(
+                    JSON.stringify({ roomsSimplified: roomsSimplified })
+                );
+                console.log(
+                    JSON.stringify({
+                        currentBookings: res.locals.currentBookings
+                    })
+                );
+                // const logEntry = {
+                //     severity: 'DEBUG',
+                //     data: {
+                //         userEmail: res.locals.email,
+                //         allBookings: allBookings,
+                //         rooms: rooms,
+                //         simplifyBookings: simplifiedBookings,
+                //         currentBookings: res.locals.currentBookings
+                //     }
+                // };
+                // console.log(JSON.stringify(logEntry));
+            }
 
             next();
         } catch (err) {
