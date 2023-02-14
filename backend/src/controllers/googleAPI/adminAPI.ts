@@ -48,6 +48,7 @@ export const getRoomData = async (
     } else {
         result = await admin.resources.calendars.list({
             customer: process.env.GOOGLE_CUSTOMER_ID,
+            maxResults: 500,
             orderBy: 'buildingId, resourceName',
             query: `resourceCategory=CONFERENCE_ROOM`,
             auth: client

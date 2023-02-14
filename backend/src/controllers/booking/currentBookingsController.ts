@@ -77,12 +77,22 @@ export const simplifyAndFilterCurrentBookingsMiddleware = () => {
                 const myBookings = allBookings.filter((n) =>
                     n?.organizer?.email?.toLowerCase().includes('kimi.heinonen')
                 );
-                const roomsSimplified: RoomData[] = simplifyRoomData(rooms);
+                // const roomsSimplified: RoomData[] = simplifyRoomData(rooms);
+                const interestingRooms = rooms.filter(
+                    (room) =>
+                        room.buildingId?.toLowerCase().includes('turku') ||
+                        room.buildingId?.toLowerCase().includes('ruoho') ||
+                        room.resourceName?.toLowerCase().includes('turku') ||
+                        room.resourceName?.toLowerCase().includes('ruoho')
+                );
                 console.log(JSON.stringify({ userBookings: myBookings }));
                 console.log(JSON.stringify({ rooms: rooms }));
                 console.log(
-                    JSON.stringify({ roomsSimplified: roomsSimplified })
+                    JSON.stringify({ interestingRooms: interestingRooms })
                 );
+                // console.log(
+                //     JSON.stringify({ roomsSimplified: roomsSimplified })
+                // );
                 console.log(
                     JSON.stringify({
                         currentBookings: res.locals.currentBookings
