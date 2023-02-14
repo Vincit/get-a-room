@@ -68,49 +68,6 @@ export const simplifyAndFilterCurrentBookingsMiddleware = () => {
                 res.locals.email
             );
 
-            if (
-                (res.locals.email as string)
-                    .toLowerCase()
-                    .includes('kimi.heinonen')
-            ) {
-                // TODO - DELETE ME this is only temporary
-                const myBookings = allBookings.filter((n) =>
-                    n?.organizer?.email?.toLowerCase().includes('kimi.heinonen')
-                );
-                // const roomsSimplified: RoomData[] = simplifyRoomData(rooms);
-                const interestingRooms = rooms.filter(
-                    (room) =>
-                        room.buildingId?.toLowerCase().includes('turku') ||
-                        room.buildingId?.toLowerCase().includes('ruoho') ||
-                        room.resourceName?.toLowerCase().includes('turku') ||
-                        room.resourceName?.toLowerCase().includes('ruoho')
-                );
-                console.log(JSON.stringify({ userBookings: myBookings }));
-                console.log(JSON.stringify({ rooms: rooms }));
-                console.log(
-                    JSON.stringify({ interestingRooms: interestingRooms })
-                );
-                // console.log(
-                //     JSON.stringify({ roomsSimplified: roomsSimplified })
-                // );
-                console.log(
-                    JSON.stringify({
-                        currentBookings: res.locals.currentBookings
-                    })
-                );
-                // const logEntry = {
-                //     severity: 'DEBUG',
-                //     data: {
-                //         userEmail: res.locals.email,
-                //         allBookings: allBookings,
-                //         rooms: rooms,
-                //         simplifyBookings: simplifiedBookings,
-                //         currentBookings: res.locals.currentBookings
-                //     }
-                // };
-                // console.log(JSON.stringify(logEntry));
-            }
-
             next();
         } catch (err) {
             next(err);

@@ -48,6 +48,9 @@ export const getRoomData = async (
     } else {
         result = await admin.resources.calendars.list({
             customer: process.env.GOOGLE_CUSTOMER_ID,
+            // Undocumented by Google: default value for maxResults is 100 and must be in range of [1, 500].
+            // We have over 100 rooms so not having a maxResult greater than 100 caused a bug, where
+            // the users own reservation was not show if that room was not part of that first 100 rooms
             maxResults: 500,
             orderBy: 'buildingId, resourceName',
             query: `resourceCategory=CONFERENCE_ROOM`,
