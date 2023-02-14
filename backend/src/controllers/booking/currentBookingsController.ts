@@ -68,6 +68,19 @@ export const simplifyAndFilterCurrentBookingsMiddleware = () => {
                 res.locals.email
             );
 
+            // TODO - DELETE ME this is only temporary
+            const logEntry = {
+                severity: 'DEBUG',
+                data: {
+                    userEmail: res.locals.email,
+                    allBookings: allBookings,
+                    rooms: rooms,
+                    simplifyBookings: simplifiedBookings,
+                    currentBookings: res.locals.currentBookings
+                }
+            };
+            console.log(JSON.stringify(logEntry));
+
             next();
         } catch (err) {
             next(err);
